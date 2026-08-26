@@ -161,45 +161,45 @@ une API ASP.NET~Core~\cite{ms_aspnetcore}.
 
 \begin{figure}[H]
   \centering
-  \resizebox{0.85\textwidth}{!}{%
   \begin{tikzpicture}[
-    font=\small,
-    card/.style={rounded corners=4pt, draw=vinciblue, line width=0.9pt, fill=white,
-      drop shadow={opacity=0.18,shadow xshift=1pt,shadow yshift=-1pt},
-      align=center, text width=7cm, minimum height=1cm},
-    layer/.style={rounded corners=3pt, draw=vinciblue!55, line width=0.7pt,
-      fill=vinciblue!8, align=center, text width=6cm, minimum height=0.75cm},
-    flow/.style={-{Stealth[length=3mm]}, line width=1.1pt, vinciblue},
+    font=\footnotesize,
+    card/.style={rounded corners=3pt, draw=vinciblue, line width=0.8pt, fill=white,
+      align=center, text width=5.2cm, minimum height=0.8cm},
+    layer/.style={rounded corners=2pt, draw=vinciblue!55, line width=0.6pt,
+      fill=vinciblue!8, align=center, text width=4.8cm, minimum height=0.6cm},
+    flow/.style={-{Stealth[length=2.2mm]}, line width=0.9pt, vinciblue},
     tag/.style={rounded corners=2pt, draw=vincired!55, fill=vincired!7,
-      font=\scriptsize, text=grisfonce, align=center, inner sep=3pt},
-    lbl/.style={font=\footnotesize\itshape, text=grisfonce, fill=white, inner sep=2pt}
+      font=\scriptsize, text=grisfonce, align=center, inner sep=2pt},
+    lbl/.style={font=\scriptsize\itshape, text=grisfonce, fill=white, inner sep=1pt}
   ]
-    \node[card] (spa) {\textbf{Navigateur} — Application Angular (SPA)};
-    \fill[vinciblue] ([xshift=7pt,yshift=-6.5pt]spa.north west) circle (1.3pt);
-    \fill[vinciblue] ([xshift=13pt,yshift=-6.5pt]spa.north west) circle (1.3pt);
-    \fill[vinciblue] ([xshift=19pt,yshift=-6.5pt]spa.north west) circle (1.3pt);
-    \node[layer, below=1.5cm of spa] (ctrl) {Couche présentation — Contrôleurs};
-    \node[layer, below=0.3cm of ctrl] (svc) {Couche métier — Services};
-    \node[layer, below=0.3cm of svc] (repo) {Couche d'accès aux données — Repositories};
+    % Front-end
+    \node[card] (spa) {\textbf{Navigateur} — Angular (SPA)};
+    % Couches API
+    \node[layer, below=1cm of spa] (ctrl) {Contrôleurs (présentation)};
+    \node[layer, below=0.2cm of ctrl] (svc) {Services (métier)};
+    \node[layer, below=0.2cm of svc] (repo) {Repositories (accès données)};
     \draw[flow] (ctrl) -- (svc);
     \draw[flow] (svc) -- (repo);
+    % Cadre API
     \begin{scope}[on background layer]
-      \node[draw=vinciblue, line width=1pt, rounded corners=5pt, fill=grisclair,
-            fit=(ctrl)(svc)(repo), inner sep=12pt] (api) {};
+      \node[draw=vinciblue, line width=0.8pt, rounded corners=4pt, fill=grisclair,
+            fit=(ctrl)(svc)(repo), inner sep=8pt] (api) {};
     \end{scope}
-    \node[anchor=south west, font=\bfseries\footnotesize, text=vinciblue]
-          at ([xshift=3pt,yshift=2pt]api.north west) {API ASP.NET Core};
-    \node[tag, right=0.7cm of ctrl] (t1) {DTO};
-    \node[tag, right=0.7cm of repo] (t2) {Repository\\Unit of Work};
-    \draw[vincired!55, dotted, line width=0.7pt] (ctrl.east) -- (t1.west);
-    \draw[vincired!55, dotted, line width=0.7pt] (repo.east) -- (t2.west);
-    \node[cylinder, shape border rotate=90, aspect=0.28, draw=vincired,
-          line width=1pt, fill=vincired!8, minimum width=2.8cm, minimum height=1.2cm,
-          align=center, below=1.6cm of api] (db) {\textbf{SQL Server}};
-    \draw[flow] (spa) -- node[lbl,right]{Requêtes HTTP / REST (JSON)} (api.north);
-    \draw[flow] (api.south) -- node[lbl,right]{Entity Framework Core (ORM)} (db);
-  \end{tikzpicture}%
-  }
+    \node[anchor=south west, font=\scriptsize\bfseries, text=vinciblue]
+          at ([xshift=2pt,yshift=1pt]api.north west) {API ASP.NET Core};
+    % Tags patrons
+    \node[tag, right=0.4cm of ctrl] (t1) {DTO};
+    \node[tag, right=0.4cm of repo] (t2) {Repository};
+    \draw[vincired!55, dotted, line width=0.6pt] (ctrl.east) -- (t1.west);
+    \draw[vincired!55, dotted, line width=0.6pt] (repo.east) -- (t2.west);
+    % Base de données
+    \node[cylinder, shape border rotate=90, aspect=0.3, draw=vincired,
+          line width=0.8pt, fill=vincired!8, minimum width=2cm, minimum height=0.9cm,
+          align=center, below=1cm of api] (db) {\textbf{SQL Server}};
+    % Flèches principales
+    \draw[flow] (spa) -- node[lbl,right]{HTTP / REST (JSON)} (api.north);
+    \draw[flow] (api.south) -- node[lbl,right]{Entity Framework Core} (db);
+  \end{tikzpicture}
   \caption{Architecture en couches d'une application web moderne~: du front-end
     SPA à la base de données relationnelle.}
   \label{fig:archi}
