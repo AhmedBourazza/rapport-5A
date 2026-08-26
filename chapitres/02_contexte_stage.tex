@@ -1,0 +1,203 @@
+\chapter{Contexte et cadre du stage}
+\label{chap:contexte}
+Après avoir présenté l'organisme d'accueil, ce chapitre expose le cadre de mon
+stage~: les objectifs et les missions qui m'ont été confiés, le cahier des
+charges du projet principal, mon intégration et ma prise de poste,
+l'organisation agile de l'équipe, puis l'environnement technique.
+
+\section{Objectifs et missions}
+\label{sec:objectifs}
+J'ai rejoint le service Collaborative Solutions en tant qu'analyste développeur
+.NET~/ Angular. La fiche de mission résumait ainsi le poste~:
+\begin{quote}\itshape
+Concevoir, développer, maintenir et gouverner des solutions applicatives
+autour de l'écosystème Microsoft~365, et particulièrement SharePoint~Online.
+En tant qu'analyste développeur, vous interviendrez sur l'ensemble du cycle de
+vie des applications.
+\end{quote}
+Ce périmètre couvre quatre volets complémentaires. Le développement
+d'applications, avec une participation aux choix d'architecture et
+l'intégration des normes d'éco-conception et d'accessibilité numérique.
+L'analyse et la conception, qui regroupent l'analyse des besoins métier, la
+rédaction des spécifications techniques et l'amélioration continue des
+solutions existantes. Les tests et la qualité, à travers les tests unitaires
+et le respect des bonnes pratiques. Enfin la maintenance corrective et
+évolutive, incluant la résolution d'incidents en production.
+
+En pratique, mes missions se sont organisées autour d'un projet principal et de
+plusieurs missions transverses. Le projet principal a été la refonte de
+l'application interne \csbag, dont la version~2 a été découpée en trois lots
+complémentaires, présentés dans la section suivante.
+
+Les missions transverses, plus courtes mais représentatives du travail
+d'exploitation en production, ont porté sur deux applications existantes. Elium
+Sauvegarde est une application console .NET qui archive automatiquement les
+articles de la plateforme de gestion des connaissances Elium vers
+SharePoint~Online~; j'y suis intervenu pour fiabiliser un traitement qui
+échouait en production. Access Report TTC~GO est un ensemble d'Azure WebJobs qui
+génèrent à la demande un rapport des droits d'accès d'un espace collaboratif
+SharePoint~; j'y ai corrigé une panne silencieuse d'authentification. Ces deux
+missions sont détaillées au chapitre~\ref{chap:transverses}.
+
+\section{Cahier des charges}
+\label{sec:cahier-charges}
+\csbag est un outil interne au service Collaborative Solutions, destiné aux
+profils techniques de l'équipe. Il sert à recenser et documenter les
+applications du service ainsi que leurs composants techniques~: frameworks,
+comptes de service, applications SharePoint et Azure~AD, certificats,
+ressources Azure, serveurs d'exploitation et bases de données. Son accès est
+réservé aux comptes d'administration (comptes ADM)\footnote{Source~:
+documentation interne VINCI~Energies Systèmes d'Information.}.
+
+L'objectif de la version~2 est de faire évoluer cet outil pour en améliorer la
+richesse fonctionnelle, l'ergonomie et la maintenabilité. Pour être menée de
+façon progressive et livrable par étapes, la refonte a été découpée en trois
+lots complémentaires, chacun formalisé par un document de spécifications
+propre. Cette approche incrémentale permet de livrer de la valeur à chaque
+étape tout en limitant les risques. Le détail technique de chaque lot est
+présenté au chapitre~\ref{chap:csbag}.
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[
+    font=\footnotesize,
+    lot/.style={rectangle, rounded corners, draw=vinciblue, very thick,
+      fill=vinciblue!8, text width=3.1cm, minimum height=1.7cm, align=center,
+      inner sep=5pt},
+    num/.style={circle, fill=vinciblue, text=white, font=\bfseries\small,
+      inner sep=1pt, minimum size=5.5mm},
+    fleche/.style={-{Stealth[length=3mm]}, draw=vincired, very thick}
+  ]
+    \node[lot] (l1) {Socle\\ de la refonte};
+    \node[lot, right=1.3cm of l1] (l2) {Amélioration\\ de l'outil};
+    \node[lot, right=1.3cm of l2] (l3) {Enrichissement\\ fonctionnel};
+    \node[num] at (l1.north) {1};
+    \node[num] at (l2.north) {2};
+    \node[num] at (l3.north) {3};
+    \draw[fleche] (l1) -- (l2);
+    \draw[fleche] (l2) -- (l3);
+    \node[below=0.5cm of l2, font=\itshape, text=grisfonce, text width=11cm,
+          align=center]
+      {Livraison incrémentale~: chaque lot s'appuie sur le précédent
+       et étend le périmètre fonctionnel.};
+  \end{tikzpicture}
+  \caption{Découpage de la refonte \csbag~v2 en trois lots complémentaires.}
+  \label{fig:lots}
+\end{figure}
+
+\section{Intégration et prise de poste}
+\label{sec:integration}
+Le stage a débuté par deux journées d'accueil organisées par les ressources
+humaines de VESI, communes à l'ensemble des stagiaires. Après un tour de
+présentation, ces journées ont enchaîné plusieurs interventions des différentes
+équipes et directions de VESI, permettant de comprendre leurs rôles et
+d'identifier les interlocuteurs à solliciter. Elles se sont conclues par un
+échange avec deux directeurs, l'occasion de recueillir des conseils sur le
+parcours professionnel.
+
+À partir du troisième jour, j'ai rejoint mon équipe sur le site du Mans, où
+j'ai été accueilli par mon chef de projet, Maxime, et le team lead de l'équipe,
+Alexis. Après la découverte des locaux, un premier point avec mon chef de
+projet a permis de fixer la feuille de route du stage. La première semaine a
+ensuite été consacrée à la préparation de l'environnement de travail et à la
+validation des formations et passeports obligatoires, avant le lancement du
+premier lot.
+
+\begin{table}[H]
+  \centering
+  \caption{Étapes de la prise de poste.}
+  \label{tab:integration}
+  \begin{tabularx}{\textwidth}{>{\bfseries}p{3.4cm} X}
+    \toprule
+    \normalfont\bfseries Étape & \bfseries Contenu \\
+    \midrule
+    Journées d'accueil (J1--J2) & Présentation des équipes et directions de
+      VESI, règles internes, échange avec deux directeurs \\
+    Prise de poste (J3) & Accueil dans l'équipe, découverte des locaux,
+      cadrage de la feuille de route avec le chef de projet \\
+    Semaine 1 & Installation de l'environnement de travail~; formations et
+      passeports obligatoires (sécurité des systèmes d'information, règles
+      d'usage de l'IA~: seul GitHub~Copilot autorisé) \\
+    Lancement du lot 1 & Présentation du projet \csbag et démarrage des
+      développements \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\section{Organisation du travail et méthode agile}
+\label{sec:organisation}
+Au sein de la direction Custom Applications, le service Collaborative Solutions
+comprend l'équipe Group Collaborative Solutions, elle-même organisée en deux
+squads~: le squad MyVIEW et le squad M365. J'ai été intégré au squad M365.
+
+\begin{figure}[H]
+  \centering
+  % >>> Remplacer la ligne ci-dessous par votre export draw.io : <
+   \includegraphics[width=\textwidth]{org_squads.png}
+  \caption{Positionnement du squad M365 au sein de la direction Custom
+    Applications.}
+  \label{fig:org-squads}
+\end{figure}
+
+L'équipe fonctionne selon une approche agile, rythmée par plusieurs rituels au
+cours de la semaine. Chaque jour, un daily réunit le squad pour faire le point
+sur le travail de la veille, celui du jour, et remonter d'éventuels points
+bloquants. Le lundi, un point d'équipe rassemble l'ensemble de l'équipe Group
+Collaborative Solutions afin de coordonner les travaux entre les deux squads.
+Le mardi, un point de squad se concentre sur l'avancement propre au squad M365.
+Enfin, le vendredi, un point technique avec le référent technique, Nathan,
+permet de valider les choix techniques et de discuter en profondeur des sujets
+de conception avant leur mise en œuvre. Le suivi des tâches s'effectue tout au
+long de la semaine dans Wrike, où le travail est formalisé et priorisé, ce qui
+assure la traçabilité des développements et une visibilité partagée sur
+l'avancement.
+
+\begin{table}[H]
+  \centering
+  \caption{Rituels agiles suivis durant le stage.}
+  \label{tab:rituels}
+  \begin{tabularx}{\textwidth}{>{\bfseries}p{3.2cm} p{2.6cm} X}
+    \toprule
+    \normalfont\bfseries Rituel & \bfseries Fréquence & \bfseries Objectif \\
+    \midrule
+    Daily          & Quotidienne & Point sur la veille et la journée à venir,
+                                   remontée des points bloquants \\
+    Point d'équipe & Hebdo (lundi) & Coordination à l'échelle de l'équipe
+                                     Group Collaborative Solutions \\
+    Point de squad & Hebdo (mardi) & Suivi de l'avancement au sein du
+                                     squad M365 \\
+    Point technique & Hebdo (vendredi) & Validation des choix techniques avec
+                                         le référent technique \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+\section{Environnement technique}
+\label{sec:environnement-technique}
+Les développements s'appuient sur une pile technique full-stack cohérente avec
+celle du service, complétée par des outils de gestion de code, de suivi de
+projet et d'assistance au développement.
+
+\begin{table}[H]
+  \centering
+  \caption{Environnement technique du stage.}
+  \label{tab:stack}
+  \begin{tabularx}{\textwidth}{>{\bfseries}p{3.8cm} X}
+    \toprule
+    \normalfont\bfseries Catégorie & \bfseries Technologies et outils \\
+    \midrule
+    Back-end          & C\#, ASP.NET~Core (.NET~Core / .NET~Framework) \\
+    Front-end         & Angular \\
+    Base de données   & Microsoft SQL~Server \\
+    Cloud             & Microsoft Azure (services cloud, Azure~AD) \\
+    Gestion de code   & GitLab (instance auto-hébergée en interne) \\
+    Gestion de projet & Wrike \\
+    Assistance IA     & GitHub~Copilot (seul outil d'IA autorisé) \\
+    Rédaction du rapport & Latex via la plateforme Overleaf~\cite{overleaf} \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+Ce socle est représentatif des projets du service~: un back-end .NET exposant
+des services consommés par un front-end Angular, une persistance sur SQL~Server
+et une intégration à l'écosystème Microsoft~365 et Azure. Il constitue le cadre
+technique dans lequel s'inscrit la refonte de \csbag, présentée au
+chapitre~\ref{chap:csbag}.

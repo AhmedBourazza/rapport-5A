@@ -1,0 +1,17 @@
+% =====================================================================
+%  ANNEXES
+%  Qualité rédactionnelle équivalente au texte principal.
+%  Chaque annexe doit être référencée dans le corps du rapport.
+% =====================================================================
+\appendix
+\chapter*{Annexes}
+\addcontentsline{toc}{chapter}{Annexes}
+\markboth{Annexes}{Annexes}
+
+% Renommer les sections en "Annexe A", "Annexe B", ...
+\renewcommand{\thesection}{Annexe~\Alph{section}}
+\setcounter{section}{0}
+
+\section{[Titre de l'annexe]}
+% >>> ex. : diagramme de Gantt, schéma d'architecture, extraits de code <<<
+\textit{[Contenu à ajouter.]}

@@ -1,0 +1,290 @@
+% =====================================================================
+%  CHAPITRE 1 - PRÉSENTATION DE L'ORGANISME D'ACCUEIL
+% =====================================================================
+%  NOTES (à traiter avant version finale) :
+%  [1] Chiffres publics : à revérifier (voir references.bib).
+%  [2] Dénomination du pôle "contracting" : à confirmer sur l'URD 2024.
+%  [3] Historique GTIE : formulation en commentaire, à activer après vérif.
+%  [4] Liste des directions de VESI : laissée générique (non confirmée).
+%  [5] Données internes : créditées "documentation interne VESI".
+% =====================================================================
+
+\chapter{Présentation de l'organisme d'accueil}
+\label{chap:organisme}
+
+Ce chapitre présente le cadre dans lequel s'est déroulé mon stage, du plus
+général au plus spécifique~: le groupe VINCI, la branche VINCI~Energies,
+son entité informatique VESI, la direction Custom Applications, puis le
+service Collaborative Solutions et l'équipe qui m'a accueilli. Il se termine
+sur l'engagement sociétal et environnemental du groupe et sa traduction
+concrète dans les pratiques de développement.
+
+\section{Le groupe VINCI}
+\label{sec:groupe-vinci}
+
+VINCI est un acteur mondial des concessions, de l'énergie et de la
+construction, présent dans plus de 120~pays. Le groupe intervient sur
+l'ensemble du cycle de vie des infrastructures et des bâtiments, de la
+conception à l'exploitation, et inscrit son action dans une stratégie de
+transition énergétique et environnementale. En 2024, il réunissait environ
+285\,000~collaborateurs pour un chiffre d'affaires de 71,6~milliards d'euros
+et un résultat net part du Groupe de 4,86~milliards d'euros~\cite{vinci_urd2024}.
+
+Le groupe organise ses activités autour de deux grands pôles opérationnels.
+\textbf{VINCI~Concessions} conçoit, finance et exploite des infrastructures
+de transport, notamment à travers VINCI~Autoroutes et VINCI~Airports. Le pôle
+\textbf{énergie et construction} rassemble \textbf{VINCI~Energies},
+\textbf{VINCI~Construction} et \textbf{Cobra~IS}. À ces activités s'ajoute
+\textbf{VINCI~Immobilier}, dédié à la promotion immobilière. C'est au sein de
+VINCI~Energies que s'est déroulé mon stage.
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[
+    font=\footnotesize,
+    racine/.style={rectangle, rounded corners, draw=vinciblue, very thick,
+      fill=vinciblue, text=white, minimum width=2.4cm, minimum height=0.8cm,
+      align=center},
+    pole/.style={rectangle, rounded corners, draw=vinciblue, thick,
+      fill=vinciblue!10, minimum width=2.6cm, minimum height=0.75cm, align=center},
+    feuille/.style={rectangle, rounded corners, draw=gray, thick,
+      fill=grisclair, minimum width=2.4cm, minimum height=0.65cm, align=center},
+    lien/.style={-, draw=gray, thick}
+  ]
+    \node[racine] (vinci) {VINCI};
+    \node[pole, below left=1.2cm and 3.1cm of vinci] (conc) {VINCI\\Concessions};
+    \node[pole, below=1.2cm of vinci] (contr) {Énergie \&\\Construction};
+    \node[pole, below right=1.2cm and 3.1cm of vinci] (immo) {VINCI\\Immobilier};
+    \draw[lien] (vinci) -- (conc);
+    \draw[lien] (vinci) -- (contr);
+    \draw[lien] (vinci) -- (immo);
+    \node[feuille, below=1.9cm of contr] (energies) {VINCI\\\textbf{Energies}};
+    \node[feuille, left=0.35cm of energies] (construction) {VINCI\\Construction};
+    \node[feuille, right=0.35cm of energies] (cobra) {Cobra~IS};
+    \draw[lien] (contr) -- (construction);
+    \draw[lien] (contr) -- (energies);
+    \draw[lien] (contr) -- (cobra);
+    \node[feuille, below=1.9cm of conc, minimum width=2.1cm] (airp) {VINCI\\Airports};
+    \node[feuille, left=0.35cm of airp, minimum width=2.1cm] (auto) {VINCI\\Autoroutes};
+    \draw[lien] (conc) -- (auto);
+    \draw[lien] (conc) -- (airp);
+    \begin{scope}[on background layer]
+      \node[draw=vincired, thick, rounded corners, fit=(energies), inner sep=3pt] {};
+    \end{scope}
+  \end{tikzpicture}
+  \caption{Structure simplifiée du groupe VINCI. L'entité d'accueil,
+    VINCI~Energies, est encadrée en rouge.}
+  \label{fig:structure-vinci}
+\end{figure}
+
+\section{La branche VINCI Energies}
+\label{sec:vinci-energies}
+
+VINCI~Energies accompagne ses clients dans la transition énergétique et la
+transformation numérique, en proposant des solutions multitechniques sur
+mesure, de la conception-réalisation à l'exploitation-maintenance. En 2024,
+la branche a réalisé un chiffre d'affaires de 20,4~milliards d'euros, avec
+plus de 100\,000~collaborateurs répartis dans 61~pays~\cite{ve_chiffres_cles}.
+
+Sa principale caractéristique tient à son \textbf{modèle décentralisé}~:
+VINCI~Energies fonctionne comme un réseau de près de 2\,000~entreprises à
+taille humaine, ancrées dans leurs territoires, ce qui conjugue réactivité
+locale et puissance d'un grand groupe. Ses métiers se répartissent entre
+infrastructures d'énergie, industrie, technologies de l'information et
+bâtiment, portés par des marques transverses telles qu'Actemium, Axians,
+Omexom, Citeos et VINCI~Facilities. Ce modèle a une conséquence directe pour
+les systèmes d'information~: outiller un grand nombre d'entités hétérogènes
+avec des applications communes, fiables et sécurisées. C'est précisément la
+mission de VESI, et le contexte de mon stage.
+
+% [3] HISTORIQUE GTIE - à activer seulement après vérification de source :
+% VINCI~Energies s'inscrit dans la continuité d'un savoir-faire ancien en
+% génie électrique, hérité notamment de l'entité GTIE.
+
+\begin{table}[H]
+  \centering
+  \caption{Carte d'identité de VINCI~Energies (données 2024).}
+  \label{tab:carte-ve}
+  \begin{tabularx}{\textwidth}{>{\bfseries}p{4.2cm} X}
+    \toprule
+    \normalfont\bfseries Catégorie & \bfseries Informations \\
+    \midrule
+    Raison sociale        & VINCI~Energies SA \\
+    Métiers               & Services à l'énergie, industrie, ICT, bâtiment \\
+    Présence              & 61 pays, près de 2\,000 entreprises \\
+    Effectifs (2024)      & plus de 100\,000 collaborateurs \\
+    Chiffre d'affaires (2024) & 20,4 milliards d'euros \\
+    Marques               & Actemium, Axians, Omexom, Citeos, VINCI~Facilities \\
+    Concurrents           & Equans, Spie, Eiffage Énergie Systèmes, SNEF \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\section{VINCI Energies Systèmes d'Information (VESI)}
+\label{sec:vesi}
+
+VINCI~Energies Systèmes d'Information (VESI) est l'entité chargée du système
+d'information de VINCI~Energies. Sa mission est de concevoir, déployer et
+maintenir les applications et outils numériques utilisés par les entreprises
+du réseau, qu'il s'agisse d'outils de gestion, de collaboration ou de
+valorisation de la donnée. Ce rôle est stratégique dans un groupe
+décentralisé~: fournir un socle applicatif commun à des centaines d'entités
+autonomes suppose des solutions robustes, sécurisées et adaptables. VESI
+dispose d'une implantation notable au Mans, où s'est déroulé mon stage. Elle
+regroupe plusieurs directions spécialisées, parmi lesquelles la direction
+\textbf{Custom Applications}, qui m'a accueilli.
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[
+    font=\footnotesize,
+    vesi/.style={rectangle, rounded corners, draw=vinciblue, very thick,
+      fill=vinciblue, text=white, minimum width=3cm, minimum height=0.8cm,
+      align=center},
+    dir/.style={rectangle, rounded corners, draw=gray, thick, fill=grisclair,
+      minimum width=2.7cm, minimum height=0.7cm, align=center},
+    dirhi/.style={rectangle, rounded corners, draw=vincired, very thick,
+      fill=vinciblue!10, minimum width=2.7cm, minimum height=0.7cm, align=center},
+    lien/.style={-, draw=gray, thick}
+  ]
+    \node[vesi] (vesi) {VESI};
+    \node[dir, below=1.1cm of vesi] (ca) {Custom\\Applications};
+    \node[dirhi] at (ca) (cahi) {Custom\\Applications};
+    \node[dir, left=1.1cm of ca] (d1) {Autres\\directions};
+    \node[dir, right=1.1cm of ca] (d2) {Autres\\directions};
+    \draw[lien] (vesi) -- (cahi);
+    \draw[lien] (vesi) -- (d1);
+    \draw[lien] (vesi) -- (d2);
+  \end{tikzpicture}
+  \caption{Positionnement de la direction Custom Applications au sein de VESI
+    (schéma de structure, sans nominatif).}
+  \label{fig:vesi}
+\end{figure}
+
+\section{La direction Custom Applications}
+\label{sec:custom-apps}
+
+La direction Custom Applications conçoit, développe, teste, déploie et
+maintient les applications métier --- web et mobiles --- de VINCI~Energies
+(hors périmètres Codex, FSM et CRM). Elle maintient un portefeuille de plus
+de 50~applications couvrant des besoins variés~: outils Groupe, applications
+opérationnelles, QHSE, solutions collaboratives et services internes à
+VESI\footnote{Source~: documentation interne VINCI~Energies Systèmes
+d'Information.}.
+
+Ses développements reposent sur un socle full-stack --- C\#/.NET, Angular,
+React, Java, Flutter et technologies mobiles --- complété par le déploiement
+et le support de solutions éditeurs (paie, SIRH). Au-delà du développement,
+la direction assure la gouvernance des solutions, l'animation des communautés
+d'utilisateurs clés et intègre les pratiques \textbf{DevSecOps} et de
+\textbf{numérique responsable} dans ses projets. Elle représentait environ
+98~collaborateurs (ETP) en 2025, sur un périmètre France et
+international\footnote{Source~: documentation interne VINCI~Energies Systèmes
+d'Information.}.
+
+Pour structurer cette activité, la direction est organisée en quatre services,
+chacun responsable d'un domaine applicatif~: \textbf{Web \& Mobile
+Applications}, \textbf{Collaborative Solutions}, \textbf{Payroll Solutions}
+et \textbf{HRIS}. J'ai été intégré au service Collaborative Solutions.
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[
+    font=\footnotesize,
+    dir/.style={rectangle, rounded corners, draw=vinciblue, very thick,
+      fill=vinciblue, text=white, minimum width=3.4cm, minimum height=0.8cm,
+      align=center},
+    serv/.style={rectangle, rounded corners, draw=gray, thick, fill=grisclair,
+      minimum width=2.5cm, minimum height=0.9cm, align=center},
+    servhi/.style={rectangle, rounded corners, draw=vincired, very thick,
+      fill=vinciblue!10, minimum width=2.5cm, minimum height=0.9cm, align=center},
+    lien/.style={-, draw=gray, thick}
+  ]
+    \node[dir] (ca) {Direction Custom Applications};
+    \node[serv, below=1.2cm of ca, xshift=-4.05cm] (s1) {Web \& Mobile\\Applications};
+    \node[servhi, right=0.35cm of s1] (s2) {Collaborative\\Solutions};
+    \node[serv, right=0.35cm of s2] (s3) {Payroll\\Solutions};
+    \node[serv, right=0.35cm of s3] (s4) {HRIS};
+    \draw[lien] (ca) -- (s1);
+    \draw[lien] (ca) -- (s2);
+    \draw[lien] (ca) -- (s3);
+    \draw[lien] (ca) -- (s4);
+  \end{tikzpicture}
+  \caption{Les quatre services de la direction Custom Applications. Le service
+    d'accueil, Collaborative Solutions, est mis en évidence.}
+  \label{fig:custom-apps}
+\end{figure}
+
+\section{Le service Collaborative Solutions}
+\label{sec:collab-solutions}
+
+Le service Collaborative Solutions maintient et développe les solutions
+collaboratives de VINCI~Energies, principalement sur une base
+\textbf{Microsoft~365}, dans le respect des règles de gouvernance et de
+sécurité. Son rôle est transverse~: renforcer la collaboration au sein d'un
+groupe fortement décentralisé, en fournissant des outils communs à des
+centaines d'entités.
+
+Le service s'articule autour de deux équipes\footnote{Source~: documentation
+interne VINCI~Energies Systèmes d'Information.}. L'équipe \textbf{Group
+Collaborative Solutions} prend en charge les solutions à périmètre Groupe ---
+notamment l'intranet \textbf{MyVIEW}, le moteur de recherche et annuaire
+\textbf{Connect}, et les espaces de travail collaboratifs. L'équipe
+\textbf{BU Collaborative Solutions} se concentre sur les solutions à périmètre
+Business Unit, comme \textbf{DPF} (Digital Project Files), ainsi que sur les
+migrations de données M365 (OneDrive, SharePoint, Teams). Sur le plan
+technique, les compétences clés du service couvrent le développement
+C\#/.NET, Angular et React, appuyé sur SharePoint Online et l'API
+Microsoft~Graph.
+
+C'est au sein de l'équipe \textbf{Group Collaborative Solutions} que s'est
+déroulé mon stage. Mes missions, détaillées dans les chapitres suivants, se
+sont inscrites dans ce périmètre --- au premier rang desquelles la refonte de
+l'application \csbag.
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[
+    font=\footnotesize,
+    serv/.style={rectangle, rounded corners, draw=vinciblue, very thick,
+      fill=vinciblue, text=white, minimum width=3.4cm, minimum height=0.8cm,
+      align=center},
+    eq/.style={rectangle, rounded corners, draw=vinciblue, thick,
+      fill=vinciblue!10, minimum width=3.6cm, minimum height=0.8cm, align=center},
+    peri/.style={rectangle, rounded corners, draw=gray, thick, fill=grisclair,
+      minimum width=3.6cm, minimum height=1.1cm, align=center, font=\scriptsize},
+    lien/.style={-, draw=gray, thick}
+  ]
+    \node[serv] (svc) {Service Collaborative Solutions};
+    \node[eq, below=1.1cm of svc, xshift=-2.2cm] (g) {Group\\Collaborative Solutions};
+    \node[eq, below=1.1cm of svc, xshift=2.2cm] (bu) {BU\\Collaborative Solutions};
+    \draw[lien] (svc) -- (g);
+    \draw[lien] (svc) -- (bu);
+    \node[peri, below=0.6cm of g] (gp) {Périmètre Groupe~:\\MyVIEW, Connect,\\espaces collaboratifs};
+    \node[peri, below=0.6cm of bu] (bup) {Périmètre Business Unit~:\\DPF, migrations M365\\(OneDrive, SharePoint, Teams)};
+    \draw[lien] (g) -- (gp);
+    \draw[lien] (bu) -- (bup);
+    \begin{scope}[on background layer]
+      \node[draw=vincired, thick, rounded corners, fit=(g)(gp), inner sep=4pt] {};
+    \end{scope}
+  \end{tikzpicture}
+  \caption{Les deux équipes du service Collaborative Solutions et leurs
+    périmètres applicatifs. L'équipe d'accueil est encadrée en rouge.}
+  \label{fig:collab}
+\end{figure}
+
+\section{Responsabilité sociétale et environnementale (RSE)}
+\label{sec:rse}
+
+La responsabilité sociétale et environnementale occupe une place centrale
+dans la stratégie de VINCI~Energies, qui s'engage à réduire son empreinte
+carbone et à accompagner ses clients dans leur transition énergétique. Cet
+engagement se prolonge au niveau de VESI et de la direction Custom
+Applications à travers deux axes intégrés directement aux développements~: la
+\textbf{sécurité dès la conception} (approche DevSecOps, analyse systématique
+du code et des dépendances) et le \textbf{numérique responsable}
+(éco-conception des applications, accessibilité
+numérique)\footnote{Source~: documentation interne VINCI~Energies Systèmes
+d'Information.}. Les enjeux RSE ne sont donc pas seulement portés au niveau du
+groupe~: ils irriguent aussi les pratiques quotidiennes des équipes de
+développement.

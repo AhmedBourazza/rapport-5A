@@ -1,0 +1,278 @@
+\chapter{État de l'art}
+\label{chap:etat-art}
+
+Avant d'aborder la conception de \csbag, ce chapitre dresse un état de l'art des
+technologies, méthodes et bonnes pratiques disponibles à l'entrée en stage. Il
+ne décrit pas mes réalisations, présentées au chapitre suivant, mais le cadre
+existant dans lequel s'inscrit mon travail~: l'écosystème Microsoft, les
+services cloud Azure, l'architecture des applications web modernes, la
+conception des bases de données relationnelles et, enfin, les stratégies de
+modernisation d'un existant. Chacune de ces notions servira ensuite de grille de
+lecture pour analyser et justifier les choix techniques du
+chapitre~\ref{chap:csbag}.
+
+\section{L'écosystème Microsoft 365 et SharePoint}
+\label{sec:m365}
+
+Le service qui m'a accueilli développe ses solutions autour de Microsoft~365,
+une suite d'outils collaboratifs hébergés dans le cloud~\cite{ms_m365}. Au cœur
+de cette suite, SharePoint~Online est une plateforme de collaboration et de
+gestion documentaire organisée en sites, chaque site regroupant des listes
+(données structurées) et des bibliothèques de documents~\cite{ms_sharepoint}.
+Dans un groupe fortement décentralisé, ce type de plateforme fournit un socle
+commun à des centaines d'entités, ce qui explique sa place centrale au sein du
+service.
+
+Plusieurs approches permettent d'accéder par programme aux données de
+Microsoft~365 et de SharePoint. Microsoft~Graph constitue l'interface REST
+unifiée et recommandée aujourd'hui par Microsoft pour l'ensemble des services
+de la suite~\cite{ms_graph}. À côté, deux approches plus anciennes subsistent~:
+le modèle objet client (CSOM), spécifique à SharePoint, et l'API REST propre à
+SharePoint~\cite{ms_sp_access}.
+
+\begin{table}[H]
+  \centering
+  \caption{Approches d'accès programmatique à SharePoint~/ Microsoft~365.}
+  \label{tab:sp-acces}
+  \begin{tabularx}{\textwidth}{>{\bfseries}p{3.4cm} X p{2.9cm}}
+    \toprule
+    \normalfont\bfseries Approche & \bfseries Description & \bfseries Positionnement \\
+    \midrule
+    Microsoft Graph & Interface REST unifiée pour tout Microsoft~365
+      (utilisateurs, fichiers, sites, etc.) & Approche moderne recommandée \\
+    CSOM & Modèle objet côté client, spécifique à SharePoint & Approche
+      historique \\
+    API REST SharePoint & Accès REST propre à SharePoint & Approche historique \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\section{Le cloud et les services Azure}
+\label{sec:azure}
+
+L'informatique en nuage (\textit{cloud computing}) désigne la fourniture à la
+demande de ressources informatiques par un fournisseur, selon un modèle où l'on
+consomme un service au lieu d'héberger et d'administrer soi-même
+l'infrastructure. La définition de référence, établie par le NIST, distingue
+trois modèles de service~: l'infrastructure (IaaS), la plateforme (PaaS) et le
+logiciel (SaaS)~\cite{nist2011cloud}. Microsoft~Azure est la plateforme cloud de
+Microsoft~; elle propose un ensemble de services managés que l'on assemble selon
+les besoins d'une application.
+
+Plusieurs de ces services sont directement pertinents pour une application
+d'entreprise. La gestion des identités et de l'authentification est assurée par
+Microsoft~Entra~ID, anciennement Azure~Active~Directory, qui prend notamment en
+charge l'authentification unique (SSO) via le protocole OpenID~Connect
+\cite{ms_entra,ms_oidc}. La protection des données sensibles repose sur
+Azure~Key~Vault, un service dédié au stockage centralisé et sécurisé des secrets,
+clés et certificats~\cite{ms_keyvault}~; cette approche répond à une bonne
+pratique élémentaire, qui consiste à ne jamais inscrire de secret en clair dans
+le code source. Enfin, l'exécution de traitements en arrière-plan peut s'appuyer
+sur les Azure~WebJobs, déclenchés notamment par une file d'attente
+Azure~Storage~Queue, ce qui permet de découpler et de fiabiliser des traitements
+asynchrones~\cite{ms_webjobs}.
+
+\begin{figure}[H]
+  \centering
+  \resizebox{0.95\textwidth}{!}{%
+  \begin{tikzpicture}[
+    font=\small,
+    app/.style={rounded corners=5pt, draw=vinciblue, line width=1pt, fill=vinciblue!6,
+      drop shadow={opacity=0.18,shadow xshift=1pt,shadow yshift=-1pt},
+      align=center, text width=4cm, minimum height=1.3cm},
+    serv/.style={rounded corners=5pt, draw=azurblue!70, line width=0.9pt, fill=white,
+      drop shadow={opacity=0.16,shadow xshift=1pt,shadow yshift=-1pt},
+      align=center, text width=2.8cm, minimum height=2.4cm, inner sep=4pt},
+    conn/.style={-{Stealth[length=2.5mm]}, line width=1pt, azurblue!80}
+  ]
+    \node[app] (app) {\textbf{Application}\\[2pt]\footnotesize ASP.NET Core + Angular};
+    \node[serv, below=2.4cm of app, xshift=-4.9cm] (entra) {};
+    \node[serv, right=0.4cm of entra] (kv) {};
+    \node[serv, right=0.4cm of kv] (queue) {};
+    \node[serv, right=0.4cm of queue] (wj) {};
+    % Entra ID : bouclier
+    \begin{scope}[shift={([yshift=-0.5cm]entra.north)}]
+      \fill[azurblue] (0,0.28) -- (0.22,0.17) -- (0.22,-0.07)
+        .. controls (0.22,-0.26) and (0,-0.35) .. (0,-0.35)
+        .. controls (0,-0.35) and (-0.22,-0.26) .. (-0.22,-0.07)
+        -- (-0.22,0.17) -- cycle;
+      \draw[white, line width=1pt] (-0.08,-0.02) -- (-0.01,-0.11) -- (0.1,0.09);
+    \end{scope}
+    \node[align=center] at ([yshift=-1.5cm]entra.north)
+      {\textbf{\footnotesize Entra ID}\\[1pt]\rrole{Authentification \& SSO}\\\rrole{(OpenID Connect)}};
+    % Key Vault : clé
+    \begin{scope}[shift={([yshift=-0.5cm]kv.north)}]
+      \draw[azurblue, line width=1.4pt] (-0.1,0) circle (0.11);
+      \draw[azurblue, line width=1.4pt] (0.01,0) -- (0.28,0);
+      \draw[azurblue, line width=1.4pt] (0.2,0) -- (0.2,-0.1);
+      \draw[azurblue, line width=1.4pt] (0.28,0) -- (0.28,-0.12);
+    \end{scope}
+    \node[align=center] at ([yshift=-1.5cm]kv.north)
+      {\textbf{\footnotesize Key Vault}\\[1pt]\rrole{Secrets, clés}\\\rrole{et certificats}};
+    % Queue : messages empilés
+    \begin{scope}[shift={([yshift=-0.45cm]queue.north)}]
+      \foreach \y in {0.14,0.0,-0.14} {
+        \draw[azurblue, line width=0.9pt, rounded corners=1pt] (-0.24,\y-0.045) rectangle (0.24,\y+0.045);}
+    \end{scope}
+    \node[align=center] at ([yshift=-1.5cm]queue.north)
+      {\textbf{\footnotesize Storage Queue}\\[1pt]\rrole{File d'attente}\\\rrole{de messages}};
+    % WebJobs : engrenage
+    \begin{scope}[shift={([yshift=-0.5cm]wj.north)}]
+      \draw[azurblue, line width=1.2pt] (0,0) circle (0.12);
+      \foreach \a in {0,45,...,315} \draw[azurblue, line width=1.8pt] (\a:0.12) -- (\a:0.2);
+      \fill[azurblue] (0,0) circle (0.04);
+    \end{scope}
+    \node[align=center] at ([yshift=-1.5cm]wj.north)
+      {\textbf{\footnotesize WebJobs}\\[1pt]\rrole{Traitements}\\\rrole{en arrière-plan}};
+    % connexions
+    \draw[conn] (app.south) .. controls +(0,-0.6) and +(0,0.6) .. (entra.north)
+       node[pos=0.5, sloped, above, font=\scriptsize\itshape, text=grisfonce]{s'authentifie};
+    \draw[conn] (app.south) .. controls +(0,-0.6) and +(0,0.6) .. (kv.north)
+       node[pos=0.55, right, font=\scriptsize\itshape, text=grisfonce]{lit les secrets};
+    \draw[conn] (queue.east) -- node[above, font=\scriptsize\itshape, text=grisfonce]{déclenche} (wj.west);
+    % cadre
+    \begin{scope}[on background layer]
+      \node[draw=azurblue!35, line width=0.8pt, rounded corners=6pt, fill=azurblue!4,
+            fit=(entra)(wj), inner sep=11pt] (box) {};
+    \end{scope}
+    \node[anchor=west, font=\footnotesize\bfseries, text=azurblue]
+      at ([xshift=5pt,yshift=-2pt]box.north west) {Services Azure managés};
+  \end{tikzpicture}%
+  }
+  \caption{Services Azure managés et leur rôle autour d'une application.}
+  \label{fig:azure}
+\end{figure}
+
+\section{L'architecture des applications web modernes}
+\label{sec:archi-web}
+
+Les applications web ont longtemps reposé sur un modèle multipage, où le serveur
+renvoie une page HTML complète à chaque interaction. Le modèle dominant
+aujourd'hui est celui de l'application monopage (\textit{Single Page
+Application}, SPA)~: une seule page est chargée initialement, puis mise à jour
+dynamiquement côté navigateur, le serveur n'échangeant plus que des données. Ces
+échanges s'appuient sur une API REST, style d'architecture formalisé par
+Fielding, fondé sur la manipulation de ressources via les verbes du protocole
+HTTP~\cite{fielding2000rest}. Ce découplage entre un front-end autonome et une
+API back-end permet de développer et de faire évoluer les deux indépendamment,
+et d'ouvrir l'API à d'autres consommateurs. Dans l'écosystème considéré, ce
+modèle se traduit par un front-end Angular~\cite{angular_docs} dialoguant avec
+une API ASP.NET~Core~\cite{ms_aspnetcore}.
+
+\begin{figure}[H]
+  \centering
+  \resizebox{0.85\textwidth}{!}{%
+  \begin{tikzpicture}[
+    font=\small,
+    card/.style={rounded corners=4pt, draw=vinciblue, line width=0.9pt, fill=white,
+      drop shadow={opacity=0.18,shadow xshift=1pt,shadow yshift=-1pt},
+      align=center, text width=7cm, minimum height=1cm},
+    layer/.style={rounded corners=3pt, draw=vinciblue!55, line width=0.7pt,
+      fill=vinciblue!8, align=center, text width=6cm, minimum height=0.75cm},
+    flow/.style={-{Stealth[length=3mm]}, line width=1.1pt, vinciblue},
+    tag/.style={rounded corners=2pt, draw=vincired!55, fill=vincired!7,
+      font=\scriptsize, text=grisfonce, align=center, inner sep=3pt},
+    lbl/.style={font=\footnotesize\itshape, text=grisfonce, fill=white, inner sep=2pt}
+  ]
+    \node[card] (spa) {\textbf{Navigateur} — Application Angular (SPA)};
+    \fill[vinciblue] ([xshift=7pt,yshift=-6.5pt]spa.north west) circle (1.3pt);
+    \fill[vinciblue] ([xshift=13pt,yshift=-6.5pt]spa.north west) circle (1.3pt);
+    \fill[vinciblue] ([xshift=19pt,yshift=-6.5pt]spa.north west) circle (1.3pt);
+    \node[layer, below=1.5cm of spa] (ctrl) {Couche présentation — Contrôleurs};
+    \node[layer, below=0.3cm of ctrl] (svc) {Couche métier — Services};
+    \node[layer, below=0.3cm of svc] (repo) {Couche d'accès aux données — Repositories};
+    \draw[flow] (ctrl) -- (svc);
+    \draw[flow] (svc) -- (repo);
+    \begin{scope}[on background layer]
+      \node[draw=vinciblue, line width=1pt, rounded corners=5pt, fill=grisclair,
+            fit=(ctrl)(svc)(repo), inner sep=12pt] (api) {};
+    \end{scope}
+    \node[anchor=south west, font=\bfseries\footnotesize, text=vinciblue]
+          at ([xshift=3pt,yshift=2pt]api.north west) {API ASP.NET Core};
+    \node[tag, right=0.7cm of ctrl] (t1) {DTO};
+    \node[tag, right=0.7cm of repo] (t2) {Repository\\Unit of Work};
+    \draw[vincired!55, dotted, line width=0.7pt] (ctrl.east) -- (t1.west);
+    \draw[vincired!55, dotted, line width=0.7pt] (repo.east) -- (t2.west);
+    \node[cylinder, shape border rotate=90, aspect=0.28, draw=vincired,
+          line width=1pt, fill=vincired!8, minimum width=2.8cm, minimum height=1.2cm,
+          align=center, below=1.6cm of api] (db) {\textbf{SQL Server}};
+    \draw[flow] (spa) -- node[lbl,right]{Requêtes HTTP / REST (JSON)} (api.north);
+    \draw[flow] (api.south) -- node[lbl,right]{Entity Framework Core (ORM)} (db);
+  \end{tikzpicture}%
+  }
+  \caption{Architecture en couches d'une application web moderne~: du front-end
+    SPA à la base de données relationnelle.}
+  \label{fig:archi}
+\end{figure}
+
+Côté back-end, les applications d'entreprise s'organisent classiquement en
+couches~: une couche de présentation (les contrôleurs qui reçoivent les
+requêtes), une couche métier (les services qui portent la logique) et une couche
+d'accès aux données. Cette organisation s'accompagne de plusieurs patrons de
+conception éprouvés, recensés notamment par Fowler~\cite{fowler2002poeaa}. Le
+patron Repository isole l'accès aux données derrière une interface~; l'Unit of
+Work regroupe un ensemble de modifications au sein d'une même transaction~; les
+objets de transfert de données (DTO) découplent les entités internes de ce que
+l'API expose. À cela s'ajoute l'injection de dépendances, principe qui consiste
+à fournir à un composant les services dont il a besoin plutôt que de les laisser
+les instancier lui-même, ce qui améliore la testabilité et le découplage
+\cite{seemann2019di,ms_di}.
+
+L'accès aux données relationnelles s'appuie fréquemment sur un
+\textit{mapping} objet-relationnel (ORM), qui traduit automatiquement entre les
+objets du langage et les tables de la base. Entity~Framework~Core est l'ORM de
+référence de l'écosystème .NET~\cite{ms_efcore}. Un ORM accélère le
+développement et réduit le code répétitif, au prix d'un contrôle plus fin qu'offre
+en contrepartie l'accès direct par requêtes (ADO.NET), parfois préféré pour les
+traitements les plus sensibles à la performance.
+
+\section{Les bases de données relationnelles et la normalisation}
+\label{sec:normalisation}
+
+Le modèle relationnel, introduit par Codd, organise les données en relations
+(tables) reliées entre elles, et constitue le fondement des systèmes de gestion
+de bases de données actuels~\cite{codd1970relational}. La qualité d'un schéma
+relationnel repose en grande partie sur sa normalisation, c'est-à-dire son
+organisation en formes normales successives (1NF, 2NF, 3NF) visant à éliminer la
+redondance des données~\cite{codd1972normalization}.
+
+L'enjeu de la normalisation est concret. Lorsqu'une même information est dupliquée
+en plusieurs endroits, par exemple une valeur saisie en texte libre répétée sur
+de nombreuses lignes, la base s'expose à des anomalies de mise à jour~: une
+correction partielle laisse des incohérences, et les fautes de saisie créent de
+faux doublons~\cite{elmasri2016fundamentals}. La normalisation répond à ce
+problème en extrayant les données répétées dans des tables de référence
+dédiées. Les relations de type plusieurs-à-plusieurs sont alors modélisées par
+des tables d'association, qui relient deux entités et peuvent porter des
+attributs propres à la relation~\cite{silberschatz2019database}. Ces principes
+constituent la grille de lecture qui servira, au chapitre~\ref{chap:csbag}, à
+analyser le schéma existant et à justifier son évolution.
+
+\section{Dette technique et modernisation applicative}
+\label{sec:dette-technique}
+
+Toute application vit et évolue. Les lois de l'évolution logicielle énoncées par
+Lehman rappellent qu'un logiciel utilisé doit être continuellement adapté, sous
+peine de voir son utilité décroître, et que sa complexité tend à augmenter avec
+le temps si aucun effort n'est consenti pour la maîtriser~\cite{lehman1980evolution}.
+Cette dégradation progressive est captée par la notion de dette technique,
+métaphore introduite par Cunningham~: privilégier une solution rapide à une
+solution propre revient à contracter une dette, qu'il faudra rembourser plus tard
+sous forme d'efforts de maintenance accrus~\cite{cunningham1992wycash}.
+
+Rembourser cette dette passe par le \textit{refactoring}, discipline formalisée
+par Fowler, qui consiste à améliorer la structure interne d'un code sans en
+modifier le comportement observable~\cite{fowler2018refactoring}. À l'échelle
+d'une application entière, deux stratégies de modernisation s'opposent~: la
+réécriture complète, qui repart de zéro mais concentre les risques, et la refonte
+incrémentale, qui fait évoluer l'existant par étapes tout en le gardant
+fonctionnel. Le patron \textit{Strangler~Fig} illustre cette seconde voie, où le
+nouveau système remplace progressivement l'ancien~\cite{fowler2004strangler}.
+Cette démarche progressive s'inscrit dans le cadre plus large de la maintenance
+logicielle, notamment évolutive, telle que la décrivent les référentiels du génie
+logiciel~\cite{iso14764}.
+
+Ces bonnes pratiques, issues de la littérature, fournissent le cadre théorique
+sur lequel s'appuie la suite du rapport. Le chapitre suivant confronte cet état
+de l'art à l'existant de \csbag et présente, à sa lumière, la conception et la
+réalisation de sa version~2.

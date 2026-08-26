@@ -1,0 +1,57 @@
+% =====================================================================
+%  Rapport de Projet de Fin d'Études - ENSIM
+%  Ahmed BOURAZZA - VINCI Energies Systèmes d'Information (VESI)
+%  Compilation : pdfLaTeX  (Overleaf : Menu > Compiler > pdfLaTeX)
+%  Bibliographie : Biber
+% =====================================================================
+\documentclass[12pt,a4paper,twoside]{report}% --- Préambule (packages, police Times, marges, styles) ---
+\input{config/preambule}
+
+% --- Fichier de bibliographie ---
+\addbibresource{backmatter/references.bib}
+
+% =====================================================================
+\begin{document}
+
+% -------------------- PAGES LIMINAIRES --------------------
+\input{frontmatter/page_de_garde}
+\cleardoublepage
+
+\input{frontmatter/resumes}       % Résumé FR + Abstract EN + mots-clés
+\cleardoublepage
+
+\input{frontmatter/remerciements}
+\cleardoublepage
+
+% --- Sommaire, table des figures, table des tableaux ---
+\microtypesetup{protrusion=false}
+\tableofcontents
+\cleardoublepage
+\listoffigures
+\cleardoublepage
+\listoftables
+\cleardoublepage
+\microtypesetup{protrusion=true}
+
+% -------------------- TEXTE PRINCIPAL --------------------
+% (maximum 30 pages : introduction incluse, hors annexes/références)
+\input{chapitres/00_introduction}
+\input{chapitres/01_organisme_accueil}
+\input{chapitres/02_contexte_stage}
+\input{chapitres/03_etat_de_lart}
+\input{chapitres/04_csbag_v2}
+\input{chapitres/05_missions_transverses}
+\input{chapitres/06_recul}
+\input{chapitres/07_conclusion}
+
+% -------------------- BACKMATTER --------------------
+% Références documentaires
+\printbibliography[heading=bibintoc,title={Références documentaires}]
+
+% Glossaire des acronymes
+\input{backmatter/glossaire}
+
+% Annexes
+\input{backmatter/annexes}
+
+\end{document}
