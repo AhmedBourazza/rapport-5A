@@ -1,36 +1,205 @@
-% =====================================================================
-%  CHAPITRE 4 - CS BAG v2 : CONCEPTION ET RÉALISATION  (~11 pages)
-%  Cœur technique et analytique du rapport.
-%  Pour les choix importants : problème -> contraintes -> solutions
-%  possibles -> solution choisie -> justification -> résultat.
-% =====================================================================
-\chapter{\csbag v2 : conception et réalisation}
+\chapter{Travaux réalisés}
 \label{chap:csbag}
 
-\section{L'existant : \csbag v1 et ses limites}
+Ce chapitre constitue le cœur technique du rapport. Il commence par présenter
+la démarche de réalisation commune à tous les projets du service, puis détaille
+les trois missions menées au cours du stage~: la refonte de l'application
+\csbag (projet principal), la fiabilisation de l'application Elium Sauvegarde,
+et la correction d'une panne sur Access Report TTC~GO.
+
+\section{Démarche de réalisation}
+\label{sec:demarche}
+
+Au sein du service Collaborative Solutions de VESI, chaque livraison suit une
+démarche structurée en plusieurs étapes, du cadrage du besoin jusqu'à la
+supervision en production. Cette démarche, illustrée par la
+figure~\ref{fig:workflow}, garantit que chaque évolution est spécifiée, testée
+et validée avant d'atteindre les utilisateurs.
+
+Le point de départ est le cadrage du besoin. Pour chaque lot, l'analyste
+fonctionnel rédige un document de spécifications qui décrit les fonctionnalités
+attendues, les règles métier et les contraintes. Ce document est présenté et
+discuté lors d'une réunion de cadrage avec le chef de projet et le développeur,
+afin de lever les ambiguïtés et de valider la faisabilité technique.
+
+Une fois le besoin cadré, la phase de développement commence sur
+l'environnement local du développeur. Les fonctionnalités sont conçues,
+implémentées et testées en local. Le code est ensuite déployé sur les ressources
+Azure de l'environnement de développement. En effet, chaque application dispose
+de trois environnements Azure distincts --- développement (DEV), recette (UAT)
+et production (PROD) --- ce qui permet d'isoler les phases et de garantir que
+les tests n'impactent jamais les données de production
+(figure~\ref{fig:azure-envs}). Le développeur réalise alors une première
+campagne de tests dans l'environnement DEV pour valider le comportement dans
+des conditions proches de la production.
+
+\begin{figure}[H]
+  \centering
+  % >>> Remplacer par votre capture du dashboard Azure : <
+   \includegraphics[width=0.9\textwidth]{azure_envs.png}
+  \caption{Tableau de bord Azure montrant les trois environnements (DEV, UAT, PROD)
+    d'une application du service.}
+  \label{fig:azure-envs}
+\end{figure}
+
+Le livrable est alors mis en recette. L'analyste fonctionnel teste
+l'application en conditions réelles et consigne les anomalies dans un cahier
+de retours, accompagné de captures d'écran ou de vidéos pour illustrer chaque
+problème. Le développeur corrige les retours, puis une nouvelle mise en recette
+est effectuée pour validation. Ce cycle correction--validation se répète tant
+que des anomalies subsistent.
+
+Lorsque la recette est validée, la mise en production est réalisée. L'application
+est alors accessible aux utilisateurs. Une phase de supervision (monitoring)
+suit le déploiement pour détecter d'éventuels incidents et confirmer la
+stabilité de la livraison.
+
+\begin{figure}[H]
+  \centering
+  \resizebox{0.92\textwidth}{!}{%
+  \begin{tikzpicture}[
+    font=\small,
+    wfstep/.style={rounded corners=3pt, line width=0.9pt, fill=white,
+      text width=7.2cm, minimum height=0.7cm, align=left, inner sep=5pt,
+      drop shadow={opacity=0.1,shadow xshift=0.7pt,shadow yshift=-0.7pt}},
+    num/.style={circle, text=white, font=\bfseries\scriptsize, minimum size=5.4mm, inner sep=0pt},
+    flow/.style={-{Stealth[length=2.4mm]}, line width=1pt, gray},
+    loop/.style={-{Stealth[length=2.4mm]}, line width=1pt, vincired, dashed},
+    swatch/.style={rounded corners=1pt, minimum width=3.5mm, minimum height=3.5mm, inner sep=0pt}
+  ]
+    \node[swatch, fill=grisfonce] (lg0) {};
+    \node[right=1mm of lg0, font=\scriptsize] (lt0) {Cadrage};
+    \node[swatch, fill=vinciblue, right=4mm of lt0] (lg1) {};
+    \node[right=1mm of lg1, font=\scriptsize] (lt1) {Développement};
+    \node[swatch, fill=phrec, right=4mm of lt1] (lg2) {};
+    \node[right=1mm of lg2, font=\scriptsize] (lt2) {Recette};
+    \node[swatch, fill=phprod, right=4mm of lt2] (lg3) {};
+    \node[right=1mm of lg3, font=\scriptsize] (lt3) {Production};
+
+    \node[wfstep, draw=grisfonce, below=0.5cm of lg0.west, anchor=north west] (s1)
+      {\textbf{Cadrage du besoin} — spécifications de l'analyste fonctionnel,
+       présentées en réunion avec le chef de projet};
+    \node[wfstep, draw=vinciblue, below=0.32cm of s1] (s2)
+      {\textbf{Conception et développement} sur l'environnement local};
+    \node[wfstep, draw=vinciblue, below=0.32cm of s2] (s3)
+      {\textbf{Déploiement} sur les ressources Azure de développement};
+    \node[wfstep, draw=vinciblue, below=0.32cm of s3] (s4)
+      {\textbf{Tests développeur} (environnement de développement)};
+    \node[wfstep, draw=phrec, below=0.32cm of s4] (s5)
+      {\textbf{Mise en recette}};
+    \node[wfstep, draw=phrec, below=0.32cm of s5] (s6)
+      {\textbf{Tests analyste fonctionnel} — cahier d'anomalies (captures, vidéos)};
+    \node[wfstep, draw=phrec, below=0.32cm of s6] (s7)
+      {\textbf{Correction des retours}};
+    \node[wfstep, draw=phrec, below=0.32cm of s7] (s8)
+      {\textbf{Tests finaux} par l'analyste fonctionnel};
+    \node[wfstep, draw=phprod, below=0.32cm of s8] (s9)
+      {\textbf{Mise en production}};
+    \node[wfstep, draw=phprod, below=0.32cm of s9] (s10)
+      {\textbf{Supervision} (monitoring)};
+
+    \foreach \i/\c in {1/grisfonce,2/vinciblue,3/vinciblue,4/vinciblue,5/phrec,6/phrec,7/phrec,8/phrec,9/phprod,10/phprod}
+      \node[num, fill=\c, anchor=east] at ([xshift=-2.5mm]s\i.west) {\i};
+
+    \foreach \i [evaluate=\i as \j using int(\i+1)] in {1,...,9}
+      \draw[flow] (s\i.south) -- (s\j.north);
+
+    \draw[loop] (s8.east) -- ++(0.7,0) |- (s7.east)
+      node[pos=0.25, right, font=\scriptsize\itshape, text=vincired, align=left]{si anomalies\\restantes};
+  \end{tikzpicture}%
+  }
+  \caption{Démarche de réalisation suivie pour chaque livraison, du cadrage du
+    besoin à la supervision en production.}
+  \label{fig:workflow}
+\end{figure}
+
+\section{\csbag v2~: conception et réalisation}
+\label{sec:csbag-detail}
+
+\subsection{L'existant et ses limites}
 \label{sec:existant}
-% >>> À RÉDIGER <<<
 
-\section{Expression des besoins et exigences}
-\label{sec:besoins}
-% >>> À RÉDIGER <<<
+% >>> À COMPLÉTER avec la fiche d'architecture <
+\textit{[Section à rédiger : description de la v1, ses limites techniques
+et fonctionnelles, dette technique identifiée.]}
 
-\section{Architecture cible}
-\label{sec:architecture}
-% >>> À RÉDIGER <<<
+\subsection{Lot 1~: socle de la refonte}
+\label{sec:lot1}
 
-\section{Modèle de données et migration}
-\label{sec:donnees-migration}
-% >>> À RÉDIGER <<<
+% >>> À COMPLÉTER avec les specs du Lot 1 <
+\textit{[Section à rédiger : contenu du Lot 1.]}
 
-\section{Réalisation}
-\label{sec:realisation}
-% >>> À RÉDIGER <<<
+\subsection{Lot 2~: amélioration de l'outil}
+\label{sec:lot2}
 
-\section{Qualité, tests et déploiement}
-\label{sec:qualite}
-% >>> À RÉDIGER <<<
+% >>> À COMPLÉTER avec les specs du Lot 2 <
+\textit{[Section à rédiger : contenu du Lot 2.]}
 
-\section{Résultats}
-\label{sec:resultats}
-% >>> À RÉDIGER <<<
+\subsection{Lot 3~: enrichissement fonctionnel}
+\label{sec:lot3}
+
+% >>> À COMPLÉTER avec les specs du Lot 3 <
+\textit{[Section à rédiger : contenu du Lot 3.]}
+
+\section{Elium Sauvegarde}
+\label{sec:elium}
+
+Elium Sauvegarde est une application console .NET~6 qui archive automatiquement
+les articles de la plateforme de gestion des connaissances Elium vers
+SharePoint~Online. Elle récupère les articles via l'API GraphQL d'Elium par lots
+de 100, compare chaque article avec un référentiel stocké dans une liste
+SharePoint, puis crée ou supprime les pages correspondantes via Microsoft~Graph.
+L'exécution est planifiée en batch hebdomadaire, toutes traductions comprises.
+
+Mon intervention a porté sur la fiabilisation d'un traitement qui échouait
+régulièrement en production. Le problème principal était l'absence d'isolation
+des erreurs~: une seule anomalie sur un article (donnée corrompue, réponse
+partielle de l'API GraphQL) faisait échouer l'intégralité de la synchronisation.
+
+Pour y remédier, j'ai mis en place une isolation des erreurs par article~: chaque
+article est traité dans un bloc protégé, avec des accès JSON null-safe, de sorte
+qu'un article corrompu n'empêche plus le traitement des suivants. J'ai ensuite
+distingué les réponses partielles de l'API (données exploitables, traitement
+poursuivi) des vraies pannes serveur (retry trois fois à trente secondes
+d'intervalle, puis passage au lot suivant).
+
+Le blocage principal du projet concernait la création des pages SharePoint~:
+SharePoint refuse toute page dont le dossier parent n'existe pas. J'ai
+développé un mécanisme de création récursive et idempotente de l'arborescence
+de dossiers, avec un check-in automatique pour lever le verrou après chaque
+création.
+
+Enfin, j'ai refondu l'observabilité de l'application~: refonte des logs et
+ajout d'un résumé final de onze indicateurs (pages créées, échecs, articles
+ignorés par motif, taux de réussite, durée), permettant de valider les
+recettes sans lecture manuelle des journaux. J'ai également externalisé un
+paramètre de configuration permettant de basculer entre synchronisation complète
+et incrémentale sans recompilation ni redéploiement.
+
+\section{Access Report TTC~GO}
+\label{sec:access-report}
+
+Access Report TTC~GO est un ensemble d'Azure WebJobs (.NET~Framework) déclenchés
+par une file d'attente Azure Storage~Queue. À la demande, ces traitements
+génèrent un rapport Excel des droits d'accès d'un espace collaboratif
+SharePoint~: qui a accès à quoi. Le parcours de l'arborescence SharePoint
+s'effectue via CSOM et l'API REST, la résolution des groupes via
+Microsoft~Graph, et le rapport est produit en export multi-onglets bilingue
+(français / anglais) avant d'être envoyé par e-mail. Les secrets sont gérés dans
+Azure Key~Vault et l'authentification repose sur un certificat X509.
+
+Mon intervention a porté sur la correction d'une panne silencieuse~: les rapports
+étaient livrés avec les colonnes de groupes vides, sans qu'aucune erreur ne soit
+journalisée. Après investigation, j'ai identifié la cause~: la bibliothèque
+commune cherchait le certificat d'authentification dans le magasin
+\texttt{CurrentUser\textbackslash My}, alors qu'il était installé dans
+\texttt{LocalMachine\textbackslash My} sur la machine virtuelle de production.
+L'authentification Graph échouait donc silencieusement.
+
+Le correctif a été mené en deux temps. Dans un premier temps, j'ai mis en place
+un contournement isolé dans le projet console pour débloquer l'exploitation,
+sans risque pour les WebJobs de production. Une fois la cause confirmée, j'ai
+corrigé la bibliothèque partagée en rendant le magasin de certificats
+configurable via une variable d'environnement, avec un repli par défaut assurant
+la rétrocompatibilité. Cette correction bénéficie à l'ensemble des WebJobs qui
+consomment cette bibliothèque.
