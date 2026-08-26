@@ -56,46 +56,45 @@ stabilité de la livraison.
 
 \begin{figure}[H]
   \centering
-  \resizebox{0.92\textwidth}{!}{%
+  \resizebox{0.72\textwidth}{!}{%
   \begin{tikzpicture}[
-    font=\small,
-    wfstep/.style={rounded corners=3pt, line width=0.9pt, fill=white,
-      text width=7.2cm, minimum height=0.7cm, align=left, inner sep=5pt,
-      drop shadow={opacity=0.1,shadow xshift=0.7pt,shadow yshift=-0.7pt}},
-    num/.style={circle, text=white, font=\bfseries\scriptsize, minimum size=5.4mm, inner sep=0pt},
-    flow/.style={-{Stealth[length=2.4mm]}, line width=1pt, gray},
-    loop/.style={-{Stealth[length=2.4mm]}, line width=1pt, vincired, dashed},
-    swatch/.style={rounded corners=1pt, minimum width=3.5mm, minimum height=3.5mm, inner sep=0pt}
+    font=\scriptsize,
+    wfstep/.style={rounded corners=2pt, line width=0.7pt, fill=white,
+      text width=6cm, minimum height=0.55cm, align=left, inner sep=4pt,
+      drop shadow={opacity=0.1,shadow xshift=0.5pt,shadow yshift=-0.5pt}},
+    num/.style={circle, text=white, font=\bfseries\tiny, minimum size=4.2mm, inner sep=0pt},
+    flow/.style={-{Stealth[length=1.8mm]}, line width=0.7pt, gray},
+    loop/.style={-{Stealth[length=1.8mm]}, line width=0.7pt, vincired, dashed},
+    swatch/.style={rounded corners=1pt, minimum width=2.8mm, minimum height=2.8mm, inner sep=0pt}
   ]
     \node[swatch, fill=grisfonce] (lg0) {};
-    \node[right=1mm of lg0, font=\scriptsize] (lt0) {Cadrage};
-    \node[swatch, fill=vinciblue, right=4mm of lt0] (lg1) {};
-    \node[right=1mm of lg1, font=\scriptsize] (lt1) {Développement};
-    \node[swatch, fill=phrec, right=4mm of lt1] (lg2) {};
-    \node[right=1mm of lg2, font=\scriptsize] (lt2) {Recette};
-    \node[swatch, fill=phprod, right=4mm of lt2] (lg3) {};
-    \node[right=1mm of lg3, font=\scriptsize] (lt3) {Production};
+    \node[right=1mm of lg0, font=\tiny] (lt0) {Cadrage};
+    \node[swatch, fill=vinciblue, right=3mm of lt0] (lg1) {};
+    \node[right=1mm of lg1, font=\tiny] (lt1) {Développement};
+    \node[swatch, fill=phrec, right=3mm of lt1] (lg2) {};
+    \node[right=1mm of lg2, font=\tiny] (lt2) {Recette};
+    \node[swatch, fill=phprod, right=3mm of lt2] (lg3) {};
+    \node[right=1mm of lg3, font=\tiny] (lt3) {Production};
 
-    \node[wfstep, draw=grisfonce, below=0.5cm of lg0.west, anchor=north west] (s1)
-      {\textbf{Cadrage du besoin} — spécifications de l'analyste fonctionnel,
-       présentées en réunion avec le chef de projet};
-    \node[wfstep, draw=vinciblue, below=0.32cm of s1] (s2)
+    \node[wfstep, draw=grisfonce, below=0.4cm of lg0.west, anchor=north west] (s1)
+      {\textbf{Cadrage du besoin} — spécifications (AF), réunion de cadrage};
+    \node[wfstep, draw=vinciblue, below=0.2cm of s1] (s2)
       {\textbf{Conception et développement} sur l'environnement local};
-    \node[wfstep, draw=vinciblue, below=0.32cm of s2] (s3)
-      {\textbf{Déploiement} sur les ressources Azure de développement};
-    \node[wfstep, draw=vinciblue, below=0.32cm of s3] (s4)
-      {\textbf{Tests développeur} (environnement de développement)};
-    \node[wfstep, draw=phrec, below=0.32cm of s4] (s5)
+    \node[wfstep, draw=vinciblue, below=0.2cm of s2] (s3)
+      {\textbf{Déploiement} sur les ressources Azure DEV};
+    \node[wfstep, draw=vinciblue, below=0.2cm of s3] (s4)
+      {\textbf{Tests développeur} (environnement DEV)};
+    \node[wfstep, draw=phrec, below=0.2cm of s4] (s5)
       {\textbf{Mise en recette}};
-    \node[wfstep, draw=phrec, below=0.32cm of s5] (s6)
-      {\textbf{Tests analyste fonctionnel} — cahier d'anomalies (captures, vidéos)};
-    \node[wfstep, draw=phrec, below=0.32cm of s6] (s7)
+    \node[wfstep, draw=phrec, below=0.2cm of s5] (s6)
+      {\textbf{Tests AF} — cahier d'anomalies (captures, vidéos)};
+    \node[wfstep, draw=phrec, below=0.2cm of s6] (s7)
       {\textbf{Correction des retours}};
-    \node[wfstep, draw=phrec, below=0.32cm of s7] (s8)
+    \node[wfstep, draw=phrec, below=0.2cm of s7] (s8)
       {\textbf{Tests finaux} par l'analyste fonctionnel};
-    \node[wfstep, draw=phprod, below=0.32cm of s8] (s9)
+    \node[wfstep, draw=phprod, below=0.2cm of s8] (s9)
       {\textbf{Mise en production}};
-    \node[wfstep, draw=phprod, below=0.32cm of s9] (s10)
+    \node[wfstep, draw=phprod, below=0.2cm of s9] (s10)
       {\textbf{Supervision} (monitoring)};
 
     \foreach \i/\c in {1/grisfonce,2/vinciblue,3/vinciblue,4/vinciblue,5/phrec,6/phrec,7/phrec,8/phrec,9/phprod,10/phprod}
