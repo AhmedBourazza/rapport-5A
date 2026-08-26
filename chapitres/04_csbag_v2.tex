@@ -1,36 +1,204 @@
 % =====================================================================
-%  CHAPITRE 4 - CS BAG v2 : CONCEPTION ET RÉALISATION  (~11 pages)
-%  Cœur technique et analytique du rapport.
-%  Pour les choix importants : problème -> contraintes -> solutions
-%  possibles -> solution choisie -> justification -> résultat.
+%  CHAPITRE 4 - TRAVAUX RÉALISÉS
+%  Méthodologie de travail + CS BAG v2 + Elium Sauvegarde + Access TTC
 % =====================================================================
-\chapter{\csbag v2 : conception et réalisation}
-\label{chap:csbag}
+\chapter{Travaux réalisés}
+\label{chap:travaux}
 
-\section{L'existant : \csbag v1 et ses limites}
+Ce chapitre présente d'abord la méthodologie de travail appliquée au sein du
+service, puis détaille les trois projets sur lesquels j'ai travaillé~: la
+refonte de \csbag, l'outil de sauvegarde Elium et le système de rapports
+d'accès TTC/GO.
+
+% -----------------------------------------------------------------
+\section{Méthodologie de travail au sein de VESI}
+\label{sec:methodologie}
+
+Chaque évolution applicative suit un processus structuré en plusieurs étapes,
+depuis l'expression du besoin jusqu'à la mise en production et le suivi.
+La figure~\ref{fig:workflow} synthétise ce cycle.
+
+\begin{figure}[H]
+  \centering
+  \scalebox{0.82}{%
+  \begin{tikzpicture}[
+    font=\scriptsize,
+    step/.style={rounded corners=2pt, draw=vinciblue, line width=0.6pt,
+      fill=vinciblue!6, align=center, text width=3.2cm, minimum height=0.55cm,
+      inner sep=2pt},
+    arr/.style={-{Stealth[length=1.8mm]}, line width=0.7pt, vinciblue!80}
+  ]
+    % Colonne gauche (étapes 1-5)
+    \node[step] (s1) {\textbf{1.} Spécifications\\(analyste fonctionnel)};
+    \node[step, below=0.2cm of s1] (s2) {\textbf{2.} Réunion de cadrage\\(AF + chef de projet)};
+    \node[step, below=0.2cm of s2] (s3) {\textbf{3.} Développement\\(environnement local)};
+    \node[step, below=0.2cm of s3] (s4) {\textbf{4.} Déploiement DEV\\(ressources Azure)};
+    \node[step, below=0.2cm of s4] (s5) {\textbf{5.} Tests développeur\\(environnement DEV)};
+    % Colonne droite (étapes 6-10)
+    \node[step, right=1cm of s1] (s10) {\textbf{10.} Monitoring};
+    \node[step, below=0.2cm of s10] (s9) {\textbf{9.} Mise en production};
+    \node[step, below=0.2cm of s9] (s8) {\textbf{8.} Tests finaux (AF)\\+ validation};
+    \node[step, below=0.2cm of s8] (s7) {\textbf{7.} Corrections\\des retours};
+    \node[step, below=0.2cm of s7] (s6) {\textbf{6.} Mise en recette\\+ tests AF};
+    % Flèches colonne gauche
+    \draw[arr] (s1) -- (s2);
+    \draw[arr] (s2) -- (s3);
+    \draw[arr] (s3) -- (s4);
+    \draw[arr] (s4) -- (s5);
+    % Transition gauche -> droite
+    \draw[arr] (s5.east) -- ++(0.2,0) |- (s6.west);
+    % Flèches colonne droite (remonte)
+    \draw[arr] (s6) -- (s7);
+    \draw[arr] (s7) -- (s8);
+    \draw[arr] (s8) -- (s9);
+    \draw[arr] (s9) -- (s10);
+  \end{tikzpicture}%
+  }
+  \caption{Cycle de réalisation d'un lot applicatif au sein de VESI.}
+  \label{fig:workflow}
+\end{figure}
+
+\begin{enumerate}[leftmargin=*, nosep]
+  \item \textbf{Spécifications fonctionnelles}~: l'analyste fonctionnel rédige
+    un document de spécifications détaillé pour chaque lot, décrivant les règles
+    métier, les maquettes d'écran et les critères d'acceptation.
+  \item \textbf{Réunion de cadrage}~: l'analyste fonctionnel et le chef de
+    projet présentent le document à l'équipe de développement lors d'une réunion
+    dédiée, au cours de laquelle les questions techniques sont levées.
+  \item \textbf{Développement et conception}~: le développeur implémente la
+    solution sur son environnement local (machine personnelle), en respectant
+    l'architecture et les conventions du projet.
+  \item \textbf{Déploiement en environnement DEV}~: le code est déployé sur les
+    ressources Azure de l'environnement de développement (App~Service, base de
+    données, Key~Vault, etc.).
+  \item \textbf{Tests développeur}~: le développeur vérifie le bon
+    fonctionnement dans l'environnement DEV, en testant les scénarios décrits
+    dans les spécifications.
+  \item \textbf{Mise en recette}~: une fois les tests développeur validés, le
+    code est déployé en environnement de recette. L'analyste fonctionnel réalise
+    ses propres tests et constitue un répertoire de retours (captures d'écran,
+    vidéos) documentant les anomalies et écarts constatés.
+  \item \textbf{Correction des retours}~: le développeur corrige les anomalies
+    signalées et effectue un nouveau cycle de tests.
+  \item \textbf{Tests finaux et validation}~: l'analyste fonctionnel valide les
+    corrections en recette. Cette étape conditionne le passage en production.
+  \item \textbf{Mise en production}~: le code validé est déployé sur
+    l'environnement de production, accessible aux utilisateurs finaux.
+  \item \textbf{Monitoring}~: l'équipe surveille l'application en production
+    (journaux, alertes, retours utilisateurs) pour détecter d'éventuelles
+    régressions.
+\end{enumerate}
+
+Ce processus a été appliqué à chacun des lots de \csbag ainsi qu'aux autres
+projets présentés ci-après.
+
+% =================================================================
+\section{\csbag v2 : conception et réalisation}
+\label{sec:csbag}
+
+\subsection{L'existant : \csbag v1 et ses limites}
 \label{sec:existant}
 % >>> À RÉDIGER <<<
 
-\section{Expression des besoins et exigences}
+\subsection{Expression des besoins et exigences}
 \label{sec:besoins}
 % >>> À RÉDIGER <<<
 
-\section{Architecture cible}
+\subsection{Architecture cible}
 \label{sec:architecture}
 % >>> À RÉDIGER <<<
 
-\section{Modèle de données et migration}
+\subsection{Modèle de données et migration}
 \label{sec:donnees-migration}
 % >>> À RÉDIGER <<<
 
-\section{Réalisation}
+\subsection{Réalisation}
 \label{sec:realisation}
 % >>> À RÉDIGER <<<
 
-\section{Qualité, tests et déploiement}
+\subsection{Qualité, tests et déploiement}
 \label{sec:qualite}
 % >>> À RÉDIGER <<<
 
-\section{Résultats}
-\label{sec:resultats}
+\subsection{Résultats}
+\label{sec:resultats-csbag}
+% >>> À RÉDIGER <<<
+
+% =================================================================
+\section{Elium Sauvegarde}
+\label{sec:elium}
+
+Le service Collaborative Solutions utilise la plateforme Elium comme base de
+connaissances interne. Afin de prévenir toute perte de contenu et de centraliser
+l'information dans l'écosystème SharePoint, un outil de synchronisation
+automatique a été développé.
+
+\subsection{Objectif et besoin}
+\label{sec:elium-objectif}
+
+L'outil \textit{Elium Sauvegarde} est une application console .NET~6 dont le
+rôle est de répliquer les articles (\textit{stories}) publiés sur Elium vers des
+pages SharePoint~Online. Il supporte deux modes de synchronisation~: un mode
+complet (toutes les stories) et un mode incrémental (basé sur une fenêtre de
+jours configurable), permettant une exécution planifiée régulière.
+
+\subsection{Fonctionnement technique}
+\label{sec:elium-technique}
+
+Le processus de synchronisation se déroule en plusieurs étapes~:
+\begin{enumerate}[nosep]
+  \item lecture des éléments de référence existants sur le site SharePoint cible~;
+  \item récupération des stories depuis l'API Elium~;
+  \item calcul des différences (stories supprimées, modifiées, nouvelles)~;
+  \item suppression des pages SharePoint obsolètes et de leurs entrées en liste~;
+  \item création et publication des nouvelles pages~;
+  \item journalisation détaillée des résultats (succès et erreurs).
+\end{enumerate}
+
+L'application s'appuie sur Azure~Key~Vault pour la gestion des secrets
+(jetons d'API, certificats) et utilise Microsoft~Graph pour l'interaction avec
+SharePoint.
+
+\subsection{Résultats}
+\label{sec:elium-resultats}
+% >>> À RÉDIGER <<<
+
+% =================================================================
+\section{Rapports d'accès TTC/GO}
+\label{sec:ttcgo}
+
+La gouvernance des accès aux ressources partagées (sites SharePoint, partages
+de fichiers) est un enjeu majeur pour un groupe décentralisé comme VINCI~Energies.
+Le projet \textit{Access~Report~TTC/GO} automatise la génération de ces rapports
+de permissions.
+
+\subsection{Objectif et besoin}
+\label{sec:ttcgo-objectif}
+
+Ce système repose sur plusieurs Azure~WebJobs qui traitent des demandes de
+rapports d'accès. Un job de gouvernance alimente des files d'attente
+(Azure~Storage~Queue) avec les demandes entrantes, puis des jobs spécialisés
+(TTC, GO, fichiers BU, confidentiels) exécutent les exports de permissions
+correspondants.
+
+\subsection{Fonctionnement technique}
+\label{sec:ttcgo-technique}
+
+Le traitement d'une demande suit le parcours suivant~:
+\begin{enumerate}[nosep]
+  \item réception d'une requête depuis la file de gouvernance~;
+  \item vérification des doublons et des demandes déjà traitées~;
+  \item export des permissions (NTFS ou SharePoint selon le périmètre)~;
+  \item génération d'un rapport Excel~;
+  \item envoi du rapport par courriel (en pièce jointe ou via un lien de
+    partage pour les fichiers volumineux)~;
+  \item journalisation de l'exécution en base SQL~Server.
+\end{enumerate}
+
+L'application utilise le SDK Azure~WebJobs avec des déclencheurs sur file
+d'attente et sur minuteur, Azure~Key~Vault pour les secrets, et
+Application~Insights pour le monitoring.
+
+\subsection{Résultats}
+\label{sec:ttcgo-resultats}
 % >>> À RÉDIGER <<<
