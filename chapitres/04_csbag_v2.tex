@@ -115,30 +115,394 @@ stabilité de la livraison.
 \section{\csbag v2~: conception et réalisation}
 \label{sec:csbag-detail}
 
-\subsection{L'existant et ses limites}
+\subsection{Présentation de l'application et diagnostic de l'existant}
 \label{sec:existant}
 
-% >>> À COMPLÉTER avec la fiche d'architecture <
-\textit{[Section à rédiger : description de la v1, ses limites techniques
-et fonctionnelles, dette technique identifiée.]}
+\csbag (\textit{Inventory}) est l'outil interne de cartographie applicative du
+service Collaborative Solutions. Il recense l'ensemble des applications gérées
+par le service et, pour chacune d'elles, les modules qui la composent, les
+personnes qui en sont référentes et les ressources techniques qu'elle mobilise~:
+bases de données, comptes de service, certificats, ressources Azure, serveurs
+d'exploitation, applications Azure~AD et frameworks. Il constitue ainsi la
+source de vérité que consultent les équipes lors d'une mise en production, d'un
+audit de sécurité ou du renouvellement d'un certificat. Son accès est restreint
+aux membres du service et s'effectue au moyen d'un compte d'administration
+(ADM). La figure~\ref{fig:modele-domaine} présente le modèle métier autour
+duquel s'organise l'application.
 
-\subsection{Lot 1~: socle de la refonte}
-\label{sec:lot1}
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[
+    font=\scriptsize,
+    ent/.style={rounded corners=2pt, draw=vinciblue, line width=0.8pt, fill=white,
+      minimum width=2.1cm, minimum height=0.55cm, align=center, inner sep=3pt},
+    sat/.style={rounded corners=2pt, draw=grisfonce, line width=0.5pt, fill=grisclair,
+      minimum width=2.9cm, minimum height=0.42cm, align=center, inner sep=2pt, font=\tiny},
+    res/.style={rounded corners=2pt, draw=azurblue, line width=0.5pt, fill=white,
+      minimum width=3.0cm, minimum height=0.40cm, align=center, inner sep=2pt, font=\tiny},
+    lnk/.style={-{Stealth[length=1.6mm]}, line width=0.7pt, gray}
+  ]
+    \node[ent] (app) at (0,0) {\textbf{Application}};
+    \node[ent] (mod) at (3.4,0) {\textbf{Module}};
 
-% >>> À COMPLÉTER avec les specs du Lot 1 <
-\textit{[Section à rédiger : contenu du Lot 1.]}
+    \node[sat] (eq)   at (0,-1.05) {Équipes (BU / Group)};
+    \node[sat] (ref)  at (0,-1.60) {Référents + Fonction};
+    \node[sat] (hist) at (0,-2.15) {Historique de livraison};
 
-\subsection{Lot 2~: amélioration de l'outil}
-\label{sec:lot2}
+    \node[res] (r1) at (7.3, 1.30) {Bases de données};
+    \node[res] (r2) at (7.3, 0.78) {Comptes de service};
+    \node[res] (r3) at (7.3, 0.26) {Certificats};
+    \node[res] (r4) at (7.3,-0.26) {Ressources Azure};
+    \node[res] (r5) at (7.3,-0.78) {Serveurs d'exploitation};
+    \node[res] (r6) at (7.3,-1.30) {Applications Azure~AD};
+    \node[res] (r7) at (7.3,-1.82) {Frameworks};
 
-% >>> À COMPLÉTER avec les specs du Lot 2 <
-\textit{[Section à rédiger : contenu du Lot 2.]}
+    \begin{scope}[on background layer]
+      \node[fit=(r1)(r7), draw=azurblue, dashed, line width=0.5pt,
+        rounded corners=3pt, inner sep=4pt] (resbox) {};
+    \end{scope}
+    \node[above=1mm of resbox, font=\tiny\itshape, text=azurblue]
+      {Ressources techniques (référentiels)};
 
-\subsection{Lot 3~: enrichissement fonctionnel}
-\label{sec:lot3}
+    \draw[lnk] (app) -- node[above, font=\tiny]{1..n} (mod);
+    \draw[lnk] (mod) -- node[above, font=\tiny]{n..n} (resbox.west);
+    \draw[lnk] (app.south) -- (eq.north);
+    \draw[lnk] (eq.south) -- (ref.north);
+    \draw[lnk] (ref.south) -- (hist.north);
+  \end{tikzpicture}
+  \caption{Modèle métier de \csbag~: une application regroupe des modules, chaque
+    module s'appuyant sur un ensemble de ressources techniques.}
+  \label{fig:modele-domaine}
+\end{figure}
 
-% >>> À COMPLÉTER avec les specs du Lot 3 <
-\textit{[Section à rédiger : contenu du Lot 3.]}
+À mon arrivée sur le projet, la mission qui m'était confiée se limitait à la
+mise en \oe uvre de trois lots de spécifications fonctionnelles. J'ai toutefois
+souhaité commencer par établir un diagnostic complet de l'application avant
+d'écrire la moindre ligne de code, afin de comprendre le terrain sur lequel ces
+évolutions allaient être greffées. Cette analyse a mis en évidence trois formes
+de dette, de natures très différentes.
+
+La première est une \textbf{dette technique de version}. Le front-end reposait
+sur Angular~14 et le back-end sur .NET~6, deux versions sorties du support
+actif. L'application accumulait de ce fait des vulnérabilités remontées par les
+outils d'analyse du groupe, sans possibilité d'appliquer les correctifs
+officiels~; toute évolution s'effectuait sur un socle qu'il aurait fallu, tôt ou
+tard, migrer en urgence.
+
+La deuxième, la plus structurante, est une \textbf{dette du modèle de données}.
+La quasi-totalité des ressources techniques était stockée sous forme de texte
+libre~: un même framework pouvait ainsi coexister sous plusieurs orthographes,
+un serveur d'exploitation être saisi différemment d'une application à l'autre.
+Certaines tables d'association ne disposaient pas même de clé primaire. Cette
+absence de normalisation, au sens de Codd~\cite{codd1972normalization}, rendait
+tout filtrage ou toute statistique peu fiable, alors même que c'est la vocation
+première d'un outil d'inventaire.
+
+La troisième est une \textbf{dette ergonomique}. L'interface n'offrait ni
+recherche, ni retour visuel pendant les chargements, ni filtres transverses, ce
+qui obligeait les utilisateurs à parcourir manuellement de longues listes.
+
+J'ai présenté ce diagnostic à l'équipe et proposé d'élargir le périmètre initial
+de la mission~: outre les trois lots demandés, j'ai suggéré de traiter la
+normalisation de la base de données et de remettre les interfaces de
+programmation en conformité avec les principes REST~\cite{fielding2000rest}.
+Ces deux chantiers, qui ne figuraient dans aucune spécification, ont été
+acceptés et constituent une part importante du travail décrit ci-après.
+L'annexe~\ref{ann:v1v2} illustre l'application avant et après cette refonte.
+
+\subsection{Architecture technique de la solution}
+\label{sec:archi-csbag}
+
+\csbag suit une architecture en couches conforme au modèle présenté au
+chapitre~\ref{chap:etat-art}~: une application monopage Angular dialogue en
+HTTPS avec une interface de programmation REST ASP.NET~Core, laquelle s'appuie
+sur une couche de domaine puis sur une couche d'accès aux données Entity
+Framework~Core (figure~\ref{fig:archi-csbag}). La solution est découpée en
+projets distincts --- \texttt{Inventory.WebApp} (interface de programmation et
+application monopage), \texttt{Inventory.WebApp.Domain},
+\texttt{Inventory.WebApp.Models}, \texttt{Inventory.WebApp.Api.Models} et
+\texttt{Inventory.Console.Secret} pour les traitements par lots.
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[
+    font=\scriptsize,
+    lay/.style={rounded corners=2pt, draw=vinciblue, line width=0.8pt, fill=white,
+      text width=3.2cm, minimum height=1.25cm, align=center, inner sep=3pt},
+    svc/.style={rounded corners=2pt, draw=azurblue, line width=0.5pt, fill=azurblue!8,
+      text width=3.2cm, minimum height=0.75cm, align=center, inner sep=2pt, font=\tiny},
+    fl/.style={-{Stealth[length=1.8mm]}, line width=0.8pt, gray},
+    tie/.style={densely dotted, line width=0.5pt, azurblue}
+  ]
+    \node[lay] (front) at (0,0)
+      {\textbf{Front-end}\\[1pt]Angular~20\\Angular Material\\[1pt]{\tiny\textit{SPA, route guards}}};
+    \node[lay] (api) at (4.1,0)
+      {\textbf{Interface REST}\\[1pt]ASP.NET Core\\.NET~10\\[1pt]{\tiny\textit{contrôleurs, DTO}}};
+    \node[lay] (dom) at (8.2,0)
+      {\textbf{Domaine}\\[1pt]Repositories\\AutoMapper\\[1pt]{\tiny\textit{règles métier}}};
+    \node[lay] (data) at (12.3,0)
+      {\textbf{Données}\\[1pt]EF~Core~10\\SQL~Server\\[1pt]{\tiny\textit{migrations V001--V026}}};
+
+    \draw[fl] (front) -- node[above, font=\tiny]{HTTPS / JSON} (api);
+    \draw[fl] (api) -- (dom);
+    \draw[fl] (dom) -- (data);
+
+    \node[svc] (aad)  at (0,-1.85)   {Microsoft Entra~ID\\(OpenID Connect)};
+    \node[svc] (kv)   at (4.1,-1.85) {Azure Key~Vault\\(secrets)};
+    \node[svc] (ai)   at (8.2,-1.85) {Serilog +\\Application Insights};
+    \node[svc] (wj)   at (12.3,-1.85){Traitement par lots\\(notifications mensuelles)};
+
+    \draw[tie] (front.south) -- (aad.north);
+    \draw[tie] (api.south)   -- (kv.north);
+    \draw[tie] (dom.south)   -- (ai.north);
+    \draw[tie] (data.south)  -- (wj.north);
+  \end{tikzpicture}
+  \caption{Architecture technique de \csbag v2 et services Azure associés.}
+  \label{fig:archi-csbag}
+\end{figure}
+
+L'authentification repose sur Microsoft Entra~ID via le protocole
+OpenID~Connect~\cite{ms_oidc}, l'application étant déclarée comme application
+Azure~AD du tenant VINCI Energies. Les secrets et chaînes de connexion sont
+externalisés dans Azure Key~Vault~\cite{ms_keyvault}, ce qui évite toute
+présence de valeur sensible dans le code ou les fichiers de configuration
+versionnés. La journalisation structurée est assurée par Serilog et remontée
+vers Application Insights.
+
+\subsection{Modernisation du socle technique}
+\label{sec:socle}
+
+La remise à niveau du socle constituait le préalable à toute évolution
+fonctionnelle. Elle a porté simultanément sur les deux extrémités de la pile
+applicative (tableau~\ref{tab:versions}).
+
+\begin{table}[H]
+  \centering
+  \caption{Montées de version réalisées sur le socle technique.}
+  \label{tab:versions}
+  \small
+  \begin{tabularx}{\textwidth}{@{}lllX@{}}
+    \toprule
+    \textbf{Composant} & \textbf{Avant} & \textbf{Après} & \textbf{Enjeu principal} \\
+    \midrule
+    Front-end        & Angular 14 & Angular 20 & Support actif, correctifs de sécurité \\
+    Back-end         & .NET 6     & .NET 10    & Support actif, performances \\
+    Accès aux données& EF Core 6  & EF Core 10 & Requêtes fractionnées, cohérence avec .NET 10 \\
+    Format de projet & \texttt{packages.config} & SDK-style & Gestion transitive des dépendances \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+La migration Angular a été conduite de manière \textbf{incrémentale}, une
+version majeure à la fois (14~$\rightarrow$~15~$\rightarrow$~\dots~$\rightarrow$~20),
+plutôt qu'en un saut unique. Ce choix, plus long, présente l'avantage décisif de
+circonscrire les régressions~: à chaque palier, seuls les changements de rupture
+de la version concernée sont à traiter, et l'application reste fonctionnelle
+entre deux étapes. Il a notamment fallu résoudre la dépréciation de l'usage
+conjoint de \texttt{ngModel} et \texttt{formControlName}, puis reprendre
+plusieurs points de mise en forme affectés par l'évolution d'Angular Material.
+La migration du back-end a suivi la même logique (.NET~6~$\rightarrow$~8~$\rightarrow$~10),
+accompagnée de la correction des vulnérabilités des paquets NuGet, en
+particulier celles affectant AutoMapper.
+
+C'est également dans ce cadre que j'ai mené la mise en conformité REST évoquée
+plus haut. Les points d'entrée de l'interface de programmation ont été
+réorganisés par ressource, avec un contrôleur dédié par entité --- séparation
+des entités \textit{Équipe} et \textit{Référent}, jusqu'alors mêlées ---, et les
+identifiants transmis dans le corps de la requête plutôt que concaténés dans
+l'adresse. J'ai par ailleurs supprimé des réponses de l'interface de
+programmation les secrets Azure et SharePoint qui y transitaient inutilement.
+Enfin, deux chantiers de cohérence ont été menés~: l'uniformisation en anglais
+du vocabulaire de la couche d'accès aux données, et l'alignement de la
+nomenclature métier, le rôle historiquement appelé « développeur » devenant
+« référent » conformément à l'usage du service.
+
+\subsection{Refonte du modèle de données}
+\label{sec:normalisation}
+
+Ce chantier, absent des spécifications initiales, est celui qui a eu le plus
+d'impact sur la fiabilité de l'outil. Il a consisté à transformer les champs de
+texte libre en véritables \textbf{tables de référence} reliées par clés
+étrangères, conformément aux formes normales de Codd~\cite{codd1970relational}.
+Sept ensembles de données ont été traités (tableau~\ref{tab:normalisation}).
+
+\begin{table}[H]
+  \centering
+  \caption{Normalisation du modèle de données et migrations associées.}
+  \label{tab:normalisation}
+  \small
+  \begin{tabularx}{\textwidth}{@{}llX@{}}
+    \toprule
+    \textbf{Migration} & \textbf{Table de référence} & \textbf{Apport} \\
+    \midrule
+    V011 & \texttt{Frameworks}            & Unicité du couple framework / version \\
+    V012 & \texttt{TypeModule}            & Typage fiable des modules \\
+    V013 & \texttt{ComptesServices}       & Suivi des dates d'expiration \\
+    V015 & \texttt{ServeursExploitation}  & Rattachement VM / dossier VM \\
+    V016 & \texttt{ApplicationsAzure}     & Nom et description structurés \\
+    V017 & \texttt{BddUtilise}            & Inventaire fiable des bases \\
+    V019 & \textit{(transverse)}          & Dédoublonnage et ajout des clés primaires manquantes \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+Chaque normalisation a été menée de bout en bout~: script de migration SQL,
+entité Entity Framework, profil de correspondance AutoMapper, point d'entrée de
+l'interface de programmation et écran Angular. Une difficulté particulière est
+apparue lors de la migration~V019~: la reprise des données existantes faisait
+apparaître des doublons qui empêchaient la création des clés primaires. J'ai
+donc dû différer la contrainte, nettoyer les enregistrements en double, puis
+seulement appliquer la clé.
+
+Cette intervention portant sur des données de production, la maîtrise du risque
+était primordiale. J'ai mis en place une \textbf{gouvernance des migrations}
+articulée autour de trois principes. Premièrement, chaque migration est
+\textbf{versionnée} (\texttt{V001} à \texttt{V026}) et rejouée dans le même
+ordre sur les trois environnements. Deuxièmement, chaque migration dispose d'un
+\textbf{script de retour arrière dédié}, qui n'annule que sa propre
+modification~; cette granularité, obtenue après reprise des premiers scripts
+qui annulaient trop largement, permet de revenir en arrière d'un seul cran.
+Troisièmement, des scripts de \textbf{contrôle préalable}
+(\texttt{V000\_PreFlight}) vérifient avant toute mise en production que la base
+cible se trouve dans l'état attendu, complétés par des sauvegardes préalables
+pour les migrations les plus sensibles.
+
+\subsection{Enrichissement fonctionnel}
+\label{sec:fonctionnel}
+
+Les trois lots de spécifications ont été livrés dans leur intégralité. Plutôt
+que de les présenter dans leur ordre chronologique, cette section les regroupe
+par thème métier, chaque thème indiquant le lot dont il est issu
+(tableau~\ref{tab:themes}).
+
+\begin{table}[H]
+  \centering
+  \caption{Fonctionnalités livrées, regroupées par thème métier.}
+  \label{tab:themes}
+  \small
+  \begin{tabularx}{\textwidth}{@{}Xl@{}}
+    \toprule
+    \textbf{Thème et fonctionnalités} & \textbf{Lot} \\
+    \midrule
+    Consultation et recherche --- barre de recherche, filtre d'équipe, page « Tout voir », indicateurs de chargement & 1 \\
+    Cycle de vie des applications --- équipes multiples, fonction des référents, ordre d'affichage, archivage & 1--2 \\
+    Traçabilité des livraisons --- historique, document et numéro de mise en production & 1--2 \\
+    Ressources sensibles --- comptes de service, certificats, empreinte, alertes d'expiration & 1--2--3 \\
+    Administration des référentiels --- huit écrans de gestion & 3 \\
+    Auditabilité --- historique des actions utilisateur & 3 \\
+    Taxonomies --- marquage et filtrage des modules & 3 \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\paragraph{Consultation et recherche.}
+La page d'accueil a été dotée d'une barre de recherche et d'un filtre d'équipe
+(\textit{Tout} / \textit{BU} / \textit{Group}), et le bouton de création
+d'application remonté au-dessus de la liste. Des indicateurs de chargement ont
+été généralisés sur l'ensemble des pages afin de fournir un retour visuel
+pendant les appels réseau. La page « Tout voir », qui présente une vue
+transverse de l'inventaire, a été enrichie de filtres par équipe, par référent
+et par framework, d'un lien direct vers chaque application et d'un affichage
+dépliable du détail de chaque ligne. Le chargement de cette page, initialement
+lent du fait du volume de données, a été optimisé par l'emploi de requêtes
+fractionnées côté serveur et d'un \texttt{forkJoin} côté client, qui parallélise
+les appels au lieu de les enchaîner (annexe~\ref{ann:ecrans}).
+
+\paragraph{Cycle de vie des applications.}
+Une application peut désormais être rattachée à plusieurs équipes, et chaque
+référent se voit associer une \textit{fonction} issue d'une table de référence
+dédiée, avec auto-complétion à la saisie. L'ordre d'affichage des modules, puis
+celui de leurs associations (bases de données, ressources Azure, comptes de
+service), est modifiable par l'utilisateur. La fonctionnalité d'\textbf{archivage}
+permet de retirer une application de l'exploitation courante sans perdre son
+historique~: l'application archivée bascule en lecture seule et n'apparaît plus
+que via un filtre dédié. Un point mérite d'être souligné~: la protection contre
+la modification d'une application archivée a été implémentée non seulement dans
+l'interface, mais également côté serveur. Un contrôle purement client aurait pu
+être contourné par un appel direct à l'interface de programmation.
+
+\paragraph{Traçabilité des livraisons.}
+Un historique de livraison a été créé pour chaque module, alimenté par la
+reprise de la donnée existante « date de dernière livraison ». Il a ensuite été
+complété des informations attendues par le service~: document de mise en
+production, numéro de mise en production et fonctionnel associé. Ces champs
+libres, potentiellement longs, ont nécessité un travail spécifique de validation
+de longueur et d'affichage.
+
+\paragraph{Ressources sensibles.}
+Une page dédiée aux comptes de service a été créée, assortie du suivi de leur
+date d'expiration et de leur intégration au courriel de rappel envoyé en début
+de mois. Côté certificats, une confirmation explicite est désormais demandée
+avant toute suppression, et l'\textbf{empreinte} (\textit{thumbprint}) a été
+ajoutée au modèle, avec validation de son format, normalisation de sa saisie,
+puis colonne, filtre et recherche associés. Enfin, des alertes d'expiration ont
+été mises en place pour les applications Dali et Elastik, qui disposent de
+tables spécifiques.
+
+\paragraph{Administration des référentiels.}
+La normalisation décrite en section~\ref{sec:normalisation} appelait sa
+contrepartie fonctionnelle~: sans écran de gestion, l'ajout d'une nouvelle
+valeur de référence aurait requis une intervention en base. Un menu
+d'administration a donc été créé, offrant huit écrans dédiés (frameworks, bases
+de données, serveurs d'exploitation, types de ressources, référents, fonctions,
+applications Azure et équipes), chacun permettant la consultation, l'ajout, la
+modification et la suppression des valeurs de référence
+(annexe~\ref{ann:ecrans}).
+
+\paragraph{Auditabilité.}
+L'historique des actions trace les créations, modifications, suppressions et
+archivages réalisés par les utilisateurs. Sa mise au point a demandé plusieurs
+itérations. La difficulté principale tenait à la granularité~: une seule action
+de l'utilisateur, telle que la modification d'une application, se traduit en
+base par de multiples écritures sur des tables différentes. Un journal brut
+aurait donc produit un flot d'événements illisible. J'ai résolu ce point par un
+mécanisme de \textbf{corrélation automatique} qui regroupe les écritures
+appartenant à une même action, complété par un affichage hiérarchisé présentant
+l'action métier au premier niveau et le détail des modifications au second.
+
+\paragraph{Taxonomies.}
+Un indicateur d'intégration des taxonomies a été ajouté au niveau du module,
+visible dans les pages de détail et de synthèse, et exploitable comme critère de
+filtrage.
+
+\subsection{Qualité, sécurité et industrialisation}
+\label{sec:qualite}
+
+L'ensemble des développements s'est inscrit dans la chaîne d'intégration
+continue GitLab du groupe, qui déclenche à chaque livraison une analyse
+SonarQube et une analyse de sécurité Checkmarx (CxOne). Ces outils ont
+constitué un cadre exigeant mais formateur~: complexité cognitive excessive de
+certaines méthodes, duplications de code, absence de description sur les
+tableaux HTML au titre de l'accessibilité. Le traitement de ces remontées a
+représenté une part non négligeable du travail et m'a conduit à refactoriser
+plusieurs composants, notamment les profils de correspondance AutoMapper.
+
+Sur le plan de la sécurité, les vulnérabilités critiques et de haute gravité
+identifiées par l'analyse de composition logicielle ont été résorbées. Des
+gardes de route ont été mises en place côté Angular afin qu'aucune page ne soit
+atteignable sans authentification préalable, en complément du contrôle réalisé
+côté serveur. Enfin, l'intégration d'Azure Key~Vault a permis de retirer
+définitivement les secrets des fichiers de configuration.
+
+\subsection{Bilan de la mission}
+\label{sec:bilan-csbag}
+
+La refonte de \csbag représente 255 livraisons de code réparties sur 256
+fichiers, pour un solde de plus de 41~000 lignes ajoutées et 28~000 lignes
+supprimées --- un rapport qui traduit l'ampleur de la part de réécriture par
+rapport à la simple addition de fonctionnalités. Les trois lots de
+spécifications ont été livrés et mis en production, accompagnés de 26 migrations
+de base de données dotées chacune de leur script de retour arrière.
+
+Au-delà des chiffres, l'apport principal de cette mission tient selon moi au
+fait d'avoir dépassé le périmètre initialement demandé. Le diagnostic mené en
+amont a permis d'identifier deux problèmes de fond --- le modèle de données
+dénormalisé et le non-respect des conventions REST --- qui n'étaient formulés
+dans aucune spécification, et dont le traitement conditionnait pourtant la
+valeur des évolutions fonctionnelles demandées. Un filtre par framework n'a en
+effet de sens que si les frameworks sont référencés de manière unique. Cette
+expérience m'a appris qu'une part importante du travail d'ingénieur consiste
+précisément à formuler les problèmes que le besoin exprimé ne dit pas.
 
 \section{Elium Sauvegarde}
 \label{sec:elium}

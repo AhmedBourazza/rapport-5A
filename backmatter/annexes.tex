@@ -12,6 +12,68 @@
 \renewcommand{\thesection}{Annexe~\Alph{section}}
 \setcounter{section}{0}
 
-\section{[Titre de l'annexe]}
-% >>> ex. : diagramme de Gantt, schéma d'architecture, extraits de code <<<
-\textit{[Contenu à ajouter.]}
+\section{\csbag~: de la version~1 à la version~2}
+\label{ann:v1v2}
+
+Les captures ci-dessous illustrent la refonte de l'interface décrite en
+section~\ref{sec:existant}. La version~1 (figure~\ref{fig:ann-v1}) ne proposait
+ni recherche, ni filtre, ni retour visuel pendant les chargements. La version~2
+(figure~\ref{fig:ann-v2}) intègre ces trois éléments.
+
+\begin{figure}[H]
+  \centering
+  \screenshot{csbag_v1_accueil.png}
+  \caption{\csbag version~1~: page d'accueil avant refonte.}
+  \label{fig:ann-v1}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \screenshot{csbag_v2_accueil.png}
+  \caption{\csbag version~2~: page d'accueil après refonte, avec barre de
+    recherche et filtre d'équipe.}
+  \label{fig:ann-v2}
+\end{figure}
+
+\section{Principaux écrans de \csbag v2}
+\label{ann:ecrans}
+
+Cette annexe présente les écrans les plus représentatifs des évolutions
+livrées, décrites en section~\ref{sec:fonctionnel}.
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[t]{0.48\textwidth}
+    \centering
+    \screenshot[\linewidth]{csbag_toutvoir.png}
+    \caption{Page « Tout voir »~: vue transverse de l'inventaire et filtres.}
+    \label{fig:ann-toutvoir}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.48\textwidth}
+    \centering
+    \screenshot[\linewidth]{csbag_details_app.png}
+    \caption{Détail d'une application~: modules, référents et historique.}
+    \label{fig:ann-details}
+  \end{subfigure}
+
+  \vspace{0.6cm}
+
+  \begin{subfigure}[t]{0.48\textwidth}
+    \centering
+    \screenshot[\linewidth]{csbag_historique_actions.png}
+    \caption{Historique des actions~: traçabilité avec affichage hiérarchisé.}
+    \label{fig:ann-historique}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.48\textwidth}
+    \centering
+    \screenshot[\linewidth]{csbag_admin_referentiels.png}
+    \caption{Administration d'un référentiel issu de la normalisation.}
+    \label{fig:ann-admin}
+  \end{subfigure}
+
+  \caption{Écrans représentatifs de \csbag v2.}
+  \label{fig:ann-ecrans}
+\end{figure}
+

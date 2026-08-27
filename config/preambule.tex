@@ -51,6 +51,7 @@
 
 % ---- Légendes (labels >= 9 pt, gras sur le numéro) ----
 \usepackage[font=small,labelfont=bf,labelsep=colon]{caption}
+\usepackage{subcaption}
 
 % ---- En-têtes et pieds de page ----
 \usepackage{fancyhdr}
@@ -133,3 +134,11 @@
 % ---- Commandes utiles ----
 \usepackage{xspace}
 \newcommand{\csbag}{CS~BAG\xspace}
+
+% Capture d'écran : affiche un cadre indicatif tant que le fichier est absent.
+\newcommand{\screenshot}[2][0.85\textwidth]{%
+  \IfFileExists{images/#2}%
+    {\includegraphics[width=#1]{#2}}%
+    {\fbox{\parbox[c][0.25\textheight][c]{\dimexpr#1-2\fboxsep-2\fboxrule\relax}%
+      {\centering\small\itshape Capture à insérer\\[3pt]\texttt{images/#2}}}}%
+}
