@@ -182,14 +182,14 @@ d'écrire la moindre ligne de code, afin de comprendre le terrain sur lequel ces
 évolutions allaient être greffées. Cette analyse a mis en évidence trois formes
 de dette, de natures très différentes.
 
-La première est une \textbf{dette technique de version}. Le front-end reposait
-sur Angular~14 et le back-end sur .NET~6, deux versions sorties du support
+La première est une dette technique de version. Le front-end reposait sur
+Angular~14.2 et le back-end sur .NET~6.0, deux versions sorties du support
 actif. L'application accumulait de ce fait des vulnérabilités remontées par les
 outils d'analyse du groupe, sans possibilité d'appliquer les correctifs
 officiels~; toute évolution s'effectuait sur un socle qu'il aurait fallu, tôt ou
 tard, migrer en urgence.
 
-La deuxième, la plus structurante, est une \textbf{dette du modèle de données}.
+La deuxième, la plus structurante, est une dette du modèle de données.
 La quasi-totalité des ressources techniques était stockée sous forme de texte
 libre~: un même framework pouvait ainsi coexister sous plusieurs orthographes,
 un serveur d'exploitation être saisi différemment d'une application à l'autre.
@@ -198,7 +198,7 @@ absence de normalisation, au sens de Codd~\cite{codd1972normalization}, rendait
 tout filtrage ou toute statistique peu fiable, alors même que c'est la vocation
 première d'un outil d'inventaire.
 
-La troisième est une \textbf{dette ergonomique}. L'interface n'offrait ni
+La troisième est une dette ergonomique. L'interface n'offrait ni
 recherche, ni retour visuel pendant les chargements, ni filtres transverses, ce
 qui obligeait les utilisateurs à parcourir manuellement de longues listes.
 
@@ -207,8 +207,9 @@ de la mission~: outre les trois lots demandés, j'ai suggéré de traiter la
 normalisation de la base de données et de remettre les interfaces de
 programmation en conformité avec les principes REST~\cite{fielding2000rest}.
 Ces deux chantiers, qui ne figuraient dans aucune spécification, ont été
-acceptés et constituent une part importante du travail décrit ci-après.
-L'annexe~\ref{ann:v1v2} illustre l'application avant et après cette refonte.
+validés par le chef de projet et constituent une part importante du travail
+décrit ci-après. Les captures rassemblées en~\ref{ann:v1v2} illustrent
+l'application avant et après cette refonte.
 
 \subsection{Architecture technique de la solution}
 \label{sec:archi-csbag}
@@ -285,15 +286,15 @@ applicative (tableau~\ref{tab:versions}).
     \toprule
     \textbf{Composant} & \textbf{Avant} & \textbf{Après} & \textbf{Enjeu principal} \\
     \midrule
-    Front-end        & Angular 14 & Angular 20 & Support actif, correctifs de sécurité \\
-    Back-end         & .NET 6     & .NET 10    & Support actif, performances \\
-    Accès aux données& EF Core 6  & EF Core 10 & Requêtes fractionnées, cohérence avec .NET 10 \\
+    Front-end        & Angular 14.2 & Angular 20.0 & Support actif, correctifs de sécurité \\
+    Back-end         & .NET 6.0     & .NET 10.0    & Support actif, performances \\
+    Accès aux données& EF Core 6.0.35 & EF Core 10.0.5 & Requêtes fractionnées, cohérence avec .NET 10 \\
     Format de projet & \texttt{packages.config} & SDK-style & Gestion transitive des dépendances \\
     \bottomrule
   \end{tabularx}
 \end{table}
 
-La migration Angular a été conduite de manière \textbf{incrémentale}, une
+La migration Angular a été conduite de manière incrémentale, une
 version majeure à la fois (14~$\rightarrow$~15~$\rightarrow$~\dots~$\rightarrow$~20),
 plutôt qu'en un saut unique. Ce choix, plus long, présente l'avantage décisif de
 circonscrire les régressions~: à chaque palier, seuls les changements de rupture
@@ -303,7 +304,9 @@ conjoint de \texttt{ngModel} et \texttt{formControlName}, puis reprendre
 plusieurs points de mise en forme affectés par l'évolution d'Angular Material.
 La migration du back-end a suivi la même logique (.NET~6~$\rightarrow$~8~$\rightarrow$~10),
 accompagnée de la correction des vulnérabilités des paquets NuGet, en
-particulier celles affectant AutoMapper.
+particulier celles affectant AutoMapper. Toutes les versions cibles retenues
+sont des versions finales et non des préversions, condition posée par le service
+pour un déploiement en production.
 
 C'est également dans ce cadre que j'ai mené la mise en conformité REST évoquée
 plus haut. Les points d'entrée de l'interface de programmation ont été
@@ -322,9 +325,21 @@ nomenclature métier, le rôle historiquement appelé « développeur » devenan
 
 Ce chantier, absent des spécifications initiales, est celui qui a eu le plus
 d'impact sur la fiabilité de l'outil. Il a consisté à transformer les champs de
-texte libre en véritables \textbf{tables de référence} reliées par clés
+texte libre en véritables tables de référence reliées par clés
 étrangères, conformément aux formes normales de Codd~\cite{codd1970relational}.
+Le principe en est illustré par la figure~\ref{fig:normalisation}, qui met en
+regard le stockage initial et le modèle cible sur l'exemple des frameworks.
 Sept ensembles de données ont été traités (tableau~\ref{tab:normalisation}).
+
+\begin{figure}[H]
+  \centering
+  \screenshot[0.95\textwidth]{normalisation.png}
+  \caption{Principe de la normalisation appliquée à \csbag~: à gauche, la valeur
+    saisie en texte libre se décline en plusieurs variantes pour un même
+    framework~; à droite, une table de référence garantit l'unicité de chaque
+    valeur, référencée par clé étrangère.}
+  \label{fig:normalisation}
+\end{figure}
 
 \begin{table}[H]
   \centering
@@ -355,14 +370,14 @@ donc dû différer la contrainte, nettoyer les enregistrements en double, puis
 seulement appliquer la clé.
 
 Cette intervention portant sur des données de production, la maîtrise du risque
-était primordiale. J'ai mis en place une \textbf{gouvernance des migrations}
+était primordiale. J'ai mis en place une gouvernance des migrations
 articulée autour de trois principes. Premièrement, chaque migration est
-\textbf{versionnée} (\texttt{V001} à \texttt{V026}) et rejouée dans le même
+versionnée (\texttt{V001} à \texttt{V026}) et rejouée dans le même
 ordre sur les trois environnements. Deuxièmement, chaque migration dispose d'un
-\textbf{script de retour arrière dédié}, qui n'annule que sa propre
+script de retour arrière dédié, qui n'annule que sa propre
 modification~; cette granularité, obtenue après reprise des premiers scripts
 qui annulaient trop largement, permet de revenir en arrière d'un seul cran.
-Troisièmement, des scripts de \textbf{contrôle préalable}
+Troisièmement, des scripts de contrôle préalable
 (\texttt{V000\_PreFlight}) vérifient avant toute mise en production que la base
 cible se trouve dans l'état attendu, complétés par des sauvegardes préalables
 pour les migrations les plus sensibles.
@@ -370,7 +385,9 @@ pour les migrations les plus sensibles.
 \subsection{Enrichissement fonctionnel}
 \label{sec:fonctionnel}
 
-Les trois lots de spécifications ont été livrés dans leur intégralité. Plutôt
+Les trois lots de spécifications ont été livrés dans leur intégralité. Ils ont
+été rédigés par l'analyste fonctionnelle du service, qui en a également assuré
+la recette~; j'en ai réalisé la conception technique et le développement. Plutôt
 que de les présenter dans leur ordre chronologique, cette section les regroupe
 par thème métier, chaque thème indiquant le lot dont il est issu
 (tableau~\ref{tab:themes}).
@@ -406,14 +423,14 @@ et par framework, d'un lien direct vers chaque application et d'un affichage
 dépliable du détail de chaque ligne. Le chargement de cette page, initialement
 lent du fait du volume de données, a été optimisé par l'emploi de requêtes
 fractionnées côté serveur et d'un \texttt{forkJoin} côté client, qui parallélise
-les appels au lieu de les enchaîner (annexe~\ref{ann:ecrans}).
+les appels au lieu de les enchaîner (voir~\ref{ann:ecrans}).
 
 \paragraph{Cycle de vie des applications.}
 Une application peut désormais être rattachée à plusieurs équipes, et chaque
 référent se voit associer une \textit{fonction} issue d'une table de référence
 dédiée, avec auto-complétion à la saisie. L'ordre d'affichage des modules, puis
 celui de leurs associations (bases de données, ressources Azure, comptes de
-service), est modifiable par l'utilisateur. La fonctionnalité d'\textbf{archivage}
+service), est modifiable par l'utilisateur. La fonctionnalité d'archivage
 permet de retirer une application de l'exploitation courante sans perdre son
 historique~: l'application archivée bascule en lecture seule et n'apparaît plus
 que via un filtre dédié. Un point mérite d'être souligné~: la protection contre
@@ -433,7 +450,7 @@ de longueur et d'affichage.
 Une page dédiée aux comptes de service a été créée, assortie du suivi de leur
 date d'expiration et de leur intégration au courriel de rappel envoyé en début
 de mois. Côté certificats, une confirmation explicite est désormais demandée
-avant toute suppression, et l'\textbf{empreinte} (\textit{thumbprint}) a été
+avant toute suppression, et l'empreinte (\textit{thumbprint}) a été
 ajoutée au modèle, avec validation de son format, normalisation de sa saisie,
 puis colonne, filtre et recherche associés. Enfin, des alertes d'expiration ont
 été mises en place pour les applications Dali et Elastik, qui disposent de
@@ -447,7 +464,7 @@ d'administration a donc été créé, offrant huit écrans dédiés (frameworks,
 de données, serveurs d'exploitation, types de ressources, référents, fonctions,
 applications Azure et équipes), chacun permettant la consultation, l'ajout, la
 modification et la suppression des valeurs de référence
-(annexe~\ref{ann:ecrans}).
+(voir~\ref{ann:ecrans}).
 
 \paragraph{Auditabilité.}
 L'historique des actions trace les créations, modifications, suppressions et
@@ -456,7 +473,7 @@ itérations. La difficulté principale tenait à la granularité~: une seule act
 de l'utilisateur, telle que la modification d'une application, se traduit en
 base par de multiples écritures sur des tables différentes. Un journal brut
 aurait donc produit un flot d'événements illisible. J'ai résolu ce point par un
-mécanisme de \textbf{corrélation automatique} qui regroupe les écritures
+mécanisme de corrélation automatique qui regroupe les écritures
 appartenant à une même action, complété par un affichage hiérarchisé présentant
 l'action métier au premier niveau et le détail des modifications au second.
 
@@ -490,7 +507,9 @@ définitivement les secrets des fichiers de configuration.
 La refonte de \csbag représente 255 livraisons de code réparties sur 256
 fichiers, pour un solde de plus de 41~000 lignes ajoutées et 28~000 lignes
 supprimées --- un rapport qui traduit l'ampleur de la part de réécriture par
-rapport à la simple addition de fonctionnalités. Les trois lots de
+rapport à la simple addition de fonctionnalités. J'ai porté 252 de ces 255
+livraisons, les trois autres relevant de la configuration de la chaîne
+d'intégration continue, maintenue au niveau du service. Les trois lots de
 spécifications ont été livrés et mis en production, accompagnés de 26 migrations
 de base de données dotées chacune de leur script de retour arrière.
 
