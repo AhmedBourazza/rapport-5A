@@ -20,23 +20,28 @@ données, l'architecture et les conventions, et le résultat était évalué à 
 livraison. \csbag m'a placé dans la situation inverse. J'ai hérité d'une
 application en service, avec des données réelles saisies pendant plusieurs
 années, des choix antérieurs que je n'avais pas faits, et des utilisateurs qui
-continuaient à s'en servir pendant que je la modifiais. La question n'est alors
+continuaient à s'en servir pendant que je la modifiais. Cette contrainte change
+tout~: on ne peut plus supprimer une colonne parce qu'elle est mal nommée, ni
+restructurer une table sans se demander ce que deviennent les enregistrements
+existants. J'ai appris que sur un système en production, la question n'est
 jamais seulement « quelle est la bonne conception~? », mais « comment atteindre
-la bonne conception sans casser ce qui fonctionne~? ». La refonte du modèle de
-données l'a illustré avec le plus de force~: je connaissais les formes normales
-en théorie, j'ignorais ce que représente concrètement leur application sur des
-données déjà dégradées. Lors de la migration~V019, les doublons présents en base
+la bonne conception sans casser ce qui fonctionne~? ».
+
+Cette contrainte s'est manifestée avec le plus de force lors de la refonte du
+modèle de données. Je connaissais les formes normales en théorie~; j'ignorais ce
+que représente concrètement leur application sur des données déjà dégradées. La
+migration~V019 en a été l'illustration~: les doublons présents en base
 empêchaient la création des clés primaires, et il a fallu nettoyer avant de
-contraindre, situation qu'un exercice académique, où les données sont propres
-par construction, ne permet pas de rencontrer. J'en ai retiré une conviction
-durable~: la qualité d'un modèle de données ne se juge pas sur son schéma, mais
-sur ce qu'il rend possible ou impossible aux utilisateurs. Un champ de texte
-libre ne produit pas immédiatement de bug~; il produit, au bout de quelques
-années, un inventaire sur lequel plus aucun filtre n'est fiable. C'est également
-l'analyse en amont qui m'a le plus fait progresser~: prendre le temps de
-requêter les données réelles avant de coder m'a permis de formuler un problème
-que personne n'avait exprimé, et de le documenter suffisamment pour qu'il soit
-accepté.
+contraindre. Ce type de situation ne se rencontre pas dans un exercice
+académique, où les données sont propres par construction. J'en ai retiré une
+conviction durable~: la qualité d'un modèle de données ne se juge pas sur son
+schéma, mais sur ce qu'il rend possible ou impossible aux utilisateurs. Un champ
+de texte libre ne produit pas immédiatement de bug~; il produit, au bout de
+quelques années, un inventaire sur lequel plus aucun filtre n'est fiable. C'est
+également l'analyse en amont qui m'a le plus fait progresser~: prendre le temps
+de requêter les données réelles avant de coder m'a permis de formuler un
+problème que personne n'avait exprimé, et de le documenter suffisamment pour
+qu'il soit accepté.
 
 La migration du socle technique m'a appris une autre forme de rigueur. Le
 réflexe naturel aurait été de sauter directement d'Angular~14 à Angular~20~; le
@@ -158,21 +163,24 @@ normaliser une base en production est un problème de migration, qui suppose des
 scripts réversibles, des contrôles préalables et une reprise des données
 existantes.
 
-Le génie logiciel, la conception objet et le développement web ont constitué le
-socle de mon travail sur l'architecture en couches de l'application. La
-séparation des responsabilités, la notion de contrat entre composants et les
-patrons de conception vus en cours m'ont permis de me repérer rapidement dans
-une base de code que je n'avais pas écrite, et l'architecture n-tiers étudiée en
-formation s'est concrétisée dans le découpage réel de la solution, en projets
-distincts dont chacun a une responsabilité assignée. Je n'avais pratiqué ni
-Angular ni~.NET avant le stage~; c'est la compréhension de ces concepts
-sous-jacents, plutôt que la connaissance d'un framework particulier, qui m'a
-permis de monter en compétence sans blocage majeur, ce qui confirme l'intérêt
-d'une formation qui enseigne des principes plutôt que des outils. Le stage m'a
-appris en revanche ce qui s'enseigne difficilement en cours~: qu'une
-architecture existante porte des compromis, et qu'un développeur qui la reprend
-doit d'abord comprendre pourquoi ces compromis ont été faits avant de les
-corriger.
+Le génie logiciel et la conception objet ont constitué le socle de mon travail
+sur l'architecture en couches de l'application. La séparation des
+responsabilités, la notion de contrat entre composants et les patrons de
+conception vus en cours m'ont permis de me repérer rapidement dans une base de
+code que je n'avais pas écrite. Le stage m'a appris ce qui ne s'enseigne
+difficilement en cours~: qu'une architecture existante porte des compromis, et
+qu'un développeur qui la reprend doit d'abord comprendre pourquoi ces compromis
+ont été faits avant de les corriger. De la même façon, l'architecture n-tiers
+étudiée en cours s'est concrétisée dans le découpage réel de la solution, en
+projets distincts dont chacun a une responsabilité assignée.
+
+Le développement web et la programmation objet m'ont donné les fondamentaux
+nécessaires pour être opérationnel rapidement sur des technologies que je ne
+connaissais pas. Je n'avais pratiqué ni Angular ni~.NET avant le stage~; c'est
+la compréhension des concepts sous-jacents, plutôt que la connaissance d'un
+framework particulier, qui m'a permis de monter en compétence sans blocage
+majeur. Cette expérience a confirmé l'intérêt d'une formation qui enseigne des
+principes plutôt que des outils.
 
 Ma spécialité, Interaction Personnes Systèmes, a trouvé une application moins
 attendue mais réelle. La dette ergonomique identifiée dans l'application
