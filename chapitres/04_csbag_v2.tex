@@ -531,7 +531,7 @@ définitivement les secrets des fichiers de configuration.
 
 La refonte de \csbag représente 255 livraisons de code réparties sur 256
 fichiers, pour un solde de plus de 41~000 lignes ajoutées et 28~000 lignes
-supprimées --- un rapport qui traduit l'ampleur de la part de réécriture par
+supprimées, un rapport qui traduit l'ampleur de la part de réécriture par
 rapport à la simple addition de fonctionnalités. J'ai porté 252 de ces 255
 livraisons, les trois autres relevant de la configuration de la chaîne
 d'intégration continue, maintenue au niveau du service. Les trois lots de
@@ -540,8 +540,8 @@ de base de données dotées chacune de leur script de retour arrière.
 
 Au-delà des chiffres, l'apport principal de cette mission tient selon moi au
 fait d'avoir dépassé le périmètre initialement demandé. Le diagnostic mené en
-amont a permis d'identifier deux problèmes de fond --- le modèle de données
-dénormalisé et le non-respect des conventions REST --- qui n'étaient formulés
+amont a permis d'identifier deux problèmes de fond, le modèle de données
+dénormalisé et le non-respect des conventions REST, qui n'étaient formulés
 dans aucune spécification, et dont le traitement conditionnait pourtant la
 valeur des évolutions fonctionnelles demandées. Un filtre par framework n'a en
 effet de sens que si les frameworks sont référencés de manière unique. Cette
@@ -551,40 +551,183 @@ précisément à formuler les problèmes que le besoin exprimé ne dit pas.
 \section{Elium Sauvegarde}
 \label{sec:elium}
 
+\subsection{Une intervention dictée par l'urgence}
+\label{sec:urgence}
+
+Contrairement à \csbag, dont les travaux étaient planifiés par lots, les deux
+missions décrites dans la suite de ce chapitre sont intervenues en réaction à
+des dysfonctionnements constatés en production. Elles n'étaient inscrites à
+aucun planning et ont, à chaque fois, pris le pas sur les développements en
+cours.
+
+Cette priorité s'explique par la nature des applications concernées. Elium
+Sauvegarde constitue le dispositif d'archivage du patrimoine documentaire d'une
+plateforme de gestion des connaissances~: tant qu'il échoue, les nouveaux
+contenus ne sont plus sauvegardés, et l'écart avec la source s'accroît à chaque
+exécution manquée. Access Report TTC~GO produit des rapports de droits d'accès
+demandés par les responsables d'espaces collaboratifs~; des rapports incomplets
+sont plus dangereux qu'une absence de rapport, puisqu'ils donnent l'illusion
+d'un contrôle effectué. Dans les deux cas, l'impact était immédiat et visible
+par les utilisateurs, alors qu'un retard d'une semaine sur un lot fonctionnel de
+\csbag restait sans conséquence opérationnelle.
+
+L'arbitrage a été posé lors du point quotidien avec le chef de projet, qui a
+demandé la bascule sur l'incident. J'ai appris à ce moment-là qu'interrompre une
+tâche ne consiste pas à s'arrêter net~: il faut d'abord ramener le travail en
+cours à un état stable et documenté, en particulier lorsqu'une migration de base
+de données est engagée, afin de pouvoir le reprendre sans repartir de zéro.
+Cette contrainte a également orienté la manière de corriger. Sur Access Report,
+elle m'a conduit à séparer explicitement le rétablissement rapide du service de
+la correction de fond, ces deux objectifs n'ayant ni le même délai, ni le même
+niveau de risque acceptable.
+
+\subsection{Contexte et fonctionnement de l'application}
+\label{sec:elium-contexte}
+
 Elium Sauvegarde est une application console .NET~6 qui archive automatiquement
 les articles de la plateforme de gestion des connaissances Elium vers
 SharePoint~Online. Elle récupère les articles via l'API GraphQL d'Elium par lots
 de 100, compare chaque article avec un référentiel stocké dans une liste
 SharePoint, puis crée ou supprime les pages correspondantes via Microsoft~Graph.
 L'exécution est planifiée en batch hebdomadaire, toutes traductions comprises.
+La figure~\ref{fig:elium-flux} présente cette chaîne de traitement.
 
-Mon intervention a porté sur la fiabilisation d'un traitement qui échouait
-régulièrement en production. Le problème principal était l'absence d'isolation
-des erreurs~: une seule anomalie sur un article (donnée corrompue, réponse
-partielle de l'API GraphQL) faisait échouer l'intégralité de la synchronisation.
+\begin{figure}[H]
+  \centering
+  \resizebox{\textwidth}{!}{%
+  \begin{tikzpicture}[
+    font=\scriptsize,
+    ext/.style={rounded corners=2pt, draw=grisfonce, fill=grisclair,
+      text width=2.3cm, minimum height=1.0cm, align=center, inner sep=3pt},
+    app/.style={rounded corners=2pt, draw=vinciblue, line width=0.9pt, fill=white,
+      text width=2.6cm, minimum height=1.3cm, align=center, inner sep=3pt},
+    ref/.style={rounded corners=2pt, draw=azurblue, fill=white,
+      text width=2.6cm, minimum height=0.9cm, align=center, inner sep=3pt},
+    flow/.style={-{Stealth[length=1.8mm]}, line width=0.7pt, gray},
+    lbl/.style={font=\tiny\itshape, text=grisfonce}
+  ]
+    \node[ext] (elium) {API GraphQL\\Elium};
+    \node[app, right=1.5cm of elium] (app) {Elium Sauvegarde\\(console .NET~6)\\traitement article\\par article};
+    \node[ext, right=1.5cm of app] (graph) {Microsoft\\Graph};
+    \node[ext, right=1.2cm of graph] (pages) {Pages\\SharePoint\\Online};
+    \node[ref, below=1.1cm of app] (liste) {Liste SharePoint\\(référentiel des\\articles archivés)};
 
-Pour y remédier, j'ai mis en place une isolation des erreurs par article~: chaque
-article est traité dans un bloc protégé, avec des accès JSON null-safe, de sorte
-qu'un article corrompu n'empêche plus le traitement des suivants. J'ai ensuite
-distingué les réponses partielles de l'API (données exploitables, traitement
-poursuivi) des vraies pannes serveur (retry trois fois à trente secondes
-d'intervalle, puis passage au lot suivant).
+    \draw[flow] (elium) -- node[lbl, above, align=center]{lots de\\100 articles} (app);
+    \draw[flow] (app) -- node[lbl, above, align=center]{création /\\suppression} (graph);
+    \draw[flow] (graph) -- (pages);
+    \draw[flow, <->] (app) -- node[lbl, right, align=left]{comparaison\\et mise à jour} (liste);
+  \end{tikzpicture}%
+  }
+  \caption{Chaîne de traitement d'Elium Sauvegarde, de la récupération des
+    articles à la création des pages SharePoint.}
+  \label{fig:elium-flux}
+\end{figure}
 
-Le blocage principal du projet concernait la création des pages SharePoint~:
-SharePoint refuse toute page dont le dossier parent n'existe pas. J'ai
-développé un mécanisme de création récursive et idempotente de l'arborescence
-de dossiers, avec un check-in automatique pour lever le verrou après chaque
-création.
+\subsection{Diagnostic et solutions envisagées}
+\label{sec:elium-diagnostic}
 
-Enfin, j'ai refondu l'observabilité de l'application~: refonte des logs et
-ajout d'un résumé final de onze indicateurs (pages créées, échecs, articles
-ignorés par motif, taux de réussite, durée), permettant de valider les
-recettes sans lecture manuelle des journaux. J'ai également externalisé un
-paramètre de configuration permettant de basculer entre synchronisation complète
-et incrémentale sans recompilation ni redéploiement.
+Le traitement échouait régulièrement en production. L'analyse des journaux a
+montré que l'exécution s'interrompait toujours sur un article particulier, sans
+que les articles suivants soient traités~: une seule anomalie, qu'il s'agisse
+d'une donnée corrompue ou d'une réponse partielle de l'API GraphQL, faisait
+échouer l'intégralité de la synchronisation. Le comportement était donc du type
+« tout ou rien », alors que les articles sont indépendants les uns des autres.
+
+Trois orientations ont été examinées pour traiter ce défaut, résumées dans le
+tableau~\ref{tab:elium-options}.
+
+\begin{table}[H]
+  \centering
+  \caption{Options étudiées pour la fiabilisation du traitement Elium.}
+  \label{tab:elium-options}
+  \begin{tabularx}{\textwidth}{p{3.4cm} X p{1.9cm}}
+    \toprule
+    \bfseries Option & \bfseries Analyse & \bfseries Décision \\
+    \midrule
+    Relancer l'exécution complète en cas d'échec
+      & Aucune modification du code, mais la relance échoue au même endroit tant
+        que l'article fautif est présent dans la source. Le traitement ne
+        progresse pas et le coût d'exécution est multiplié.
+      & Écartée \\
+    Exclure en amont les articles connus comme non conformes
+      & Rétablit rapidement le traitement, mais suppose une liste d'exclusion
+        maintenue à la main, qui ne couvre pas les cas futurs et masque
+        durablement les articles non archivés.
+      & Écartée \\
+    Isoler le traitement de chaque article et poursuivre
+      & Demande de restructurer la boucle de traitement et de sécuriser les
+        accès aux données, mais garantit qu'une anomalie unitaire n'affecte plus
+        que l'article concerné, tout en la rendant visible.
+      & Retenue \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+La troisième option a été retenue parce qu'elle traite la cause structurelle et
+non le symptôme~: la sauvegarde doit produire le meilleur résultat possible avec
+les données disponibles, un résultat partiel mais tracé valant mieux qu'une
+absence totale d'archivage. Chaque article est désormais traité dans un bloc
+protégé, avec des accès JSON tolérants aux champs absents, de sorte qu'un
+article corrompu n'empêche plus le traitement des suivants.
+
+Cette isolation a fait apparaître un second cas à distinguer. Une réponse
+incomplète de l'API peut signifier deux choses très différentes~: soit
+l'article existe mais certaines de ses propriétés sont absentes, auquel cas les
+données restantes sont exploitables, soit le serveur est momentanément
+indisponible, auquel cas insister immédiatement ne sert à rien. Traiter les
+deux situations de la même manière conduisait soit à perdre des articles
+valides, soit à masquer une panne réelle. J'ai donc introduit une
+discrimination fondée sur le contenu de la réponse~: en cas de réponse
+partielle, le traitement se poursuit avec les données disponibles~; en cas de
+panne serveur, la requête est réessayée trois fois à trente secondes
+d'intervalle avant de passer au lot suivant. Le délai retenu constitue un
+compromis entre le temps laissé au service pour se rétablir et la durée totale
+du batch, qui doit rester compatible avec sa planification hebdomadaire.
+
+\subsection{Création de l'arborescence et observabilité}
+\label{sec:elium-arbo}
+
+Le blocage suivant concernait la création des pages~: SharePoint refuse toute
+page dont le dossier parent n'existe pas, et l'arborescence cible reflète
+l'organisation des espaces Elium, qui évolue dans le temps. Créer l'arborescence
+au préalable, par un script d'initialisation, aurait supposé de la maintenir
+manuellement à chaque nouvel espace. J'ai donc opté pour une création à la
+volée, récursive et idempotente~: le traitement remonte la chaîne des dossiers
+parents jusqu'au premier existant, puis redescend en créant ce qui manque, et ne
+fait rien si le dossier est déjà présent. Un check-in automatique a été ajouté
+après chaque création afin de lever le verrou posé par SharePoint, dont
+l'absence provoquait un blocage sur les créations suivantes.
+
+La figure~\ref{fig:elium-pages} montre le résultat de ce mécanisme sur le site
+SharePoint de destination~: chaque dossier correspond à un espace Elium et a été
+créé automatiquement par le traitement, sans intervention manuelle, au fur et à
+mesure de l'archivage des articles qu'il contient.
+
+\begin{figure}[H]
+  \centering
+  \screenshot{elium_sharepoint_pages.png}
+  \caption{Site SharePoint « Sauvegarde Elium »~: arborescence de dossiers créée
+    automatiquement par le traitement lors de l'archivage des articles.}
+  \label{fig:elium-pages}
+\end{figure}
+
+Enfin, j'ai refondu l'observabilité de l'application. Les journaux existants ne
+permettaient pas de dire, après une exécution, ce qui avait été réellement
+archivé, ce qui rendait la recette dépendante d'une lecture manuelle des
+fichiers de log. J'ai réorganisé les traces et ajouté un résumé final de onze
+indicateurs (pages créées, échecs, articles ignorés par motif, taux de réussite,
+durée), qui permet de valider une exécution d'un seul regard. Ce point s'est
+révélé indissociable du reste~: l'isolation des erreurs n'est acceptable que si
+les erreurs isolées sont comptabilisées et visibles. J'ai également externalisé
+un paramètre de configuration permettant de basculer entre synchronisation
+complète et incrémentale sans recompilation ni redéploiement, ce qui autorise
+un rattrapage complet après incident sans nouvelle livraison.
 
 \section{Access Report TTC~GO}
 \label{sec:access-report}
+
+\subsection{Contexte et fonctionnement de l'application}
+\label{sec:access-contexte}
 
 Access Report TTC~GO est un ensemble d'Azure WebJobs (.NET~Framework) déclenchés
 par une file d'attente Azure Storage~Queue. À la demande, ces traitements
@@ -593,20 +736,128 @@ SharePoint~: qui a accès à quoi. Le parcours de l'arborescence SharePoint
 s'effectue via CSOM et l'API REST, la résolution des groupes via
 Microsoft~Graph, et le rapport est produit en export multi-onglets bilingue
 (français / anglais) avant d'être envoyé par e-mail. Les secrets sont gérés dans
-Azure Key~Vault et l'authentification repose sur un certificat X509.
+Azure Key~Vault et l'authentification repose sur un certificat X509 installé sur
+la machine hébergeant le traitement. La figure~\ref{fig:access-flux} situe ces
+composants et localise le point de défaillance analysé ci-après.
 
-Mon intervention a porté sur la correction d'une panne silencieuse~: les rapports
-étaient livrés avec les colonnes de groupes vides, sans qu'aucune erreur ne soit
-journalisée. Après investigation, j'ai identifié la cause~: la bibliothèque
-commune cherchait le certificat d'authentification dans le magasin
-\texttt{CurrentUser\textbackslash My}, alors qu'il était installé dans
-\texttt{LocalMachine\textbackslash My} sur la machine virtuelle de production.
-L'authentification Graph échouait donc silencieusement.
+\begin{figure}[H]
+  \centering
+  \resizebox{\textwidth}{!}{%
+  \begin{tikzpicture}[
+    font=\scriptsize,
+    ext/.style={rounded corners=2pt, draw=grisfonce, fill=grisclair,
+      text width=2.2cm, minimum height=0.9cm, align=center, inner sep=3pt},
+    app/.style={rounded corners=2pt, draw=vinciblue, line width=0.9pt, fill=white,
+      text width=2.6cm, minimum height=1.2cm, align=center, inner sep=3pt},
+    ko/.style={rounded corners=2pt, draw=vincired, line width=0.9pt, fill=white,
+      text width=2.4cm, minimum height=0.9cm, align=center, inner sep=3pt},
+    flow/.style={-{Stealth[length=1.8mm]}, line width=0.7pt, gray},
+    bad/.style={-{Stealth[length=1.8mm]}, line width=0.9pt, vincired, dashed},
+    lbl/.style={font=\tiny\itshape, text=grisfonce}
+  ]
+    \node[ext] (queue) {Storage Queue\\(demande)};
+    \node[app, right=1.3cm of queue] (job) {WebJob\\Access Report\\(.NET Framework)};
+    \node[ext, above=0.9cm of job] (kv) {Key Vault\\+ certificat X509};
+    \node[ext, right=1.4cm of job] (sp) {SharePoint\\(CSOM / REST)};
+    \node[ko, below=0.9cm of sp] (graph) {Microsoft Graph\\(résolution des\\groupes)};
+    \node[ext, right=1.3cm of sp] (xls) {Rapport Excel\\bilingue};
+    \node[ext, right=1.2cm of xls] (mail) {Envoi\\par e-mail};
 
-Le correctif a été mené en deux temps. Dans un premier temps, j'ai mis en place
-un contournement isolé dans le projet console pour débloquer l'exploitation,
-sans risque pour les WebJobs de production. Une fois la cause confirmée, j'ai
-corrigé la bibliothèque partagée en rendant le magasin de certificats
-configurable via une variable d'environnement, avec un repli par défaut assurant
-la rétrocompatibilité. Cette correction bénéficie à l'ensemble des WebJobs qui
-consomment cette bibliothèque.
+    \draw[flow] (queue) -- (job);
+    \draw[flow] (kv) -- node[lbl, right]{authentification} (job);
+    \draw[flow] (job) -- node[lbl, above, align=center]{parcours de\\l'arborescence} (sp);
+    \draw[bad] (job) |- (graph);
+    \draw[flow] (sp) -- (xls);
+    \draw[flow] (graph) -| (xls);
+    \draw[flow] (xls) -- (mail);
+
+    \node[lbl, text=vincired, below=0.15cm of graph, align=center]
+      {échec silencieux\\de l'authentification};
+  \end{tikzpicture}%
+  }
+  \caption{Architecture d'Access Report TTC~GO et localisation de la
+    défaillance~: seule la résolution des groupes via Microsoft~Graph était
+    affectée.}
+  \label{fig:access-flux}
+\end{figure}
+
+\subsection{Diagnostic d'une panne silencieuse}
+\label{sec:access-diagnostic}
+
+Les rapports étaient livrés aux demandeurs avec les colonnes de groupes vides,
+sans qu'aucune erreur ne soit journalisée et sans que le traitement échoue. Cette
+absence de signal a constitué la principale difficulté~: le WebJob se terminait
+normalement, produisait un fichier au format attendu et l'envoyait, si bien que
+l'anomalie n'était détectable qu'en ouvrant le rapport et en connaissant le
+contenu attendu.
+
+Le fait que le rapport soit partiellement correct a orienté le diagnostic. Les
+données issues de SharePoint étaient présentes, seules celles provenant de
+Microsoft~Graph manquaient~: la défaillance était donc localisée sur une seule
+dépendance, et non sur le traitement dans son ensemble. Le comportement
+divergeait par ailleurs selon l'environnement, puisque le traitement lancé
+depuis un poste de développement produisait un rapport complet. L'écart ne
+pouvait donc pas provenir du code lui-même, mais de son contexte d'exécution.
+En reprenant la configuration de la machine virtuelle de production, j'ai
+identifié la cause~: la bibliothèque commune cherchait le certificat
+d'authentification dans le magasin \texttt{CurrentUser\textbackslash My}, alors
+qu'il était installé dans \texttt{LocalMachine\textbackslash My} sur cette
+machine. Le certificat n'étant pas trouvé, l'authentification Graph échouait, et
+l'erreur était absorbée sans être remontée.
+
+\subsection{Solutions envisagées et correctif retenu}
+\label{sec:access-correctif}
+
+La cause identifiée admettait plusieurs corrections possibles, dont les
+implications différaient sensiblement, comme le résume le
+tableau~\ref{tab:access-options}.
+
+\begin{table}[H]
+  \centering
+  \caption{Options étudiées pour la correction de l'accès au certificat.}
+  \label{tab:access-options}
+  \begin{tabularx}{\textwidth}{p{3.4cm} X p{1.9cm}}
+    \toprule
+    \bfseries Option & \bfseries Analyse & \bfseries Décision \\
+    \midrule
+    Réinstaller le certificat dans le magasin attendu par le code
+      & Rétablit le service sans toucher au code, mais fait dépendre le
+        fonctionnement d'une manipulation manuelle, à répéter à chaque
+        renouvellement du certificat ou reconstruction de la machine.
+      & Écartée \\
+    Fixer le magasin machine directement dans la bibliothèque
+      & Correction immédiate en production, mais elle inverse simplement le
+        problème et casse l'exécution depuis un poste de développement, ainsi
+        que pour les autres traitements qui consomment la bibliothèque.
+      & Écartée \\
+    Rechercher successivement dans les deux magasins
+      & Fonctionne dans tous les cas de figure, mais rend le comportement
+        implicite~: une erreur de déploiement du certificat ne serait plus
+        détectée, et la recherche est dupliquée à chaque appel.
+      & Écartée \\
+    Rendre le magasin configurable, avec valeur par défaut inchangée
+      & Demande une modification de la bibliothèque partagée et une variable
+        d'environnement par déploiement, mais rend le choix explicite, propre à
+        chaque environnement, sans impact sur les consommateurs existants.
+      & Retenue \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+Le correctif a été mené en deux temps, précisément en raison de l'urgence
+décrite en section~\ref{sec:urgence}. Modifier une bibliothèque partagée par
+plusieurs WebJobs de production supposait une validation et une recette que le
+délai ne permettait pas d'engager immédiatement. J'ai donc d'abord mis en place
+un contournement circonscrit au projet console, permettant de régénérer
+manuellement les rapports attendus sans toucher aux traitements en service, donc
+sans risque de régression sur les autres WebJobs. Une fois la cause confirmée et
+le service rétabli, j'ai corrigé la bibliothèque partagée en rendant le magasin
+de certificats configurable via une variable d'environnement, avec un repli sur
+le comportement d'origine lorsque la variable n'est pas définie. Cette
+rétrocompatibilité était indispensable pour que la correction puisse être
+livrée sans imposer de modification de configuration aux autres traitements.
+
+Au-delà du rétablissement du service, cette correction a supprimé une classe
+entière d'anomalies~: tout traitement s'appuyant sur cette bibliothèque peut
+désormais être déployé sur une machine dont la configuration de certificats
+diffère, sans modification de code.
