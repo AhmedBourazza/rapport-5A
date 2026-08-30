@@ -26,26 +26,10 @@ service.
 Plusieurs approches permettent d'accéder par programme aux données de
 Microsoft~365 et de SharePoint. Microsoft~Graph constitue l'interface REST
 unifiée et recommandée aujourd'hui par Microsoft pour l'ensemble des services
-de la suite~\cite{ms_graph}. À côté, deux approches plus anciennes subsistent~:
-le modèle objet client (CSOM), spécifique à SharePoint, et l'API REST propre à
-SharePoint~\cite{ms_sp_access}.
-
-\begin{table}[H]
-  \centering
-  \caption{Approches d'accès programmatique à SharePoint~/ Microsoft~365.}
-  \label{tab:sp-acces}
-  \begin{tabularx}{\textwidth}{>{\bfseries}p{3.4cm} X p{2.9cm}}
-    \toprule
-    \normalfont\bfseries Approche & \bfseries Description & \bfseries Positionnement \\
-    \midrule
-    Microsoft Graph & Interface REST unifiée pour tout Microsoft~365
-      (utilisateurs, fichiers, sites, etc.) & Approche moderne recommandée \\
-    CSOM & Modèle objet côté client, spécifique à SharePoint & Approche
-      historique \\
-    API REST SharePoint & Accès REST propre à SharePoint & Approche historique \\
-    \bottomrule
-  \end{tabularx}
-\end{table}
+de la suite~\cite{ms_graph}. À côté subsistent deux approches historiques,
+propres à SharePoint~: le modèle objet client (CSOM) et l'API REST
+SharePoint~\cite{ms_sp_access}. Ces trois voies coexistent dans les
+applications du service, les plus anciennes s'appuyant encore sur CSOM.
 
 \section{Le cloud et les services Azure}
 \label{sec:azure}
@@ -264,13 +248,10 @@ Rembourser cette dette passe par le \textit{refactoring}, discipline formalisée
 par Fowler, qui consiste à améliorer la structure interne d'un code sans en
 modifier le comportement observable~\cite{fowler2018refactoring}. À l'échelle
 d'une application entière, deux stratégies de modernisation s'opposent~: la
-réécriture complète, qui repart de zéro mais concentre les risques, et la refonte
-incrémentale, qui fait évoluer l'existant par étapes tout en le gardant
-fonctionnel. Le patron \textit{Strangler~Fig} illustre cette seconde voie, où le
-nouveau système remplace progressivement l'ancien~\cite{fowler2004strangler}.
-Cette démarche progressive s'inscrit dans le cadre plus large de la maintenance
-logicielle, notamment évolutive, telle que la décrivent les référentiels du génie
-logiciel~\cite{iso14764}.
+réécriture complète, qui repart de zéro mais concentre les risques, et la
+refonte incrémentale, qui fait évoluer l'existant par étapes tout en le gardant
+fonctionnel et livrable. C'est cette seconde voie qui a été retenue pour
+\csbag.
 
 Ces bonnes pratiques, issues de la littérature, fournissent le cadre théorique
 sur lequel s'appuie la suite du rapport. Le chapitre suivant confronte cet état

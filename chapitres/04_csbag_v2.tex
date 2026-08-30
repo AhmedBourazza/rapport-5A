@@ -428,14 +428,17 @@ par thème métier, chaque thème indiquant le lot dont il est issu
     \midrule
     Consultation et recherche --- barre de recherche, filtre d'équipe, page « Tout voir », indicateurs de chargement & 1 \\
     Cycle de vie des applications --- équipes multiples, fonction des référents, ordre d'affichage, archivage & 1--2 \\
-    Traçabilité des livraisons --- historique, document et numéro de mise en production & 1--2 \\
-    Ressources sensibles --- comptes de service, certificats, empreinte, alertes d'expiration & 1--2--3 \\
+    Traçabilité des livraisons --- historique par module, document et numéro de mise en production, fonctionnel associé & 1--2 \\
+    Ressources sensibles --- page des comptes de service, suivi et rappel mensuel des expirations, empreinte des certificats avec validation de format, confirmation avant suppression, alertes pour Dali et Elastik & 1--2--3 \\
     Administration des référentiels --- huit écrans de gestion & 3 \\
     Auditabilité --- historique des actions utilisateur & 3 \\
-    Taxonomies --- marquage et filtrage des modules & 3 \\
+    Taxonomies --- indicateur d'intégration au niveau du module, exploitable comme critère de filtrage & 3 \\
     \bottomrule
   \end{tabularx}
 \end{table}
+
+Quatre de ces thèmes ont soulevé des difficultés de conception qui méritent
+d'être détaillées.
 
 \paragraph{Consultation et recherche.}
 La page d'accueil a été dotée d'une barre de recherche et d'un filtre d'équipe
@@ -463,24 +466,6 @@ la modification d'une application archivée a été implémentée non seulement 
 l'interface, mais également côté serveur. Un contrôle purement client aurait pu
 être contourné par un appel direct à l'interface de programmation.
 
-\paragraph{Traçabilité des livraisons.}
-Un historique de livraison a été créé pour chaque module, alimenté par la
-reprise de la donnée existante « date de dernière livraison ». Il a ensuite été
-complété des informations attendues par le service~: document de mise en
-production, numéro de mise en production et fonctionnel associé. Ces champs
-libres, potentiellement longs, ont nécessité un travail spécifique de validation
-de longueur et d'affichage.
-
-\paragraph{Ressources sensibles.}
-Une page dédiée aux comptes de service a été créée, assortie du suivi de leur
-date d'expiration et de leur intégration au courriel de rappel envoyé en début
-de mois. Côté certificats, une confirmation explicite est désormais demandée
-avant toute suppression, et l'empreinte (\textit{thumbprint}) a été
-ajoutée au modèle, avec validation de son format, normalisation de sa saisie,
-puis colonne, filtre et recherche associés. Enfin, des alertes d'expiration ont
-été mises en place pour les applications Dali et Elastik, qui disposent de
-tables spécifiques.
-
 \paragraph{Administration des référentiels.}
 La normalisation décrite en section~\ref{sec:normalisation} appelait sa
 contrepartie fonctionnelle~: sans écran de gestion, l'ajout d'une nouvelle
@@ -501,11 +486,6 @@ aurait donc produit un flot d'événements illisible. J'ai résolu ce point par 
 mécanisme de corrélation automatique qui regroupe les écritures
 appartenant à une même action, complété par un affichage hiérarchisé présentant
 l'action métier au premier niveau et le détail des modifications au second.
-
-\paragraph{Taxonomies.}
-Un indicateur d'intégration des taxonomies a été ajouté au niveau du module,
-visible dans les pages de détail et de synthèse, et exploitable comme critère de
-filtrage.
 
 \subsection{Qualité, sécurité et industrialisation}
 \label{sec:qualite}

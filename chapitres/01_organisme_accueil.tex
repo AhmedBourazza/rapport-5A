@@ -132,34 +132,9 @@ décentralisé~: fournir un socle applicatif commun à des centaines d'entités
 autonomes suppose des solutions robustes, sécurisées et adaptables. VESI
 dispose d'une implantation notable au Mans, où s'est déroulé mon stage. Elle
 regroupe plusieurs directions spécialisées, parmi lesquelles la direction
-\textbf{Custom Applications}, qui m'a accueilli.
-
-\begin{figure}[H]
-  \centering
-  \begin{tikzpicture}[
-    font=\footnotesize,
-    vesi/.style={rectangle, rounded corners, draw=vinciblue, very thick,
-      fill=vinciblue, text=white, minimum width=3cm, minimum height=0.8cm,
-      align=center},
-    dir/.style={rectangle, rounded corners, draw=gray, thick, fill=grisclair,
-      minimum width=2.7cm, minimum height=0.7cm, align=center},
-    dirhi/.style={rectangle, rounded corners, draw=vincired, very thick,
-      fill=vinciblue!10, minimum width=2.7cm, minimum height=0.7cm, align=center},
-    lien/.style={-, draw=gray, thick}
-  ]
-    \node[vesi] (vesi) {VESI};
-    \node[dir, below=1.1cm of vesi] (ca) {Custom\\Applications};
-    \node[dirhi] at (ca) (cahi) {Custom\\Applications};
-    \node[dir, left=1.1cm of ca] (d1) {Autres\\directions};
-    \node[dir, right=1.1cm of ca] (d2) {Autres\\directions};
-    \draw[lien] (vesi) -- (cahi);
-    \draw[lien] (vesi) -- (d1);
-    \draw[lien] (vesi) -- (d2);
-  \end{tikzpicture}
-  \caption{Positionnement de la direction Custom Applications au sein de VESI
-    (schéma de structure, sans nominatif).}
-  \label{fig:vesi}
-\end{figure}
+\textbf{Custom Applications}, qui m'a accueilli. La
+figure~\ref{fig:org-vesi}, en fin de chapitre, restitue l'ensemble de cette
+chaîne organisationnelle.
 
 \section{La direction Custom Applications}
 \label{sec:custom-apps}
@@ -187,34 +162,6 @@ chacun responsable d'un domaine applicatif~: \textbf{Web \& Mobile
 Applications}, \textbf{Collaborative Solutions}, \textbf{Payroll Solutions}
 et \textbf{HRIS}. J'ai été intégré au service Collaborative Solutions.
 
-\begin{figure}[H]
-  \centering
-  \begin{tikzpicture}[
-    font=\footnotesize,
-    dir/.style={rectangle, rounded corners, draw=vinciblue, very thick,
-      fill=vinciblue, text=white, minimum width=3.4cm, minimum height=0.8cm,
-      align=center},
-    serv/.style={rectangle, rounded corners, draw=gray, thick, fill=grisclair,
-      minimum width=2.5cm, minimum height=0.9cm, align=center},
-    servhi/.style={rectangle, rounded corners, draw=vincired, very thick,
-      fill=vinciblue!10, minimum width=2.5cm, minimum height=0.9cm, align=center},
-    lien/.style={-, draw=gray, thick}
-  ]
-    \node[dir] (ca) {Direction Custom Applications};
-    \node[serv, below=1.2cm of ca, xshift=-4.05cm] (s1) {Web \& Mobile\\Applications};
-    \node[servhi, right=0.35cm of s1] (s2) {Collaborative\\Solutions};
-    \node[serv, right=0.35cm of s2] (s3) {Payroll\\Solutions};
-    \node[serv, right=0.35cm of s3] (s4) {HRIS};
-    \draw[lien] (ca) -- (s1);
-    \draw[lien] (ca) -- (s2);
-    \draw[lien] (ca) -- (s3);
-    \draw[lien] (ca) -- (s4);
-  \end{tikzpicture}
-  \caption{Les quatre services de la direction Custom Applications. Le service
-    d'accueil, Collaborative Solutions, est mis en évidence.}
-  \label{fig:custom-apps}
-\end{figure}
-
 \section{Le service Collaborative Solutions}
 \label{sec:collab-solutions}
 
@@ -238,39 +185,53 @@ C\#/.NET, Angular et React, appuyé sur SharePoint Online et l'API
 Microsoft~Graph.
 
 C'est au sein de l'équipe \textbf{Group Collaborative Solutions} que s'est
-déroulé mon stage. Mes missions, détaillées dans les chapitres suivants, se
-sont inscrites dans ce périmètre --- au premier rang desquelles la refonte de
-l'application \csbag.
+déroulé mon stage, plus précisément dans le squad M365, l'un des deux squads
+qui la composent avec le squad MyVIEW. Mes missions, détaillées dans les
+chapitres suivants, se sont inscrites dans ce périmètre --- au premier rang
+desquelles la refonte de l'application \csbag. La figure~\ref{fig:org-vesi}
+récapitule l'ensemble de la chaîne organisationnelle, de VESI jusqu'au squad
+d'accueil.
 
 \begin{figure}[H]
   \centering
   \begin{tikzpicture}[
-    font=\footnotesize,
-    serv/.style={rectangle, rounded corners, draw=vinciblue, very thick,
-      fill=vinciblue, text=white, minimum width=3.4cm, minimum height=0.8cm,
+    font=\scriptsize,
+    racine/.style={rectangle, rounded corners=2pt, draw=vinciblue, very thick,
+      fill=vinciblue, text=white, minimum width=2.6cm, minimum height=0.7cm,
       align=center},
-    eq/.style={rectangle, rounded corners, draw=vinciblue, thick,
-      fill=vinciblue!10, minimum width=3.6cm, minimum height=0.8cm, align=center},
-    peri/.style={rectangle, rounded corners, draw=gray, thick, fill=grisclair,
-      minimum width=3.6cm, minimum height=1.1cm, align=center, font=\scriptsize},
+    boite/.style={rectangle, rounded corners=2pt, draw=gray, thick,
+      fill=grisclair, minimum height=0.8cm, align=center, inner sep=3pt},
+    hi/.style={rectangle, rounded corners=2pt, draw=vincired, very thick,
+      fill=vinciblue!10, minimum height=0.8cm, align=center, inner sep=3pt},
     lien/.style={-, draw=gray, thick}
   ]
-    \node[serv] (svc) {Service Collaborative Solutions};
-    \node[eq, below=1.1cm of svc, xshift=-2.2cm] (g) {Group\\Collaborative Solutions};
-    \node[eq, below=1.1cm of svc, xshift=2.2cm] (bu) {BU\\Collaborative Solutions};
-    \draw[lien] (svc) -- (g);
-    \draw[lien] (svc) -- (bu);
-    \node[peri, below=0.6cm of g] (gp) {Périmètre Groupe~:\\MyVIEW, Connect,\\espaces collaboratifs};
-    \node[peri, below=0.6cm of bu] (bup) {Périmètre Business Unit~:\\DPF, migrations M365\\(OneDrive, SharePoint, Teams)};
-    \draw[lien] (g) -- (gp);
-    \draw[lien] (bu) -- (bup);
-    \begin{scope}[on background layer]
-      \node[draw=vincired, thick, rounded corners, fit=(g)(gp), inner sep=4pt] {};
-    \end{scope}
+    \node[racine] (vesi) at (-2.5,0) {VESI};
+
+    \node[hi, text width=2.2cm] (ca) at (-2.5,-1.5) {Direction\\Custom Applications};
+    \node[boite, text width=2.2cm] (autres) at (1.6,-1.5) {Autres\\directions};
+
+    \node[boite, text width=2cm] (s1) at (-6.7,-3.3) {Web \& Mobile\\Applications};
+    \node[hi, text width=2cm]    (s2) at (-3.9,-3.3) {Collaborative\\Solutions};
+    \node[boite, text width=2cm] (s3) at (-1.1,-3.3) {Payroll\\Solutions};
+    \node[boite, text width=2cm] (s4) at (1.7,-3.3)  {HRIS};
+
+    \node[hi, text width=2.9cm]    (grp) at (-5.7,-5.1) {Group\\Collaborative Solutions};
+    \node[boite, text width=2.9cm] (bu)  at (-2.1,-5.1) {BU\\Collaborative Solutions};
+
+    \node[hi, text width=2.1cm]    (m365) at (-7.2,-6.8) {Squad\\M365};
+    \node[boite, text width=2.1cm] (myv)  at (-4.2,-6.8) {Squad\\MyVIEW};
+
+    \draw[lien] (vesi) -- (ca);
+    \draw[lien] (vesi) -| (autres);
+    \foreach \s in {s1,s2,s3,s4} \draw[lien] (ca.south) -- (\s.north);
+    \draw[lien] (s2.south) -- (grp.north);
+    \draw[lien] (s2.south) -- (bu.north);
+    \draw[lien] (grp.south) -- (m365.north);
+    \draw[lien] (grp.south) -- (myv.north);
   \end{tikzpicture}
-  \caption{Les deux équipes du service Collaborative Solutions et leurs
-    périmètres applicatifs. L'équipe d'accueil est encadrée en rouge.}
-  \label{fig:collab}
+  \caption{Chaîne organisationnelle de VESI au squad d'accueil. Les entités
+    encadrées en rouge situent le parcours menant au squad M365.}
+  \label{fig:org-vesi}
 \end{figure}
 
 \section{Responsabilité sociétale et environnementale (RSE)}
