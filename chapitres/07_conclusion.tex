@@ -7,5 +7,44 @@
 \addcontentsline{toc}{chapter}{Conclusion}
 \markboth{Conclusion}{Conclusion}
 
-% >>> À RÉDIGER <<<
-\textit{[Conclusion à rédiger.]}
+Ce projet de fin d'études avait pour objet la refonte de \csbag, l'outil
+d'inventaire du patrimoine applicatif de l'équipe Group Collaborative Solutions.
+La démarche suivie a reposé sur un principe constant~: analyser l'existant avant
+de le modifier. Le diagnostic mené en amont, appuyé sur des requêtes menées
+directement sur les données de production, a orienté l'ensemble des choix
+techniques qui ont suivi. Les développements ont ensuite été conduits de manière
+incrémentale, lot par lot, chaque livraison étant validée sur l'environnement de
+développement puis en recette avant sa mise en production, et chaque évolution
+de la base de données étant accompagnée de son script de retour arrière.
+
+Les trois lots de spécifications fonctionnelles ont été livrés et mis en
+production. Le socle technique a été remis à niveau, d'Angular~14 à Angular~20
+et de .NET~6 à .NET~10, ce qui replace l'application dans le périmètre du
+support éditeur. Le modèle de données a été normalisé par une série de
+migrations qui ont substitué des tables de référence aux champs de saisie libre,
+condition sans laquelle les filtres et les alertes d'expiration ne pouvaient
+être fiables. L'application dispose désormais d'un module d'administration de
+ses référentiels, d'un historique des actions utilisateur et d'un suivi étendu
+des ressources sensibles. En parallèle, l'archivage automatique d'Elium
+Sauvegarde a été rétabli et fiabilisé, et la panne silencieuse qui tronquait les
+rapports d'Access Report TTC~GO a été diagnostiquée puis corrigée.
+
+Plusieurs pistes restent ouvertes. La plus importante concerne la mise en place
+d'une couverture de tests automatisés côté serveur, aujourd'hui absente du
+projet, qui sécuriserait les évolutions futures d'une application dont le modèle
+de données a été profondément remanié. L'automatisation des déploiements entre
+les trois environnements constitue un second axe, les mises en production
+demeurant en grande partie manuelles. Enfin, la remise à niveau du socle appelle
+un suivi régulier des versions, faute de quoi la dette technique traitée cette
+année se reconstituera.
+
+Sur le plan personnel, cette expérience a mobilisé une autonomie que je n'avais
+pas eu l'occasion d'exercer à cette échelle, puisque j'ai porté seul la quasi
+totalité des développements. Elle a également sollicité une capacité d'analyse
+et d'argumentation~: identifier un problème absent du cahier des charges ne
+suffisait pas, il fallait le documenter et le formuler assez précisément pour
+que son traitement soit validé par le chef de projet. Le travail sur les
+incidents en production a enfin demandé une gestion des priorités et une rigueur
+particulières, une intervention sur un système utilisé quotidiennement ne
+laissant pas la même marge d'erreur qu'un développement planifié.
+
