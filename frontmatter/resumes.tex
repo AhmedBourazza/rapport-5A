@@ -5,89 +5,130 @@
 \addcontentsline{toc}{chapter}{Résumé / Abstract}
 \markboth{Résumé}{Résumé}
 
-Ce rapport rend compte d'un stage de fin d'études effectué au sein de VINCI
-Energies Systèmes d'Information (VESI), dans l'équipe Collaborative Solutions.
-Intégré au squad M365, j'ai exercé le rôle d'analyste développeur .NET~/
-Angular dans un cadre agile structuré~: dailys quotidiens, points de squad
-hebdomadaires, points techniques avec le référent technique pour valider les
-choix de conception, et suivi des tâches dans Wrike. Au-delà de mes propres
-développements, j'ai participé aux réunions avec les maîtrises d'ouvrage pour
-comprendre le fonctionnement des autres projets du service, aux mises en
-production de renouvellement de secrets et de certificats, et à la résolution
-de problèmes remontés par les utilisateurs.
+Ce stage de fin d'études s'est déroulé au sein de VINCI Energies Systèmes
+d'Information (VESI), entité qui fournit les services informatiques internes du
+groupe VINCI Energies. J'ai été intégré au squad M365 de l'équipe Group
+Collaborative Solutions, rattachée à la direction Custom Applications, en tant
+qu'analyste développeur .NET~/~Angular. Le service développe et maintient des
+applications web métier construites autour de l'écosystème Microsoft~365 et de
+la plateforme Azure.
 
-Le projet principal a porté sur la refonte de CS~BAG, une application web
-interne d'inventaire du patrimoine applicatif du service, développée en Angular
-et ASP.NET Core avec une base SQL~Server hébergée sur Azure. Avant chaque
-développement, une phase d'analyse de l'existant a permis de diagnostiquer trois
-formes de dette technique~: un socle obsolète (Angular~14, .NET~6), un modèle de
-données dénormalisé source de doublons et d'alertes d'expiration non fiables, et
-une ergonomie limitée. Ce diagnostic a conduit à proposer, au-delà des trois
-lots de spécifications fonctionnelles prévus, deux chantiers supplémentaires~:
-la normalisation de la base de données et la mise en conformité des interfaces de
-programmation avec les principes REST. Le processus de développement s'est appuyé
-sur un workflow structuré~: analyse des spécifications, conception, réalisation,
-revue technique et livraison incrémentale, avec des allers-retours réguliers
-entre l'analyse fonctionnelle et la mise en œuvre.
+L'application principale dont j'avais la charge, CS~BAG, est l'outil interne
+d'inventaire du patrimoine applicatif du service~: elle recense les
+applications, leurs modules et l'ensemble des ressources techniques associées
+(certificats, comptes de service, bases de données, ressources Azure, serveurs
+d'exploitation). Sa fonction la plus critique est l'envoi mensuel d'alertes
+d'expiration aux référents concernés. Or, avant la refonte, l'outil souffrait
+de trois formes de dette technique~: un socle obsolète sorti du support actif,
+un modèle de données dénormalisé qui engendrait des doublons et rendait les
+alertes d'expiration structurellement non fiables, et une ergonomie limitée.
+L'objectif du stage était de mener la version~2 de cette application, découpée
+en trois lots de spécifications fonctionnelles à concevoir, développer et
+livrer de manière incrémentale.
 
-Les travaux ont abouti à la migration du socle vers Angular~20 et .NET~10, à la
-normalisation de sept tables de référence accompagnée de 26 scripts de migration
-versionnés avec leurs rollbacks, et à la livraison de l'ensemble des
-fonctionnalités demandées~: recherche et filtrage, archivage des projets,
-historique des actions, gestion des empreintes de certificats, administration des
-référentiels et taxonomies. Deux missions complémentaires ont été menées en
-parallèle~: la fiabilisation de l'application Elium Sauvegarde et la correction
-d'une panne silencieuse sur Access Report TTC~GO. Ce stage m'a permis de
-développer une vision complète du cycle de vie d'une application en entreprise,
-de l'analyse du besoin jusqu'à l'exploitation en production, et d'acquérir une
-autonomie technique et méthodologique qui va au-delà de la seule réalisation de
-code.
+Avant d'écrire la moindre ligne de code, j'ai mené une analyse approfondie de
+l'existant~: inventaire des tables, requêtage des données réelles pour mesurer
+la dégradation, puis évaluation de l'impact des doublons sur les alertes
+d'expiration. Ce diagnostic m'a conduit à proposer à l'équipe, au-delà du
+périmètre initial, deux chantiers supplémentaires~: la normalisation de la base
+de données et la mise en conformité des interfaces de programmation avec les
+conventions REST. Ces deux propositions ont été validées par le chef de projet
+et ont structuré une part importante du travail réalisé. Chaque fonctionnalité a
+ensuite suivi un processus rigoureux~: cadrage du besoin avec l'analyste
+fonctionnelle, conception technique, développement, déploiement sur les
+environnements Azure de développement puis de recette, cycles de
+correction--validation avec l'analyste, et enfin mise en production suivie
+d'une phase de supervision.
+
+Les travaux ont abouti à la migration du socle technique vers Angular~20 et
+.NET~10, à la normalisation de sept tables de référence accompagnée de 26
+scripts de migration versionnés avec leurs rollbacks et scripts de contrôle
+préalable, et à la livraison de l'ensemble des fonctionnalités demandées~:
+recherche et filtrage, archivage, historique des actions, gestion des
+certificats, administration des référentiels et taxonomies. Deux missions
+complémentaires ont été menées en parallèle. La fiabilisation de l'application
+Elium Sauvegarde, dont j'ai isolé les erreurs par article, créé un mécanisme de
+création récursive de dossiers SharePoint et refondu l'observabilité. La
+correction d'une panne silencieuse sur Access Report TTC~GO, causée par un
+certificat d'authentification recherché dans le mauvais magasin.
+
+Le stage s'est inscrit dans un cadre agile structuré~: daily quotidien, points
+d'équipe et de squad hebdomadaires, revue technique avec le référent chaque
+vendredi, suivi dans Wrike. Au-delà de mes propres développements, j'ai
+participé aux réunions avec les maîtrises d'ouvrage d'autres projets du
+service, aux mises en production de renouvellement de secrets et de certificats,
+et à la résolution de problèmes remontés par les utilisateurs. Cette immersion
+dans l'ensemble du cycle de vie des applications --- de l'analyse du besoin
+jusqu'à l'exploitation en production --- m'a permis de développer une autonomie
+technique et méthodologique concrète, en particulier la capacité à formuler des
+problèmes que le besoin exprimé ne dit pas et à défendre des solutions
+structurantes auprès de l'équipe.
 
 \vspace{0.5em}
-\noindent\textbf{Mots-clés :} CS~BAG, ASP.NET Core, Angular, SQL~Server,
-normalisation, migration, Azure, dette technique, méthode agile, inventaire
-applicatif
+\noindent\textbf{Mots-clés :} inventaire applicatif, dette technique,
+normalisation, migration, ASP.NET Core, Angular, SQL~Server, Azure, méthode
+agile
 
 \newpage
 
 \chapter*{Abstract}
 \markboth{Abstract}{Abstract}
 
-This report describes a final-year engineering internship at VINCI Energies
-Systèmes d'Information (VESI), within the Collaborative Solutions team. As part
-of the M365 squad, I worked as a .NET~/Angular analyst developer in a
-structured agile environment: daily stand-ups, weekly squad meetings, weekly
-technical reviews with the technical lead to validate design decisions, and task
-tracking in Wrike. Beyond my own development work, I attended meetings with
-business owners to understand other projects across the department, took part in
-production deployments for secret and certificate renewals, and addressed issues
-reported by end users.
+This final-year engineering internship took place at VINCI Energies Systèmes
+d'Information (VESI), the internal IT services provider of the VINCI Energies
+group. I joined the M365 squad within the Group Collaborative Solutions team,
+part of the Custom Applications department, as a .NET~/~Angular analyst
+developer. The team builds and maintains business web applications centred on
+the Microsoft~365 ecosystem and the Azure platform.
 
-The main project was the redesign of CS~BAG, an internal web application used to
-inventory the team's application portfolio, built with Angular and ASP.NET Core
-backed by a SQL~Server database hosted on Azure. Before each development phase,
-an analysis of the existing system identified three forms of technical debt: an
-outdated technology stack (Angular~14, .NET~6), a denormalized data model
-causing duplicates and unreliable certificate expiration alerts, and a limited
-user interface. This analysis led to proposing two additional work streams
-beyond the three planned functional specification lots: database normalization
-and REST API alignment. Development followed a structured workflow: specification
-analysis, design, implementation, technical review and incremental delivery,
-with regular iterations between functional analysis and implementation.
+The main application I was responsible for, CS~BAG, is the team's internal tool
+for inventorying its application portfolio: it catalogues applications, their
+modules and all associated technical resources (certificates, service accounts,
+databases, Azure resources, hosting servers). Its most critical function is a
+monthly expiration alert sent to the relevant contacts. However, prior to the
+redesign the tool suffered from three forms of technical debt: an end-of-support
+technology stack, a denormalized data model that produced duplicates and made
+expiration alerts structurally unreliable, and a limited user interface. The
+objective of the internship was to deliver version~2 of this application,
+divided into three functional specification lots to be designed, developed and
+released incrementally.
 
-The outcome includes the migration of the stack to Angular~20 and .NET~10, the
-normalization of seven reference tables supported by 26 versioned migration
-scripts with rollbacks, and the delivery of all requested features: search and
-filtering, project archiving, action history, certificate thumbprint management,
-reference data administration and taxonomies. Two additional assignments were
-conducted in parallel: reliability improvements to the Elium Sauvegarde
-application and the resolution of a silent failure in Access Report TTC~GO.
-This internship provided a comprehensive understanding of an application's full
-lifecycle in an enterprise setting, from requirements analysis to production
-operations, and fostered a level of technical and methodological autonomy that
-extends well beyond writing code.
+Before writing any code, I carried out a thorough analysis of the existing
+system: auditing the database tables, querying production data to quantify
+degradation, and assessing the impact of duplicates on expiration alerts. This
+diagnosis led me to propose to the team, beyond the initial scope, two
+additional work streams: database normalization and alignment of the API with
+REST conventions. Both proposals were approved by the project manager and shaped
+a significant part of the work performed. Each feature then followed a rigorous
+process: requirements discussion with the functional analyst, technical design,
+development, deployment to the Azure development and then staging environments,
+correction--validation cycles with the analyst, and finally production release
+followed by monitoring.
+
+The work resulted in the migration of the technology stack to Angular~20 and
+.NET~10, the normalization of seven reference tables supported by 26 versioned
+migration scripts with rollbacks and pre-flight checks, and the delivery of all
+requested features: search and filtering, archiving, action history, certificate
+management, reference data administration and taxonomies. Two additional
+assignments were carried out in parallel. I improved the reliability of the
+Elium Sauvegarde application by isolating errors per article, building a
+recursive SharePoint folder creation mechanism and overhauling its
+observability. I also fixed a silent failure in Access Report TTC~GO caused by
+an authentication certificate being looked up in the wrong certificate store.
+
+The internship was embedded in a structured agile framework: daily stand-ups,
+weekly team and squad meetings, a technical review with the technical lead every
+Friday, and task tracking in Wrike. Beyond my own development work, I attended
+meetings with business owners of other projects across the department,
+participated in production deployments for secret and certificate renewals, and
+resolved issues reported by end users. This immersion across the full
+application lifecycle --- from requirements analysis through to production
+operations --- enabled me to develop concrete technical and methodological
+autonomy, in particular the ability to identify problems that the stated
+requirements do not articulate and to advocate for structural solutions within
+the team.
 
 \vspace{0.5em}
-\noindent\textbf{Keywords:} CS~BAG, ASP.NET Core, Angular, SQL~Server,
-normalization, migration, Azure, technical debt, agile methodology, application
-inventory
+\noindent\textbf{Keywords:} application inventory, technical debt,
+normalization, migration, ASP.NET Core, Angular, SQL~Server, Azure, agile
+methodology
