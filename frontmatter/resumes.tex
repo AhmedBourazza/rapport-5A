@@ -1,24 +1,64 @@
 % =====================================================================
 %  RÉSUMÉ (FR) + ABSTRACT (EN) + MOTS-CLÉS
-%  À rédiger EN DERNIER, une fois le corps stabilisé.
-%  Rappel ENSIM : motivations, contexte, objectifs, principaux
-%  résultats et bénéfices ; ~20 lignes max, pas un plan simplifié.
 % =====================================================================
 \chapter*{Résumé}
 \addcontentsline{toc}{chapter}{Résumé / Abstract}
 \markboth{Résumé}{Résumé}
 
-% >>> À COMPLÉTER EN FIN DE RÉDACTION <<<
-\textit{[Résumé en français à rédiger une fois le corps du rapport terminé.]}
+Ce rapport présente les travaux réalisés au cours d'un stage de fin d'études au
+sein de VINCI Energies Systèmes d'Information (VESI), dans l'équipe
+Collaborative Solutions. La mission principale a porté sur la refonte de
+CS~BAG, une application web interne d'inventaire du patrimoine applicatif du
+service, développée en Angular et ASP.NET Core avec une base SQL~Server
+hébergée sur Azure.
+
+L'application existante souffrait de trois formes de dette~: un socle technique
+obsolète (Angular~14, .NET~6), un modèle de données dénormalisé source de
+doublons et d'alertes d'expiration non fiables, et une ergonomie limitée.
+Un diagnostic mené en amont du développement a conduit à proposer, au-delà des
+trois lots de spécifications fonctionnelles prévus, deux chantiers
+supplémentaires~: la normalisation de la base de données et la mise en
+conformité des interfaces de programmation avec les principes REST.
+
+Les travaux ont abouti à la migration du socle vers Angular~20 et .NET~10, à la
+normalisation de sept tables de référence accompagnée de 26 scripts de migration
+versionnés, et à la livraison de l'ensemble des fonctionnalités demandées~:
+recherche et filtrage, archivage des projets, historique des actions, gestion des
+empreintes de certificats, administration des référentiels et taxonomies.
+Deux missions complémentaires ont été menées en parallèle~: la fiabilisation de
+l'application Elium Sauvegarde et la correction d'une panne silencieuse sur
+Access Report TTC~GO.
 
 \vspace{0.5em}
-\noindent\textbf{Mots-clés :} % >>> ex. : CS BAG, ASP.NET Core, Angular, SQL Server, migration, Azure <<<
+\noindent\textbf{Mots-clés :} CS~BAG, ASP.NET Core, Angular, SQL~Server,
+normalisation, migration, Azure, dette technique, inventaire applicatif
 
 \vspace{2em}
 
 \section*{Abstract}
-% >>> TO BE COMPLETED <<<
-\textit{[English abstract to be written once the report body is finalized.]}
+
+This report describes the work carried out during a final-year engineering
+internship at VINCI Energies Systèmes d'Information (VESI), within the
+Collaborative Solutions team. The main assignment focused on the redesign of
+CS~BAG, an internal web application used to inventory the team's application
+portfolio, built with Angular and ASP.NET Core backed by a SQL~Server database
+hosted on Azure.
+
+The existing application suffered from three forms of technical debt: an
+outdated technology stack (Angular~14, .NET~6), a denormalized data model
+causing duplicates and unreliable certificate expiration alerts, and a limited
+user interface. An upfront analysis led to proposing two additional work
+streams beyond the three planned functional specification lots: database
+normalization and REST API alignment.
+
+The outcome includes the migration of the stack to Angular~20 and .NET~10, the
+normalization of seven reference tables supported by 26 versioned migration
+scripts, and the delivery of all requested features: search and filtering,
+project archiving, action history, certificate thumbprint management,
+reference data administration and taxonomies. Two additional assignments were
+conducted in parallel: reliability improvements to the Elium Sauvegarde
+application and the resolution of a silent failure in Access Report TTC~GO.
 
 \vspace{0.5em}
-\noindent\textbf{Keywords:} % >>> e.g. CS BAG, ASP.NET Core, Angular, SQL Server, migration, Azure <<<
+\noindent\textbf{Keywords:} CS~BAG, ASP.NET Core, Angular, SQL~Server,
+normalization, migration, Azure, technical debt, application inventory
