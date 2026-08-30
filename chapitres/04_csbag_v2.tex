@@ -393,45 +393,19 @@ Sept ensembles de données ont été traités (tableau~\ref{tab:normalisation}).
 \end{table}
 
 Chaque normalisation a été menée de bout en bout~: script de migration SQL,
-entité Entity Framework, profil de correspondance AutoMapper, point d'entrée de
-l'interface de programmation et écran Angular. Le script de chaque migration
-suit un patron en quatre étapes~: sauvegarde des tables concernées, fusion des
-alias sémantiques (par exemple « AzureFunctions » et « Fonctions Azure »
-deviennent « Azure Functions »), report des colonnes de valeur vers la table
-d'association, puis ajout de la contrainte d'unicité. Un point technique mérite
-d'être mentionné~: l'ajout de colonnes puis leur mise à jour dans un même lot
-SQL provoque une erreur de compilation différée (\texttt{Invalid column name}),
-car SQL~Server analyse l'ensemble du lot avant de l'exécuter. J'ai contourné
-ce problème par l'usage de \texttt{EXEC()} pour différer la compilation des
-instructions de mise à jour.
+adaptation de l'entité Entity Framework et de son mapping, point d'entrée REST
+et écran Angular. Une difficulté est apparue lors de la migration~V019~: les
+données existantes contenaient des doublons qui empêchaient la création des clés
+primaires. J'ai dû nettoyer ces doublons avant d'appliquer la contrainte, ce
+qui a nécessité un travail de reprise de données sur cinq tables d'association.
 
-Une difficulté plus sérieuse est
-apparue lors de la migration~V019~: la reprise des données existantes faisait
-apparaître des doublons qui empêchaient la création des clés primaires. Pour
-chaque table d'association, j'ai utilisé une expression de table commune
-(\texttt{ROW\_NUMBER() OVER (PARTITION BY ...)}) afin de ne conserver que la
-ligne portant l'ordre le plus élevé, puis recalculé les ordres consécutifs par
-module. Ce nettoyage a porté sur cinq tables d'association correspondant aux
-référentiels normalisés.
-
-Cette intervention portant sur des données de production, la maîtrise du risque
-était primordiale. J'ai mis en place une gouvernance des migrations
-articulée autour de trois principes. Premièrement, chaque migration est
-versionnée (\texttt{V001} à \texttt{V026}) et rejouée dans le même
-ordre sur les trois environnements. Deuxièmement, chaque migration dispose d'un
-script de retour arrière dédié, qui n'annule que sa propre
-modification~; cette granularité, obtenue après reprise des premiers scripts
-qui annulaient trop largement, permet de revenir en arrière d'un seul cran.
-Troisièmement, j'ai développé trois scripts de contrôle préalable, en lecture
-seule, exécutables en production pendant l'activité~: le premier vérifie les
-conditions bloquantes des migrations V011 à V017 (valeurs nulles ou vides qui
-feraient échouer un \texttt{ALTER COLUMN NOT NULL} ou une contrainte d'unicité)
-et rend un verdict GO / NO~GO~; le deuxième liste les lignes que les migrations
-supprimeront, pour validation humaine avant exécution~; le troisième, le plus
-complet, couvre V001 à V024 et détecte quatre familles de problèmes que les
-précédents ignoraient~: tables ou colonnes manquantes, objets déjà présents qui
-feraient échouer un \texttt{ALTER} non idempotent, valeurs trop longues pour
-les conversions de type, et index posés sur les colonnes à convertir.
+Cette intervention portant sur des données de production, j'ai mis en place une
+gouvernance des migrations reposant sur trois principes~: des scripts versionnés
+(\texttt{V001} à \texttt{V026}) rejoués dans le même ordre sur les trois
+environnements~; un script de retour arrière par migration, qui n'annule que sa
+propre modification~; et des scripts de contrôle préalable, en lecture seule,
+exécutables en production, qui rendent un verdict GO / NO~GO avant toute mise en
+production.
 
 \subsection{Enrichissement fonctionnel}
 \label{sec:fonctionnel}
