@@ -5,60 +5,88 @@
 \addcontentsline{toc}{chapter}{Résumé / Abstract}
 \markboth{Résumé}{Résumé}
 
-Ce rapport présente les travaux réalisés au cours d'un stage de fin d'études au
-sein de VINCI Energies Systèmes d'Information (VESI), dans l'équipe
-Collaborative Solutions. La mission principale a porté sur la refonte de
-CS~BAG, une application web interne d'inventaire du patrimoine applicatif du
-service, développée en Angular et ASP.NET Core avec une base SQL~Server
-hébergée sur Azure.
+Ce rapport rend compte d'un stage de fin d'études effectué au sein de VINCI
+Energies Systèmes d'Information (VESI), dans l'équipe Collaborative Solutions.
+Intégré au squad M365, j'ai exercé le rôle d'analyste développeur .NET~/
+Angular dans un cadre agile structuré~: dailys quotidiens, points de squad
+hebdomadaires, points techniques avec le référent technique pour valider les
+choix de conception, et suivi des tâches dans Wrike. Au-delà de mes propres
+développements, j'ai participé aux réunions avec les maîtrises d'ouvrage pour
+comprendre le fonctionnement des autres projets du service, aux mises en
+production de renouvellement de secrets et de certificats, et à la résolution
+de problèmes remontés par les utilisateurs.
 
-L'application existante souffrait de trois formes de dette~: un socle technique
-obsolète (Angular~14, .NET~6), un modèle de données dénormalisé source de
-doublons et d'alertes d'expiration non fiables, et une ergonomie limitée.
-Un diagnostic mené en amont du développement a conduit à proposer, au-delà des
-trois lots de spécifications fonctionnelles prévus, deux chantiers
-supplémentaires~: la normalisation de la base de données et la mise en
-conformité des interfaces de programmation avec les principes REST.
+Le projet principal a porté sur la refonte de CS~BAG, une application web
+interne d'inventaire du patrimoine applicatif du service, développée en Angular
+et ASP.NET Core avec une base SQL~Server hébergée sur Azure. Avant chaque
+développement, une phase d'analyse de l'existant a permis de diagnostiquer trois
+formes de dette technique~: un socle obsolète (Angular~14, .NET~6), un modèle de
+données dénormalisé source de doublons et d'alertes d'expiration non fiables, et
+une ergonomie limitée. Ce diagnostic a conduit à proposer, au-delà des trois
+lots de spécifications fonctionnelles prévus, deux chantiers supplémentaires~:
+la normalisation de la base de données et la mise en conformité des interfaces de
+programmation avec les principes REST. Le processus de développement s'est appuyé
+sur un workflow structuré~: analyse des spécifications, conception, réalisation,
+revue technique et livraison incrémentale, avec des allers-retours réguliers
+entre l'analyse fonctionnelle et la mise en œuvre.
 
 Les travaux ont abouti à la migration du socle vers Angular~20 et .NET~10, à la
 normalisation de sept tables de référence accompagnée de 26 scripts de migration
-versionnés, et à la livraison de l'ensemble des fonctionnalités demandées~:
-recherche et filtrage, archivage des projets, historique des actions, gestion des
-empreintes de certificats, administration des référentiels et taxonomies.
-Deux missions complémentaires ont été menées en parallèle~: la fiabilisation de
-l'application Elium Sauvegarde et la correction d'une panne silencieuse sur
-Access Report TTC~GO.
+versionnés avec leurs rollbacks, et à la livraison de l'ensemble des
+fonctionnalités demandées~: recherche et filtrage, archivage des projets,
+historique des actions, gestion des empreintes de certificats, administration des
+référentiels et taxonomies. Deux missions complémentaires ont été menées en
+parallèle~: la fiabilisation de l'application Elium Sauvegarde et la correction
+d'une panne silencieuse sur Access Report TTC~GO. Ce stage m'a permis de
+développer une vision complète du cycle de vie d'une application en entreprise,
+de l'analyse du besoin jusqu'à l'exploitation en production, et d'acquérir une
+autonomie technique et méthodologique qui va au-delà de la seule réalisation de
+code.
 
 \vspace{0.5em}
 \noindent\textbf{Mots-clés :} CS~BAG, ASP.NET Core, Angular, SQL~Server,
-normalisation, migration, Azure, dette technique, inventaire applicatif
+normalisation, migration, Azure, dette technique, méthode agile, inventaire
+applicatif
 
 \vspace{2em}
 
 \section*{Abstract}
 
-This report describes the work carried out during a final-year engineering
-internship at VINCI Energies Systèmes d'Information (VESI), within the
-Collaborative Solutions team. The main assignment focused on the redesign of
-CS~BAG, an internal web application used to inventory the team's application
-portfolio, built with Angular and ASP.NET Core backed by a SQL~Server database
-hosted on Azure.
+This report describes a final-year engineering internship at VINCI Energies
+Systèmes d'Information (VESI), within the Collaborative Solutions team. As part
+of the M365 squad, I worked as a .NET~/Angular analyst developer in a
+structured agile environment: daily stand-ups, weekly squad meetings, weekly
+technical reviews with the technical lead to validate design decisions, and task
+tracking in Wrike. Beyond my own development work, I attended meetings with
+business owners to understand other projects across the department, took part in
+production deployments for secret and certificate renewals, and addressed issues
+reported by end users.
 
-The existing application suffered from three forms of technical debt: an
+The main project was the redesign of CS~BAG, an internal web application used to
+inventory the team's application portfolio, built with Angular and ASP.NET Core
+backed by a SQL~Server database hosted on Azure. Before each development phase,
+an analysis of the existing system identified three forms of technical debt: an
 outdated technology stack (Angular~14, .NET~6), a denormalized data model
 causing duplicates and unreliable certificate expiration alerts, and a limited
-user interface. An upfront analysis led to proposing two additional work
-streams beyond the three planned functional specification lots: database
-normalization and REST API alignment.
+user interface. This analysis led to proposing two additional work streams
+beyond the three planned functional specification lots: database normalization
+and REST API alignment. Development followed a structured workflow: specification
+analysis, design, implementation, technical review and incremental delivery,
+with regular iterations between functional analysis and implementation.
 
 The outcome includes the migration of the stack to Angular~20 and .NET~10, the
 normalization of seven reference tables supported by 26 versioned migration
-scripts, and the delivery of all requested features: search and filtering,
-project archiving, action history, certificate thumbprint management,
+scripts with rollbacks, and the delivery of all requested features: search and
+filtering, project archiving, action history, certificate thumbprint management,
 reference data administration and taxonomies. Two additional assignments were
 conducted in parallel: reliability improvements to the Elium Sauvegarde
 application and the resolution of a silent failure in Access Report TTC~GO.
+This internship provided a comprehensive understanding of an application's full
+lifecycle in an enterprise setting, from requirements analysis to production
+operations, and fostered a level of technical and methodological autonomy that
+extends well beyond writing code.
 
 \vspace{0.5em}
 \noindent\textbf{Keywords:} CS~BAG, ASP.NET Core, Angular, SQL~Server,
-normalization, migration, Azure, technical debt, application inventory
+normalization, migration, Azure, technical debt, agile methodology, application
+inventory
