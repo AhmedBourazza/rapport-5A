@@ -1,16 +1,232 @@
 % =====================================================================
-%  CHAPITRE 6 - RECUL SUR LE STAGE  (~2 pages)
-%  Apports technique/humain, lien avec la formation ENSIM
-%  (atouts et lacunes).
+%  CHAPITRE 5 - RECUL SUR LE STAGE
 % =====================================================================
 \chapter{Recul sur le stage}
 \label{chap:recul}
 
+Après avoir détaillé les travaux réalisés, ce chapitre prend du recul sur ce que
+cette expérience m'a réellement apporté. Il ne revient pas sur les solutions
+techniques mises en \oe uvre, mais sur la manière dont ma façon de travailler a
+évolué, sur les compétences que j'ai construites et sur celles qu'il me reste à
+approfondir.
+
 \section{Apports techniques}
-% >>> À RÉDIGER <<<
+\label{sec:apports-techniques}
+
+L'apport le plus déterminant du stage tient moins aux technologies employées
+qu'à la nature du terrain sur lequel j'ai travaillé. Jusqu'ici, mes projets
+étaient conçus depuis une page blanche~: je définissais moi-même le modèle de
+données, l'architecture et les conventions, et le résultat était évalué à sa
+livraison. \csbag m'a placé dans la situation inverse. J'ai hérité d'une
+application en service, avec des données réelles saisies pendant plusieurs
+années, des choix antérieurs que je n'avais pas faits, et des utilisateurs qui
+continuaient à s'en servir pendant que je la modifiais. Cette contrainte change
+tout~: on ne peut plus supprimer une colonne parce qu'elle est mal nommée, ni
+restructurer une table sans se demander ce que deviennent les enregistrements
+existants. J'ai appris que sur un système en production, la question n'est
+jamais seulement « quelle est la bonne conception~? », mais « comment atteindre
+la bonne conception sans casser ce qui fonctionne~? ».
+
+Cette contrainte s'est manifestée avec le plus de force lors de la refonte du
+modèle de données. Je connaissais les formes normales en théorie~; j'ignorais ce
+que représente concrètement leur application sur des données déjà dégradées. La
+migration~V019 en a été l'illustration~: les doublons présents en base
+empêchaient la création des clés primaires, et il a fallu nettoyer avant de
+contraindre. Ce type de situation ne se rencontre pas dans un exercice
+académique, où les données sont propres par construction. J'en ai retiré une
+conviction durable~: la qualité d'un modèle de données ne se juge pas sur son
+schéma, mais sur ce qu'il rend possible ou impossible aux utilisateurs. Un champ
+de texte libre ne produit pas immédiatement de bug~; il produit, au bout de
+quelques années, un inventaire sur lequel plus aucun filtre n'est fiable. C'est
+également l'analyse en amont qui m'a le plus fait progresser~: prendre le temps
+de requêter les données réelles avant de coder m'a permis de formuler un
+problème que personne n'avait exprimé, et de le documenter suffisamment pour
+qu'il soit accepté.
+
+La migration du socle technique m'a appris une autre forme de rigueur. Le
+réflexe naturel aurait été de sauter directement d'Angular~14 à Angular~20~; le
+choix d'une progression palier par palier, plus long, m'a montré la valeur d'une
+méthode qui isole les causes de régression au lieu de les cumuler. Plus
+largement, j'ai découvert que la maintenance d'un socle n'est pas une tâche
+secondaire mais une condition de la sécurité de l'application, puisqu'une
+version sortie du support ne reçoit plus aucun correctif.
+
+Les interventions sur Elium Sauvegarde et Access Report TTC~GO ont
+considérablement fait évoluer ma manière de diagnostiquer un problème. Dans les
+deux cas, l'application ne produisait aucune erreur~: Elium échouait
+globalement à cause d'une anomalie sur un seul article, et Access Report livrait
+des rapports incomplets sans qu'aucune trace ne soit journalisée. J'ai appris à
+me méfier de l'absence de message d'erreur, à raisonner par élimination plutôt
+qu'à modifier le code au hasard, et surtout à ne pas m'arrêter au premier
+symptôme corrigé. Sur Access Report, la distinction entre le contournement mis
+en place pour débloquer rapidement l'exploitation et la correction de fond
+apportée ensuite à la bibliothèque partagée m'a fait comprendre qu'un correctif
+a une portée~: résoudre le problème pour soi ou le résoudre pour tous ceux qui
+utilisent le même composant ne demandent ni le même effort, ni le même niveau de
+précaution. C'est aussi sur ces missions que j'ai mesuré l'importance de
+l'observabilité~: un traitement qui ne dit rien de ce qu'il a fait est un
+traitement que personne ne peut valider.
+
+L'exigence de qualité imposée par la chaîne d'intégration continue a été, au
+début, difficile à accepter. Voir une livraison bloquée pour une complexité
+cognitive excessive ou pour une description manquante sur un tableau HTML m'a
+d'abord semblé formaliste. J'ai progressivement compris que ces règles rendent
+explicite une exigence que je n'appliquais jusqu'ici qu'au jugé, et qu'un code
+qui passe ces contrôles est un code qu'un autre développeur pourra reprendre.
+De la même façon, la découverte de la gestion des secrets et des mécanismes
+d'autorisation m'a fait passer d'une conception défensive de la sécurité, où
+l'on protège l'interface, à une conception plus juste, où l'on considère que
+l'interface peut être contournée et que le contrôle doit exister côté serveur.
+
+Sur le plan de l'autonomie, l'évolution a été nette. Les premières semaines,
+je validais chaque orientation avant de l'engager. À partir du deuxième lot,
+j'arrivais aux points techniques avec une proposition argumentée et ses
+alternatives, et la discussion portait sur le choix plutôt que sur la direction
+à prendre. Cette autonomie reste toutefois inégale selon les domaines~: je suis
+aujourd'hui à l'aise sur la conception applicative et la donnée, nettement
+moins sur les aspects d'exploitation, où j'ai surtout observé et exécuté des
+procédures existantes.
 
 \section{Apports humains et organisationnels}
-% >>> À RÉDIGER <<<
+\label{sec:apports-humains}
+
+Avant ce stage, ma représentation du travail en équipe reposait sur les projets
+tuteurés~: un groupe d'étudiants au même niveau, un objectif commun, et une
+répartition des tâches décidée entre pairs. L'équipe que j'ai rejointe
+fonctionne autrement. Chacun y occupe un rôle défini, avec des attentes et une
+temporalité propres, et une part importante du travail consiste à s'articuler
+avec les autres plutôt qu'à avancer seul. J'ai dû apprendre à identifier le bon
+interlocuteur selon la question~: le chef de projet pour un arbitrage de
+périmètre, le référent technique pour une orientation de conception, l'analyste
+fonctionnelle pour lever une ambiguïté dans une spécification.
+
+La relation avec l'analyste fonctionnelle a été particulièrement formatrice.
+Recevoir un cahier de retours documenté après chaque mise en recette m'a
+d'abord été inconfortable~: un écran que je considérais comme terminé revenait
+avec une liste d'anomalies. J'ai compris assez vite que ces retours ne portaient
+pas un jugement sur mon travail, mais sur l'écart entre ce que j'avais compris
+du besoin et ce qui était attendu. Cette prise de conscience a modifié ma façon
+de travailler en amont~: j'ai pris l'habitude de reformuler les points ambigus
+dès la réunion de cadrage plutôt que de les interpréter, ce qui a réduit le
+nombre d'allers-retours au fil des lots.
+
+Le moment le plus structurant du stage a été celui où j'ai présenté à l'équipe
+mon diagnostic de l'existant et proposé d'élargir le périmètre de la mission.
+Il ne suffisait pas d'avoir raison techniquement~: il fallait démontrer que ces
+chantiers, absents des spécifications, conditionnaient la valeur des
+fonctionnalités demandées, et que le coût supplémentaire était justifié. J'ai
+appris à formuler un problème technique dans des termes compréhensibles par des
+interlocuteurs qui n'allaient pas lire le code, en m'appuyant sur des exemples
+concrets tirés des données réelles plutôt que sur des principes de conception.
+C'est probablement la compétence la plus transférable que j'ai développée.
+
+Les rituels agiles ont eu un effet que je n'avais pas anticipé. Le point
+quotidien oblige à rendre son travail intelligible en quelques phrases, et à
+signaler un blocage au lieu de s'obstiner~: j'ai mis plusieurs semaines à
+accepter que remonter une difficulté rapidement n'est pas un aveu de faiblesse,
+mais le comportement attendu. Le point technique hebdomadaire, lui, m'a habitué
+à défendre un choix devant quelqu'un de plus expérimenté, et à distinguer une
+critique de ma solution d'une critique de mon travail.
+
+Le fait de mener trois applications en parallèle, sur des piles techniques et
+des problématiques différentes, m'a confronté à la gestion des priorités.
+Basculer d'une évolution fonctionnelle planifiée vers un incident remonté par un
+utilisateur suppose d'accepter de suspendre une tâche en cours, ce que je
+faisais mal au départ~: j'avais tendance à vouloir terminer avant de changer de
+sujet, y compris lorsque l'urgence justifiait l'inverse. Le suivi formalisé des
+tâches et les échanges avec le chef de projet m'ont aidé à hiérarchiser selon
+l'impact plutôt que selon mon confort.
+
+Enfin, la participation aux réunions concernant d'autres projets du service, aux
+mises en production de renouvellement de secrets et au traitement des problèmes
+remontés par les utilisateurs m'a donné une vision que le seul développement ne
+m'aurait pas apportée. J'ai découvert qu'une application vit bien plus longtemps
+qu'elle n'est développée, et qu'une part significative du travail d'une équipe
+consiste à maintenir en condition opérationnelle ce qui existe déjà. Cela a
+modifié ma manière de concevoir~: je me demande désormais, en écrivant une
+fonctionnalité, comment elle sera diagnostiquée le jour où elle
+dysfonctionnera.
 
 \section{Lien avec la formation ENSIM}
-% >>> À RÉDIGER <<<
+\label{sec:lien-ensim}
+
+Plusieurs enseignements suivis à l'ENSIM se sont révélés directement
+mobilisables, mais rarement sous la forme dans laquelle je les avais appris.
+
+Le cours de bases de données relationnelles est celui dont l'apport a été le
+plus direct. La modélisation et les formes normales m'ont fourni le cadre
+d'analyse qui m'a permis de qualifier le problème du modèle existant, et de
+proposer une solution argumentée plutôt qu'une intuition. Ce que le stage a
+ajouté, c'est la dimension temporelle et opérationnelle que l'exercice
+académique ignore~: normaliser une base vide est un problème de conception,
+normaliser une base en production est un problème de migration, qui suppose des
+scripts réversibles, des contrôles préalables et une reprise des données
+existantes.
+
+Le génie logiciel et la conception objet ont constitué le socle de mon travail
+sur l'architecture en couches de l'application. La séparation des
+responsabilités, la notion de contrat entre composants et les patrons de
+conception vus en cours m'ont permis de me repérer rapidement dans une base de
+code que je n'avais pas écrite. Le stage m'a appris ce qui ne s'enseigne
+difficilement en cours~: qu'une architecture existante porte des compromis, et
+qu'un développeur qui la reprend doit d'abord comprendre pourquoi ces compromis
+ont été faits avant de les corriger. De la même façon, l'architecture n-tiers
+étudiée en cours s'est concrétisée dans le découpage réel de la solution, en
+projets distincts dont chacun a une responsabilité assignée.
+
+Le développement web et la programmation objet m'ont donné les fondamentaux
+nécessaires pour être opérationnel rapidement sur des technologies que je ne
+connaissais pas. Je n'avais pratiqué ni Angular ni~.NET avant le stage~; c'est
+la compréhension des concepts sous-jacents, plutôt que la connaissance d'un
+framework particulier, qui m'a permis de monter en compétence sans blocage
+majeur. Cette expérience a confirmé l'intérêt d'une formation qui enseigne des
+principes plutôt que des outils.
+
+Ma spécialité, Interaction Personnes Systèmes, a trouvé une application moins
+attendue mais réelle. La dette ergonomique identifiée dans l'application
+existante, l'absence de retour visuel pendant les chargements, la difficulté à
+retrouver une information dans de longues listes, relève exactement des
+questions traitées en formation. Le travail sur la lisibilité de l'historique
+des actions en est l'exemple le plus net~: le problème n'était pas de tracer les
+modifications, mais de les présenter à une granularité compréhensible pour
+l'utilisateur plutôt qu'à celle du système. Les exigences d'accessibilité
+remontées par les analyses de qualité ont, de la même manière, prolongé une
+sensibilité acquise en cours.
+
+Les enseignements de gestion de projet et de méthodes agiles m'ont permis
+d'arriver en connaissant le vocabulaire et la logique des rituels. Leur pratique
+quotidienne m'a toutefois appris quelque chose que le cours ne transmet pas~:
+l'agilité en entreprise n'est pas un cadre appliqué à la lettre, mais une
+organisation ajustée à la réalité d'une équipe, avec des rituels dont chacun
+a une fonction précise.
+
+Trois domaines ont en revanche mis en évidence un écart réel entre ma formation
+et le terrain. Le cloud, d'abord~: si les notions de réseaux et de systèmes
+m'ont aidé à comprendre les mécanismes sous-jacents, je n'avais aucune pratique
+d'une plateforme comme Azure, et j'ai dû acquérir en autonomie la logique des
+services managés, de l'authentification par certificat et de la séparation des
+environnements. La mise en production, ensuite~: c'est probablement l'écart le
+plus important, car aucun projet académique ne m'avait confronté à l'idée qu'une
+erreur ne se corrige pas par une nouvelle exécution du programme, mais engage
+des données et des utilisateurs réels. La montée de version d'un socle
+technique, enfin, est une opération que je n'avais jamais eu l'occasion de
+pratiquer, et dont j'ignorais qu'elle constitue une activité à part entière du
+métier.
+
+Ce stage m'a également révélé deux compétences qu'il me reste à construire. La
+première concerne les tests automatisés~: l'application dont j'avais la charge
+n'en disposait pas côté serveur, et j'ai validé mon travail par des tests
+manuels et par la recette fonctionnelle. Cette situation m'a fait mesurer, par
+son absence, ce qu'une couverture de tests apporte en confiance lors d'une
+refonte, mais elle ne m'a pas permis d'en développer la pratique. La seconde
+concerne le déploiement automatisé~: j'ai travaillé avec une chaîne
+d'intégration continue qui compile et analyse le code, sans intervenir sur son
+paramétrage, et les déploiements auxquels j'ai participé restaient largement
+manuels. Ce sont les deux axes sur lesquels je souhaite progresser en priorité.
+
+Au terme de cette expérience, ma représentation du métier d'ingénieur
+développeur a changé. Je l'envisageais essentiellement comme une activité de
+production de code~; je le comprends aujourd'hui comme un travail d'analyse et
+d'arbitrage, où la difficulté réside moins dans l'écriture d'une solution que
+dans l'identification du bon problème et dans la capacité à le formuler
+suffisamment clairement pour qu'une équipe décide de le traiter.
