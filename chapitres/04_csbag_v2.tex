@@ -323,12 +323,43 @@ nomenclature métier, le rôle historiquement appelé « développeur » devenan
 \subsection{Refonte du modèle de données}
 \label{sec:normalisation}
 
-Ce chantier, absent des spécifications initiales, est celui qui a eu le plus
-d'impact sur la fiabilité de l'outil. Il a consisté à transformer les champs de
-texte libre en véritables tables de référence reliées par clés
-étrangères, conformément aux formes normales de Codd~\cite{codd1970relational}.
-Le principe en est illustré par la figure~\ref{fig:normalisation}, qui met en
-regard le stockage initial et le modèle cible sur l'exemple des frameworks.
+\paragraph{Diagnostic.}
+Avant de coder la moindre fonctionnalité, j'ai consacré du temps à examiner le
+schéma de la base de données existante. L'analyse a suivi trois étapes. La
+première a consisté à inventorier les tables de référence et leurs colonnes~: j'ai
+constaté que sept d'entre elles (frameworks, types de module, comptes de
+service, serveurs d'exploitation, applications Azure, bases de données) ne
+portaient pas de contrainte d'unicité sur leur identifiant métier, et que
+certaines tables d'association ne disposaient pas même de clé primaire. La
+deuxième étape a consisté à requêter les données réelles pour en mesurer la
+dégradation. Sur les seuls frameworks, un regroupement par valeur normalisée
+(\texttt{LTRIM}, \texttt{RTRIM}, comparaison insensible à la casse) a révélé
+que le même framework apparaissait sous plusieurs orthographes~: « .NET Core »,
+« .NET Standard » et « .NET » désignaient la même technologie~; « Azure
+Functions », « AzureFunctions » et « Fonctions Azure » coexistaient pour une
+seule valeur. Le même constat s'appliquait aux applications Azure, où des
+libellés libres avaient été saisis à la place de véritables identifiants, et aux
+comptes de service, dont certains UPN apparaissaient en double avec des
+variantes de casse.
+
+La troisième étape a consisté à évaluer l'impact de ces doublons sur la
+fonction la plus critique de l'application~: les alertes d'expiration. Le batch
+mensuel ne remonte une clé que si elle porte à la fois une date d'expiration
+\textit{et} un module rattaché. Or l'héritage de la version~1 avait multiplié
+les enregistrements~: une même clé Azure pouvait figurer jusqu'à onze fois
+--- une fois par module rattaché --- avec la date d'expiration renseignée sur
+un seul d'entre eux. L'alerte dépendait donc de la ligne sur laquelle
+l'utilisateur avait saisi la date. Ce constat a rendu la décision claire~: sans
+normalisation, les filtres demandés par les trois lots produiraient des
+résultats faussés, et les alertes resteraient structurellement fragiles.
+
+\paragraph{Solution retenue.}
+J'ai proposé de normaliser le modèle conformément aux formes normales de
+Codd~\cite{codd1970relational}~: remplacer chaque champ de texte libre par une
+clé étrangère pointant vers une table de référence dédiée, dotée d'une
+contrainte d'unicité. Le principe est illustré par la
+figure~\ref{fig:normalisation}, qui met en regard le stockage initial et le
+modèle cible sur l'exemple des frameworks.
 Sept ensembles de données ont été traités (tableau~\ref{tab:normalisation}).
 
 \begin{figure}[H]
@@ -363,11 +394,25 @@ Sept ensembles de données ont été traités (tableau~\ref{tab:normalisation}).
 
 Chaque normalisation a été menée de bout en bout~: script de migration SQL,
 entité Entity Framework, profil de correspondance AutoMapper, point d'entrée de
-l'interface de programmation et écran Angular. Une difficulté particulière est
+l'interface de programmation et écran Angular. Le script de chaque migration
+suit un patron en quatre étapes~: sauvegarde des tables concernées, fusion des
+alias sémantiques (par exemple « AzureFunctions » et « Fonctions Azure »
+deviennent « Azure Functions »), report des colonnes de valeur vers la table
+d'association, puis ajout de la contrainte d'unicité. Un point technique mérite
+d'être mentionné~: l'ajout de colonnes puis leur mise à jour dans un même lot
+SQL provoque une erreur de compilation différée (\texttt{Invalid column name}),
+car SQL~Server analyse l'ensemble du lot avant de l'exécuter. J'ai contourné
+ce problème par l'usage de \texttt{EXEC()} pour différer la compilation des
+instructions de mise à jour.
+
+Une difficulté plus sérieuse est
 apparue lors de la migration~V019~: la reprise des données existantes faisait
-apparaître des doublons qui empêchaient la création des clés primaires. J'ai
-donc dû différer la contrainte, nettoyer les enregistrements en double, puis
-seulement appliquer la clé.
+apparaître des doublons qui empêchaient la création des clés primaires. Pour
+chaque table d'association, j'ai utilisé une expression de table commune
+(\texttt{ROW\_NUMBER() OVER (PARTITION BY ...)}) afin de ne conserver que la
+ligne portant l'ordre le plus élevé, puis recalculé les ordres consécutifs par
+module. Ce nettoyage a porté sur cinq tables d'association correspondant aux
+référentiels normalisés.
 
 Cette intervention portant sur des données de production, la maîtrise du risque
 était primordiale. J'ai mis en place une gouvernance des migrations
@@ -377,10 +422,16 @@ ordre sur les trois environnements. Deuxièmement, chaque migration dispose d'un
 script de retour arrière dédié, qui n'annule que sa propre
 modification~; cette granularité, obtenue après reprise des premiers scripts
 qui annulaient trop largement, permet de revenir en arrière d'un seul cran.
-Troisièmement, des scripts de contrôle préalable
-(\texttt{V000\_PreFlight}) vérifient avant toute mise en production que la base
-cible se trouve dans l'état attendu, complétés par des sauvegardes préalables
-pour les migrations les plus sensibles.
+Troisièmement, j'ai développé trois scripts de contrôle préalable, en lecture
+seule, exécutables en production pendant l'activité~: le premier vérifie les
+conditions bloquantes des migrations V011 à V017 (valeurs nulles ou vides qui
+feraient échouer un \texttt{ALTER COLUMN NOT NULL} ou une contrainte d'unicité)
+et rend un verdict GO / NO~GO~; le deuxième liste les lignes que les migrations
+supprimeront, pour validation humaine avant exécution~; le troisième, le plus
+complet, couvre V001 à V024 et détecte quatre familles de problèmes que les
+précédents ignoraient~: tables ou colonnes manquantes, objets déjà présents qui
+feraient échouer un \texttt{ALTER} non idempotent, valeurs trop longues pour
+les conversions de type, et index posés sur les colonnes à convertir.
 
 \subsection{Enrichissement fonctionnel}
 \label{sec:fonctionnel}
