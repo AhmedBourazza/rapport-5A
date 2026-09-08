@@ -263,9 +263,9 @@ application monopage), \texttt{Inventory.WebApp.Domain},
 \end{figure}
 
 L'authentification repose sur Microsoft Entra~ID via le protocole
-OpenID~Connect~\cite{ms_oidc}, l'application étant déclarée comme application
+OpenID~Connect, l'application étant déclarée comme application
 Azure~AD du tenant VINCI Energies. Les secrets et chaînes de connexion sont
-externalisés dans Azure Key~Vault~\cite{ms_keyvault}, ce qui évite toute
+externalisés dans Azure Key~Vault, ce qui évite toute
 présence de valeur sensible dans le code ou les fichiers de configuration
 versionnés. La journalisation structurée est assurée par Serilog et remontée
 vers Application Insights.

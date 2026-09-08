@@ -15,10 +15,10 @@ chapitre~\ref{chap:csbag}.
 \label{sec:m365}
 
 Le service qui m'a accueilli développe ses solutions autour de Microsoft~365,
-une suite d'outils collaboratifs hébergés dans le cloud~\cite{ms_m365}. Au cœur
+une suite d'outils collaboratifs hébergés dans le cloud. Au cœur
 de cette suite, SharePoint~Online est une plateforme de collaboration et de
 gestion documentaire organisée en sites, chaque site regroupant des listes
-(données structurées) et des bibliothèques de documents~\cite{ms_sharepoint}.
+(données structurées) et des bibliothèques de documents.
 Dans un groupe fortement décentralisé, ce type de plateforme fournit un socle
 commun à des centaines d'entités, ce qui explique sa place centrale au sein du
 service.
@@ -26,9 +26,9 @@ service.
 Plusieurs approches permettent d'accéder par programme aux données de
 Microsoft~365 et de SharePoint. Microsoft~Graph constitue l'interface REST
 unifiée et recommandée aujourd'hui par Microsoft pour l'ensemble des services
-de la suite~\cite{ms_graph}. À côté, deux approches plus anciennes subsistent~:
+de la suite. À côté, deux approches plus anciennes subsistent~:
 le modèle objet client (CSOM), spécifique à SharePoint, et l'API REST propre à
-SharePoint~\cite{ms_sp_access}.
+SharePoint.
 
 \begin{table}[H]
   \centering
@@ -62,15 +62,15 @@ les besoins d'une application.
 Plusieurs de ces services sont directement pertinents pour une application
 d'entreprise. La gestion des identités et de l'authentification est assurée par
 Microsoft~Entra~ID, anciennement Azure~Active~Directory, qui prend notamment en
-charge l'authentification unique (SSO) via le protocole OpenID~Connect
-\cite{ms_entra,ms_oidc}. La protection des données sensibles repose sur
+charge l'authentification unique (SSO) via le protocole OpenID~Connect.
+La protection des données sensibles repose sur
 Azure~Key~Vault, un service dédié au stockage centralisé et sécurisé des secrets,
-clés et certificats~\cite{ms_keyvault}~; cette approche répond à une bonne
+clés et certificats~; cette approche répond à une bonne
 pratique élémentaire, qui consiste à ne jamais inscrire de secret en clair dans
 le code source. Enfin, l'exécution de traitements en arrière-plan peut s'appuyer
 sur les Azure~WebJobs, déclenchés notamment par une file d'attente
 Azure~Storage~Queue, ce qui permet de découpler et de fiabiliser des traitements
-asynchrones~\cite{ms_webjobs}.
+asynchrones\footnote{Source~: documentation officielle Microsoft Azure.}.
 
 \begin{figure}[H]
   \centering
@@ -156,8 +156,8 @@ Fielding, fondé sur la manipulation de ressources via les verbes du protocole
 HTTP~\cite{fielding2000rest}. Ce découplage entre un front-end autonome et une
 API back-end permet de développer et de faire évoluer les deux indépendamment,
 et d'ouvrir l'API à d'autres consommateurs. Dans l'écosystème considéré, ce
-modèle se traduit par un front-end Angular~\cite{angular_docs} dialoguant avec
-une API ASP.NET~Core~\cite{ms_aspnetcore}.
+modèle se traduit par un front-end Angular dialoguant avec
+une API ASP.NET~Core.
 
 \begin{figure}[H]
   \centering
@@ -216,12 +216,12 @@ objets de transfert de données (DTO) découplent les entités internes de ce qu
 l'API expose. À cela s'ajoute l'injection de dépendances, principe qui consiste
 à fournir à un composant les services dont il a besoin plutôt que de les laisser
 les instancier lui-même, ce qui améliore la testabilité et le découplage
-\cite{seemann2019di,ms_di}.
+.
 
 L'accès aux données relationnelles s'appuie fréquemment sur un
 \textit{mapping} objet-relationnel (ORM), qui traduit automatiquement entre les
 objets du langage et les tables de la base. Entity~Framework~Core est l'ORM de
-référence de l'écosystème .NET~\cite{ms_efcore}. Un ORM accélère le
+référence de l'écosystème .NET. Un ORM accélère le
 développement et réduit le code répétitif, au prix d'un contrôle plus fin qu'offre
 en contrepartie l'accès direct par requêtes (ADO.NET), parfois préféré pour les
 traitements les plus sensibles à la performance.
@@ -244,7 +244,7 @@ faux doublons~\cite{elmasri2016fundamentals}. La normalisation répond à ce
 problème en extrayant les données répétées dans des tables de référence
 dédiées. Les relations de type plusieurs-à-plusieurs sont alors modélisées par
 des tables d'association, qui relient deux entités et peuvent porter des
-attributs propres à la relation~\cite{silberschatz2019database}. Ces principes
+attributs propres à la relation. Ces principes
 constituent la grille de lecture qui servira, au chapitre~\ref{chap:csbag}, à
 analyser le schéma existant et à justifier son évolution.
 
@@ -267,7 +267,7 @@ d'une application entière, deux stratégies de modernisation s'opposent~: la
 réécriture complète, qui repart de zéro mais concentre les risques, et la refonte
 incrémentale, qui fait évoluer l'existant par étapes tout en le gardant
 fonctionnel. Le patron \textit{Strangler~Fig} illustre cette seconde voie, où le
-nouveau système remplace progressivement l'ancien~\cite{fowler2004strangler}.
+nouveau système remplace progressivement l'ancien.
 Cette démarche progressive s'inscrit dans le cadre plus large de la maintenance
 logicielle, notamment évolutive, telle que la décrivent les référentiels du génie
 logiciel~\cite{iso14764}.
