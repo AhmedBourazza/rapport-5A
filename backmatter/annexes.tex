@@ -8,11 +8,13 @@
 \addcontentsline{toc}{chapter}{Annexes}
 \markboth{Annexes}{Annexes}
 
-% Renommer les sections en "Annexe A", "Annexe B", ...
-\renewcommand{\thesection}{Annexe~\Alph{section}}
+% Numérotation des annexes : A, B, C...
+\renewcommand{\thesection}{\Alph{section}}
 \setcounter{section}{0}
+\titleformat{\section}
+  {\normalfont\normalsize\bfseries\color{vinciblue}}{Annexe~\thesection}{1em}{}
 
-\section{\csbag~: de la version~1 à la version~2}
+\section{{\csbag}~: de la version~1 à la version~2}
 \label{ann:v1v2}
 
 Les captures ci-dessous illustrent la refonte de l'interface décrite en
