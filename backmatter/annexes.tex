@@ -14,53 +14,168 @@
 \titleformat{\section}
   {\normalfont\normalsize\bfseries\color{vinciblue}}{Annexe~\thesection}{1em}{}
 
-\section{{\csbag}~: de la version~1 à la version~2}
+\section{Évolution de l'interface de \csbag}
 \label{ann:v1v2}
 
-Les captures ci-dessous illustrent la refonte de l'interface décrite en
-section~\ref{sec:existant}. La version~1 (figure~\ref{fig:ann-v1}) ne proposait
-ni recherche, ni filtre, ni retour visuel pendant les chargements. La version~2
-(figure~\ref{fig:ann-v2}) intègre ces trois éléments.
+Les captures ci-dessous illustrent l'amélioration de l'ergonomie décrite en
+section~\ref{sec:existant}. Pour chaque page, la version~1 (à gauche) est mise
+en regard de la version~2 (à droite).
 
-\begin{figure}[H]
-  \centering
-  \screenshot{csbag_v1_accueil.png}
-  \caption{\csbag version~1~: page d'accueil avant refonte.}
-  \label{fig:ann-v1}
-\end{figure}
-
-\begin{figure}[H]
-  \centering
-  \screenshot{csbag_v2_accueil.png}
-  \caption{\csbag version~2~: page d'accueil après refonte, avec barre de
-    recherche et filtre d'équipe.}
-  \label{fig:ann-v2}
-\end{figure}
-
-\section{Principaux écrans de \csbag v2}
-\label{ann:ecrans}
-
-Cette annexe présente les écrans les plus représentatifs des évolutions
-livrées, décrites en section~\ref{sec:fonctionnel}.
+\subsection*{Page d'accueil}
 
 \begin{figure}[H]
   \centering
   \begin{subfigure}[t]{0.48\textwidth}
     \centering
-    \screenshot[\linewidth]{csbag_toutvoir.png}
-    \caption{Page « Tout voir »~: vue transverse de l'inventaire et filtres.}
-    \label{fig:ann-toutvoir}
+    \screenshot[\linewidth]{csbag_v1_accueil.png}
+    \caption{Version~1~: liste sans recherche ni filtre.}
+    \label{fig:v1-accueil}
   \end{subfigure}
   \hfill
   \begin{subfigure}[t]{0.48\textwidth}
     \centering
-    \screenshot[\linewidth]{csbag_details_app.png}
-    \caption{Détail d'une application~: modules, référents et historique.}
-    \label{fig:ann-details}
+    \screenshot[\linewidth]{csbag_v2_accueil.png}
+    \caption{Version~2~: barre de recherche et filtre d'équipe.}
+    \label{fig:v2-accueil}
   \end{subfigure}
+  \caption{Page d'accueil~: avant et après refonte.}
+  \label{fig:ann-accueil}
+\end{figure}
 
-  \vspace{0.6cm}
+\subsection*{Page « Tout voir »}
 
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[t]{0.48\textwidth}
+    \centering
+    \screenshot[\linewidth]{csbag_v1_toutvoir.png}
+    \caption{Version~1~: vue sans filtres ni détail dépliable.}
+    \label{fig:v1-toutvoir}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.48\textwidth}
+    \centering
+    \screenshot[\linewidth]{csbag_v2_toutvoir.png}
+    \caption{Version~2~: filtres par équipe, référent et framework.}
+    \label{fig:v2-toutvoir}
+  \end{subfigure}
+  \caption{Page « Tout voir »~: avant et après refonte.}
+  \label{fig:ann-toutvoir}
+\end{figure}
+
+\subsection*{Détail d'une application}
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[t]{0.48\textwidth}
+    \centering
+    \screenshot[\linewidth]{csbag_v1_detail_app.png}
+    \caption{Version~1~: affichage des modules et ressources.}
+    \label{fig:v1-detail-app}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.48\textwidth}
+    \centering
+    \screenshot[\linewidth]{csbag_v2_detail_app.png}
+    \caption{Version~2~: modules enrichis, référents avec fonction.}
+    \label{fig:v2-detail-app}
+  \end{subfigure}
+  \caption{Détail d'une application~: avant et après refonte.}
+  \label{fig:ann-detail-app}
+\end{figure}
+
+\subsection*{Détail d'un module}
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[t]{0.48\textwidth}
+    \centering
+    \screenshot[\linewidth]{csbag_v1_detail_module.png}
+    \caption{Version~1~: ressources en texte libre.}
+    \label{fig:v1-detail-module}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.48\textwidth}
+    \centering
+    \screenshot[\linewidth]{csbag_v2_detail_module.png}
+    \caption{Version~2~: ressources normalisées et triables.}
+    \label{fig:v2-detail-module}
+  \end{subfigure}
+  \caption{Détail d'un module~: avant et après refonte.}
+  \label{fig:ann-detail-module}
+\end{figure}
+
+\subsection*{Modification d'une application}
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[t]{0.48\textwidth}
+    \centering
+    \screenshot[\linewidth]{csbag_v1_modif_app.png}
+    \caption{Version~1~: formulaire d'édition.}
+    \label{fig:v1-modif-app}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.48\textwidth}
+    \centering
+    \screenshot[\linewidth]{csbag_v2_modif_app.png}
+    \caption{Version~2~: formulaire enrichi avec auto-complétion.}
+    \label{fig:v2-modif-app}
+  \end{subfigure}
+  \caption{Modification d'une application~: avant et après refonte.}
+  \label{fig:ann-modif-app}
+\end{figure}
+
+\subsection*{Modification d'un module}
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[t]{0.48\textwidth}
+    \centering
+    \screenshot[\linewidth]{csbag_v1_modif_module.png}
+    \caption{Version~1~: saisie libre des ressources.}
+    \label{fig:v1-modif-module}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.48\textwidth}
+    \centering
+    \screenshot[\linewidth]{csbag_v2_modif_module.png}
+    \caption{Version~2~: sélection depuis les référentiels normalisés.}
+    \label{fig:v2-modif-module}
+  \end{subfigure}
+  \caption{Modification d'un module~: avant et après refonte.}
+  \label{fig:ann-modif-module}
+\end{figure}
+
+\subsection*{Certificats}
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[t]{0.48\textwidth}
+    \centering
+    \screenshot[\linewidth]{csbag_v1_certificats.png}
+    \caption{Version~1~: liste basique des certificats.}
+    \label{fig:v1-certificats}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.48\textwidth}
+    \centering
+    \screenshot[\linewidth]{csbag_v2_certificats.png}
+    \caption{Version~2~: empreinte, recherche et alertes d'expiration.}
+    \label{fig:v2-certificats}
+  \end{subfigure}
+  \caption{Gestion des certificats~: avant et après refonte.}
+  \label{fig:ann-certificats}
+\end{figure}
+
+\section{Principaux écrans ajoutés dans \csbag v2}
+\label{ann:ecrans}
+
+Cette annexe présente les écrans qui n'existaient pas dans la version~1, décrits
+en section~\ref{sec:fonctionnel}.
+
+\begin{figure}[H]
+  \centering
   \begin{subfigure}[t]{0.48\textwidth}
     \centering
     \screenshot[\linewidth]{csbag_historique_actions.png}
@@ -74,8 +189,7 @@ livrées, décrites en section~\ref{sec:fonctionnel}.
     \caption{Administration d'un référentiel issu de la normalisation.}
     \label{fig:ann-admin}
   \end{subfigure}
-
-  \caption{Écrans représentatifs de \csbag v2.}
+  \caption{Écrans ajoutés dans \csbag v2.}
   \label{fig:ann-ecrans}
 \end{figure}
 
@@ -103,4 +217,3 @@ de support aux points d'avancement hebdomadaires.
   \caption{Tableau agile du premier lot de \csbag v2 dans Wrike.}
   \label{fig:ann-wrike}
 \end{figure}
-
