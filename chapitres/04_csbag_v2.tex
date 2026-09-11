@@ -26,8 +26,8 @@ Une fois le besoin cadré, la phase de développement commence sur
 l'environnement local du développeur. Les fonctionnalités sont conçues,
 implémentées et testées en local. Le code est ensuite déployé sur les ressources
 Azure de l'environnement de développement. En effet, chaque application dispose
-de trois environnements Azure distincts --- développement (DEV), recette (UAT)
-et production (PROD) --- ce qui permet d'isoler les phases et de garantir que
+de trois environnements Azure distincts (développement (DEV), recette (UAT)
+et production (PROD)), ce qui permet d'isoler les phases et de garantir que
 les tests n'impactent jamais les données de production
 (figure~\ref{fig:azure-envs}). Le développeur réalise alors une première
 campagne de tests dans l'environnement DEV pour valider le comportement dans
@@ -219,7 +219,7 @@ chapitre~\ref{chap:etat-art}~: une application monopage Angular dialogue en
 HTTPS avec une interface de programmation REST ASP.NET~Core, laquelle s'appuie
 sur une couche de domaine puis sur une couche d'accès aux données Entity
 Framework~Core (figure~\ref{fig:archi-csbag}). La solution est découpée en
-projets distincts --- \texttt{Inventory.WebApp} (interface de programmation et
+projets distincts~: \texttt{Inventory.WebApp} (interface de programmation et
 application monopage), \texttt{Inventory.WebApp.Domain},
 \texttt{Inventory.WebApp.Models}, \texttt{Inventory.WebApp.Api.Models} et
 \texttt{Inventory.Console.Secret} pour les traitements par lots.
@@ -310,8 +310,8 @@ pour un déploiement en production.
 
 C'est également dans ce cadre que j'ai mené la mise en conformité REST évoquée
 plus haut. Les points d'entrée de l'interface de programmation ont été
-réorganisés par ressource, avec un contrôleur dédié par entité --- séparation
-des entités \textit{Équipe} et \textit{Référent}, jusqu'alors mêlées ---, et les
+réorganisés par ressource, avec un contrôleur dédié par entité (séparation
+des entités \textit{Équipe} et \textit{Référent}, jusqu'alors mêlées), et les
 identifiants transmis dans le corps de la requête plutôt que concaténés dans
 l'adresse. J'ai par ailleurs supprimé des réponses de l'interface de
 programmation les secrets Azure et SharePoint qui y transitaient inutilement.
@@ -347,7 +347,7 @@ fonction la plus critique de l'application~: les alertes d'expiration. Le batch
 mensuel ne remonte une clé que si elle porte à la fois une date d'expiration
 \textit{et} un module rattaché. Or l'héritage de la version~1 avait multiplié
 les enregistrements~: une même clé Azure pouvait figurer jusqu'à onze fois
---- une fois par module rattaché --- avec la date d'expiration renseignée sur
+(une fois par module rattaché), avec la date d'expiration renseignée sur
 un seul d'entre eux. L'alerte dépendait donc de la ligne sur laquelle
 l'utilisateur avait saisi la date. Ce constat a rendu la décision claire~: sans
 normalisation, les filtres demandés par les trois lots produiraient des
@@ -426,13 +426,13 @@ par thème métier, chaque thème indiquant le lot dont il est issu
     \toprule
     \textbf{Thème et fonctionnalités} & \textbf{Lot} \\
     \midrule
-    Consultation et recherche --- barre de recherche, filtre d'équipe, page « Tout voir », indicateurs de chargement & 1 \\
-    Cycle de vie des applications --- équipes multiples, fonction des référents, ordre d'affichage, archivage & 1--2 \\
-    Traçabilité des livraisons --- historique, document et numéro de mise en production & 1--2 \\
-    Ressources sensibles --- comptes de service, certificats, empreinte, alertes d'expiration & 1--2--3 \\
-    Administration des référentiels --- huit écrans de gestion & 3 \\
-    Auditabilité --- historique des actions utilisateur & 3 \\
-    Taxonomies --- marquage et filtrage des modules & 3 \\
+    Consultation et recherche~: barre de recherche, filtre d'équipe, page « Tout voir », indicateurs de chargement & 1 \\
+    Cycle de vie des applications~: équipes multiples, fonction des référents, ordre d'affichage, archivage & 1--2 \\
+    Traçabilité des livraisons~: historique, document et numéro de mise en production & 1--2 \\
+    Ressources sensibles~: comptes de service, certificats, empreinte, alertes d'expiration & 1--2--3 \\
+    Administration des référentiels~: huit écrans de gestion & 3 \\
+    Auditabilité~: historique des actions utilisateur & 3 \\
+    Taxonomies~: marquage et filtrage des modules & 3 \\
     \bottomrule
   \end{tabularx}
 \end{table}
