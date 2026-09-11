@@ -51,21 +51,14 @@ largement, j'ai découvert que la maintenance d'un socle n'est pas une tâche
 secondaire mais une condition de la sécurité de l'application, puisqu'une
 version sortie du support ne reçoit plus aucun correctif.
 
-Les interventions sur Elium Sauvegarde et Access Report TTC~GO ont
-considérablement fait évoluer ma manière de diagnostiquer un problème. Dans les
-deux cas, l'application ne produisait aucune erreur~: Elium échouait
-globalement à cause d'une anomalie sur un seul article, et Access Report livrait
-des rapports incomplets sans qu'aucune trace ne soit journalisée. J'ai appris à
-me méfier de l'absence de message d'erreur, à raisonner par élimination plutôt
-qu'à modifier le code au hasard, et surtout à ne pas m'arrêter au premier
-symptôme corrigé. Sur Access Report, la distinction entre le contournement mis
-en place pour débloquer rapidement l'exploitation et la correction de fond
-apportée ensuite à la bibliothèque partagée m'a fait comprendre qu'un correctif
-a une portée~: résoudre le problème pour soi ou le résoudre pour tous ceux qui
-utilisent le même composant ne demandent ni le même effort, ni le même niveau de
-précaution. C'est aussi sur ces missions que j'ai mesuré l'importance de
-l'observabilité~: un traitement qui ne dit rien de ce qu'il a fait est un
-traitement que personne ne peut valider.
+L'intervention sur Elium Sauvegarde a considérablement fait évoluer ma manière
+de diagnostiquer un problème. L'application ne produisait aucune erreur
+explicite~: elle échouait globalement à cause d'une anomalie sur un seul
+article. J'ai appris à me méfier de l'absence de message d'erreur, à raisonner
+par élimination plutôt qu'à modifier le code au hasard, et surtout à ne pas
+m'arrêter au premier symptôme corrigé. C'est aussi sur cette mission que j'ai
+mesuré l'importance de l'observabilité~: un traitement qui ne dit rien de ce
+qu'il a fait est un traitement que personne ne peut valider.
 
 L'exigence de qualité imposée par la chaîne d'intégration continue a été, au
 début, difficile à accepter. Voir une livraison bloquée pour une complexité

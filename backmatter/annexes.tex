@@ -217,3 +217,29 @@ de support aux points d'avancement hebdomadaires.
   \caption{Tableau agile du premier lot de \csbag v2 dans Wrike.}
   \label{fig:ann-wrike}
 \end{figure}
+
+\section{Elium Sauvegarde~: flux de traitement et API}
+\label{ann:elium}
+
+Cette annexe complète la description de la mission Elium Sauvegarde présentée en
+section~\ref{sec:elium}. La figure~\ref{fig:ann-elium-seq} détaille le
+diagramme de séquence du traitement, de la lecture du référentiel SharePoint
+jusqu'à la publication des pages. La figure~\ref{fig:ann-elium-postman}
+présente les requêtes de l'API GraphQL d'Elium telles qu'utilisées pour le
+développement et le diagnostic, via la collection Postman du service.
+
+\begin{figure}[H]
+  \centering
+  \screenshot[\textwidth]{elium_sequence.png}
+  \caption{Diagramme de séquence du traitement Elium Sauvegarde~: les cinq
+    étapes, de la lecture du référentiel à la publication des pages SharePoint.}
+  \label{fig:ann-elium-seq}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \screenshot[\textwidth]{elium_postman.png}
+  \caption{Collection Postman de l'API Elium (GraphQL)~: requêtes utilisées
+    pour le diagnostic et le développement.}
+  \label{fig:ann-elium-postman}
+\end{figure}

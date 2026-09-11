@@ -3,9 +3,8 @@
 
 Ce chapitre constitue le cœur technique du rapport. Il commence par présenter
 la démarche de réalisation commune à tous les projets du service, puis détaille
-les trois missions menées au cours du stage~: la refonte de l'application
-\csbag (projet principal), la fiabilisation de l'application Elium Sauvegarde,
-et la correction d'une panne sur Access Report TTC~GO.
+les deux missions menées au cours du stage~: la refonte de l'application
+\csbag (projet principal) et la fiabilisation de l'application Elium Sauvegarde.
 
 \section{Démarche de réalisation}
 \label{sec:demarche}
@@ -554,23 +553,19 @@ précisément à formuler les problèmes que le besoin exprimé ne dit pas.
 \subsection{Une intervention dictée par l'urgence}
 \label{sec:urgence}
 
-Contrairement à \csbag, dont les travaux étaient planifiés par lots, les deux
-missions décrites dans la suite de ce chapitre sont intervenues en réaction à
-des dysfonctionnements constatés en production. Elles n'étaient inscrites à
-aucun planning et ont, à chaque fois, pris le pas sur les développements en
-cours. Cette priorité tenait à l'impact immédiat de ces pannes~: l'archivage des
-contenus était interrompu dans un cas, et les rapports de droits d'accès étaient
-livrés incomplets dans l'autre, ce qui donnait aux demandeurs l'illusion d'un
-contrôle effectué. Un retard équivalent sur un lot fonctionnel de \csbag serait
-resté, lui, sans conséquence opérationnelle.
+Contrairement à \csbag, dont les travaux étaient planifiés par lots, la mission
+décrite ci-après est intervenue en réaction à un dysfonctionnement constaté en
+production. Elle n'était inscrite à aucun planning et a pris le pas sur les
+développements en cours. Cette priorité tenait à l'impact immédiat de la
+panne~: l'archivage des contenus était interrompu, ce qui compromettait la
+sauvegarde des connaissances du service. Un retard équivalent sur un lot
+fonctionnel de \csbag serait resté, lui, sans conséquence opérationnelle.
 
 L'arbitrage a été posé lors du point quotidien avec le chef de projet, qui a
 demandé la bascule sur l'incident. J'ai appris à ce moment-là qu'interrompre une
 tâche ne consiste pas à s'arrêter net~: il faut d'abord ramener le travail en
 cours à un état stable, en particulier lorsqu'une migration de base de données
-est engagée. Cette contrainte de délai a également orienté la manière de
-corriger, en conduisant à séparer le rétablissement rapide du service de la
-correction de fond.
+est engagée.
 
 \subsection{Contexte et diagnostic}
 \label{sec:elium-contexte}
@@ -680,128 +675,6 @@ réussite, durée), qui permet de valider une exécution d'un seul regard. Ce po
 s'est révélé indissociable du reste~: l'isolation des erreurs n'est acceptable
 que si les erreurs isolées sont comptabilisées et visibles. J'ai également rendu
 configurable le choix entre synchronisation complète et incrémentale, ce qui
-autorise un rattrapage après incident sans nouvelle livraison.
-
-\section{Access Report TTC~GO}
-\label{sec:access-report}
-
-\subsection{Contexte et diagnostic}
-\label{sec:access-contexte}
-
-Access Report TTC~GO est un ensemble d'Azure WebJobs (.NET~Framework) déclenchés
-par une file d'attente Azure Storage~Queue. À la demande, ces traitements
-génèrent un rapport Excel des droits d'accès d'un espace collaboratif
-SharePoint~: qui a accès à quoi. L'arborescence SharePoint est parcourue via
-CSOM et l'API REST, les groupes sont résolus via Microsoft~Graph, et le rapport
-bilingue est envoyé par e-mail. L'authentification repose sur un certificat X509
-installé sur la machine hébergeant le traitement. La
-figure~\ref{fig:access-flux} situe ces composants et localise la défaillance.
-
-\begin{figure}[H]
-  \centering
-  \resizebox{\textwidth}{!}{%
-  \begin{tikzpicture}[
-    font=\scriptsize,
-    ext/.style={rounded corners=2pt, draw=grisfonce, fill=grisclair,
-      text width=2.2cm, minimum height=0.9cm, align=center, inner sep=3pt},
-    app/.style={rounded corners=2pt, draw=vinciblue, line width=0.9pt, fill=white,
-      text width=2.6cm, minimum height=1.2cm, align=center, inner sep=3pt},
-    ko/.style={rounded corners=2pt, draw=vincired, line width=0.9pt, fill=white,
-      text width=2.4cm, minimum height=0.9cm, align=center, inner sep=3pt},
-    flow/.style={-{Stealth[length=1.8mm]}, line width=0.7pt, gray},
-    bad/.style={-{Stealth[length=1.8mm]}, line width=0.9pt, vincired, dashed},
-    lbl/.style={font=\tiny\itshape, text=grisfonce}
-  ]
-    \node[ext] (queue) {Storage Queue\\(demande)};
-    \node[app, right=1.3cm of queue] (job) {WebJob\\Access Report\\(.NET Framework)};
-    \node[ext, above=0.9cm of job] (kv) {Key Vault\\+ certificat X509};
-    \node[ext, right=1.4cm of job] (sp) {SharePoint\\(CSOM / REST)};
-    \node[ko, below=0.9cm of sp] (graph) {Microsoft Graph\\(résolution des\\groupes)};
-    \node[ext, right=1.3cm of sp] (xls) {Rapport Excel\\bilingue};
-    \node[ext, right=1.2cm of xls] (mail) {Envoi\\par e-mail};
-
-    \draw[flow] (queue) -- (job);
-    \draw[flow] (kv) -- node[lbl, right]{authentification} (job);
-    \draw[flow] (job) -- node[lbl, above, align=center]{parcours de\\l'arborescence} (sp);
-    \draw[bad] (job) |- (graph);
-    \draw[flow] (sp) -- (xls);
-    \draw[flow] (graph) -| (xls);
-    \draw[flow] (xls) -- (mail);
-
-    \node[lbl, text=vincired, below=0.15cm of graph, align=center]
-      {échec silencieux\\de l'authentification};
-  \end{tikzpicture}%
-  }
-  \caption{Architecture d'Access Report TTC~GO et localisation de la
-    défaillance~: seule la résolution des groupes via Microsoft~Graph était
-    affectée.}
-  \label{fig:access-flux}
-\end{figure}
-
-\subsection{Diagnostic d'une panne silencieuse}
-\label{sec:access-diagnostic}
-
-Les rapports étaient livrés aux demandeurs avec les colonnes de groupes vides,
-sans qu'aucune erreur ne soit journalisée et sans que le traitement échoue.
-Cette absence de signal a constitué la principale difficulté~: le WebJob se
-terminait normalement et produisait un fichier au format attendu, si bien que
-l'anomalie n'était détectable qu'en ouvrant le rapport.
-
-Le fait que le rapport soit partiellement correct a orienté le diagnostic~:
-seules les données issues de Microsoft~Graph manquaient, la défaillance était
-donc localisée sur une seule dépendance. Le traitement lancé depuis un poste de
-développement produisant, lui, un rapport complet, l'écart ne pouvait provenir
-du code mais de son contexte d'exécution. En reprenant la configuration de la
-machine de production, j'ai identifié la cause~: le certificat
-d'authentification y était installé dans un magasin différent de celui interrogé
-par la bibliothèque commune. N'étant pas trouvé, il faisait échouer
-l'authentification Graph, sans que l'erreur soit remontée.
-
-\subsection{Solutions envisagées et correctif retenu}
-\label{sec:access-correctif}
-
-La cause identifiée admettait plusieurs corrections possibles, dont les
-implications différaient sensiblement (tableau~\ref{tab:access-options}).
-
-\begin{table}[H]
-  \centering
-  \caption{Options étudiées pour la correction de l'accès au certificat.}
-  \label{tab:access-options}
-  \begin{tabularx}{\textwidth}{p{3.4cm} X p{1.9cm}}
-    \toprule
-    \bfseries Option & \bfseries Analyse & \bfseries Décision \\
-    \midrule
-    Réinstaller le certificat dans le magasin attendu par le code
-      & Rétablit le service sans toucher au code, mais fait dépendre le
-        fonctionnement d'une manipulation manuelle, à répéter à chaque
-        renouvellement du certificat.
-      & Écartée \\
-    Fixer le magasin de production dans la bibliothèque
-      & Correction immédiate, mais elle inverse le problème et casse l'exécution
-        depuis un poste de développement ainsi que pour les autres traitements.
-      & Écartée \\
-    Rechercher successivement dans les deux magasins
-      & Fonctionne dans tous les cas, mais rend le comportement implicite~: une
-        erreur de déploiement du certificat ne serait plus détectée.
-      & Écartée \\
-    Rendre le magasin configurable, avec valeur par défaut inchangée
-      & Demande une modification de la bibliothèque partagée, mais rend le choix
-        explicite et propre à chaque environnement, sans impact sur les
-        consommateurs existants.
-      & Retenue \\
-    \bottomrule
-  \end{tabularx}
-\end{table}
-
-Le correctif a été mené en deux temps, précisément en raison de l'urgence
-décrite en section~\ref{sec:urgence}. Modifier une bibliothèque partagée par
-plusieurs WebJobs de production supposait une validation que le délai ne
-permettait pas d'engager immédiatement~: j'ai donc d'abord mis en place un
-contournement circonscrit au projet console, permettant de régénérer les
-rapports attendus sans risque de régression sur les traitements en service. Une
-fois le service rétabli, j'ai corrigé la bibliothèque partagée en rendant le
-magasin de certificats configurable par environnement, avec un repli sur le
-comportement d'origine afin que la correction puisse être livrée sans imposer de
-modification aux autres traitements. Au-delà du rétablissement immédiat, ces
-traitements peuvent désormais être déployés sur une machine dont la
-configuration de certificats diffère, sans modification de code.
+autorise un rattrapage après incident sans nouvelle livraison. Le diagramme de
+séquence détaillé du traitement et les requêtes de l'API GraphQL d'Elium sont
+présentés en annexe~\ref{ann:elium}.
