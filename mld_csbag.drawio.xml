@@ -1,0 +1,257 @@
+<mxfile host="app.diagrams.net" modified="2026-09-12T00:00:00.000Z" agent="Ahmed" version="24.0.0">
+  <diagram name="MLD CS BAG v2" id="mld-csbag">
+    <mxGraphModel dx="2000" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ==================== TITRE ==================== -->
+        <mxCell id="title" value="Modèle logique de données — CS BAG v2" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=22;fontStyle=1;fontColor=#003366;" vertex="1" parent="1">
+          <mxGeometry x="400" y="20" width="800" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== LEGENDE ==================== -->
+        <mxCell id="legend-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cccccc;" vertex="1" parent="1">
+          <mxGeometry x="1220" y="70" width="360" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-title" value="Légende" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=13;fontStyle=1;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="1235" y="75" width="200" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-blue-sw" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="1235" y="100" width="20" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-blue-txt" value="Table existante (avant refonte)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1265" y="98" width="300" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-green-sw" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#2e8b3d;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="1235" y="122" width="20" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-green-txt" value="Table / attribut ajouté ou normalisé (v2)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;fontColor=#2e8b3d;" vertex="1" parent="1">
+          <mxGeometry x="1265" y="120" width="300" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-gray-sw" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="1235" y="144" width="20" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-gray-txt" value="Table d'association (n..n)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="1265" y="142" width="300" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== APPLICATIONS ==================== -->
+        <mxCell id="tbl-app" value="&lt;b&gt;Applications&lt;/b&gt;&lt;hr size=&quot;1&quot;&gt;&lt;u&gt;PK IdApplication&lt;/u&gt; : int&lt;br/&gt;NomAppli : nvarchar(50)&lt;br/&gt;Description : nvarchar(max)&lt;br/&gt;LogoAppli : nvarchar(max)&lt;br/&gt;&lt;span style=&quot;color:#2e8b3d;font-weight:bold&quot;&gt;IsArchived : bit&lt;/span&gt;&lt;br/&gt;LienGedVesi : nvarchar(500)&lt;br/&gt;LienDashboardAzure : nvarchar(500)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#003366;strokeWidth=2;align=left;verticalAlign=top;spacingLeft=8;spacingTop=8;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="40" y="180" width="240" height="170" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== MODULES ==================== -->
+        <mxCell id="tbl-mod" value="&lt;b&gt;Modules&lt;/b&gt;&lt;hr size=&quot;1&quot;&gt;&lt;u&gt;PK IdModule&lt;/u&gt; : int&lt;br/&gt;NomModule : nvarchar(50)&lt;br/&gt;LienGit : nvarchar(max)&lt;br/&gt;DateDerLivr : date&lt;br/&gt;LienDoc : nvarchar(max)&lt;br/&gt;DateDerMaj : date&lt;br/&gt;&lt;span style=&quot;color:#2e8b3d;font-weight:bold&quot;&gt;IntegreTaxonomies : bit&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#003366;strokeWidth=2;align=left;verticalAlign=top;spacingLeft=8;spacingTop=8;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="620" y="180" width="240" height="170" as="geometry" />
+        </mxCell>
+
+        <!-- Table association AssocAppMod (existante) -->
+        <mxCell id="tbl-appmod" value="&lt;b&gt;AssocAppMod&lt;/b&gt;&lt;hr size=&quot;1&quot;&gt;FK IdApplication&lt;br/&gt;FK IdModule&lt;br/&gt;Ordre : int" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;dashed=1;align=left;verticalAlign=top;spacingLeft=6;spacingTop=6;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="340" y="205" width="200" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== EQUIPES ==================== -->
+        <mxCell id="tbl-eq" value="&lt;b&gt;Equipes&lt;/b&gt;&lt;hr size=&quot;1&quot;&gt;&lt;u&gt;PK IdEquipe&lt;/u&gt; : int&lt;br/&gt;NomEquipe : nvarchar(100)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#003366;strokeWidth=2;align=left;verticalAlign=top;spacingLeft=8;spacingTop=8;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="40" y="400" width="240" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl-appeq" value="&lt;b&gt;AssocAppEquipe&lt;/b&gt;&lt;hr size=&quot;1&quot;&gt;FK IdApplication&lt;br/&gt;FK IdEquipe" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;dashed=1;align=left;verticalAlign=top;spacingLeft=6;spacingTop=6;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="340" y="405" width="200" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== FONCTIONS (NEW) ==================== -->
+        <mxCell id="tbl-fonc" value="&lt;b&gt;Fonctions&lt;/b&gt;&lt;hr size=&quot;1&quot;&gt;&lt;u&gt;PK IdFonction&lt;/u&gt; : int&lt;br/&gt;Libelle : nvarchar(100)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#2e8b3d;strokeWidth=2;align=left;verticalAlign=top;spacingLeft=8;spacingTop=8;fontSize=11;fontColor=#1b4a26;" vertex="1" parent="1">
+          <mxGeometry x="40" y="520" width="240" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="fonc-badge" value="NOUVEAU" style="text;html=1;strokeColor=none;fillColor=#2e8b3d;fontColor=#ffffff;align=center;verticalAlign=middle;fontSize=9;fontStyle=1;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="220" y="524" width="55" height="14" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== REFERENTS (DeveloppeursRef) ==================== -->
+        <mxCell id="tbl-ref" value="&lt;b&gt;Referents (DeveloppeursRef)&lt;/b&gt;&lt;hr size=&quot;1&quot;&gt;&lt;u&gt;PK IdDev&lt;/u&gt; : int&lt;br/&gt;NomDev : nvarchar(100)&lt;br/&gt;&lt;span style=&quot;color:#2e8b3d;font-weight:bold&quot;&gt;FK IdFonction&lt;/span&gt; : int" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#003366;strokeWidth=2;align=left;verticalAlign=top;spacingLeft=8;spacingTop=8;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="40" y="640" width="240" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl-appdevref" value="&lt;b&gt;AssocAppDevRef&lt;/b&gt;&lt;hr size=&quot;1&quot;&gt;FK IdApplication&lt;br/&gt;FK IdDev" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;dashed=1;align=left;verticalAlign=top;spacingLeft=6;spacingTop=6;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="340" y="660" width="200" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== FRAMEWORKS (V011 NEW) ==================== -->
+        <mxCell id="tbl-fw" value="&lt;b&gt;Frameworks&lt;/b&gt; &lt;i style=&quot;color:#2e8b3d&quot;&gt;(V011)&lt;/i&gt;&lt;hr size=&quot;1&quot;&gt;&lt;u&gt;PK IdFramework&lt;/u&gt; : int&lt;br/&gt;NomFramework : nvarchar(200)&lt;br/&gt;Version : nvarchar(50)&lt;br/&gt;&lt;i&gt;UQ (NomFramework, Version)&lt;/i&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#2e8b3d;strokeWidth=2;align=left;verticalAlign=top;spacingLeft=8;spacingTop=8;fontSize=11;fontColor=#1b4a26;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="80" width="240" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl-modfw" value="&lt;b&gt;AssocModFramework&lt;/b&gt;&lt;hr size=&quot;1&quot;&gt;FK IdModule&lt;br/&gt;FK IdFramework" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;dashed=1;align=left;verticalAlign=top;spacingLeft=6;spacingTop=6;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="890" y="100" width="120" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== TYPE MODULE (V012 NEW) ==================== -->
+        <mxCell id="tbl-type" value="&lt;b&gt;Type&lt;/b&gt; &lt;i style=&quot;color:#2e8b3d&quot;&gt;(V012)&lt;/i&gt;&lt;hr size=&quot;1&quot;&gt;&lt;u&gt;PK IdType&lt;/u&gt; : int&lt;br/&gt;Libelle : nvarchar(200)&lt;br/&gt;&lt;i&gt;UQ (Libelle)&lt;/i&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#2e8b3d;strokeWidth=2;align=left;verticalAlign=top;spacingLeft=8;spacingTop=8;fontSize=11;fontColor=#1b4a26;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="220" width="240" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl-modtype" value="&lt;b&gt;AssocModType&lt;/b&gt;&lt;hr size=&quot;1&quot;&gt;FK IdModule&lt;br/&gt;FK IdType" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;dashed=1;align=left;verticalAlign=top;spacingLeft=6;spacingTop=6;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="890" y="230" width="120" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== COMPTES SERVICES (V013 NEW) ==================== -->
+        <mxCell id="tbl-cpt" value="&lt;b&gt;ComptesServices&lt;/b&gt; &lt;i style=&quot;color:#2e8b3d&quot;&gt;(V013)&lt;/i&gt;&lt;hr size=&quot;1&quot;&gt;&lt;u&gt;PK IdCptServ&lt;/u&gt; : int&lt;br/&gt;UPN : nvarchar(255)&lt;br/&gt;DateExpiration : date&lt;br/&gt;&lt;i&gt;UQ (UPN)&lt;/i&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#2e8b3d;strokeWidth=2;align=left;verticalAlign=top;spacingLeft=8;spacingTop=8;fontSize=11;fontColor=#1b4a26;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="345" width="240" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl-modcpt" value="&lt;b&gt;AssocModCptServices&lt;/b&gt;&lt;hr size=&quot;1&quot;&gt;FK IdModule&lt;br/&gt;FK IdCptServ" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;dashed=1;align=left;verticalAlign=top;spacingLeft=6;spacingTop=6;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="890" y="360" width="120" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== SERVEURS EXPLOITATION (V015 NEW) ==================== -->
+        <mxCell id="tbl-serv" value="&lt;b&gt;ServeursExploitation&lt;/b&gt; &lt;i style=&quot;color:#2e8b3d&quot;&gt;(V015)&lt;/i&gt;&lt;hr size=&quot;1&quot;&gt;&lt;u&gt;PK IdServeur&lt;/u&gt; : int&lt;br/&gt;NomServeur : nvarchar(255)&lt;br/&gt;DossierVM : nvarchar(255)&lt;br/&gt;&lt;i&gt;UQ (NomServeur)&lt;/i&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#2e8b3d;strokeWidth=2;align=left;verticalAlign=top;spacingLeft=8;spacingTop=8;fontSize=11;fontColor=#1b4a26;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="480" width="240" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl-modserv" value="&lt;b&gt;AssocModServExp&lt;/b&gt;&lt;hr size=&quot;1&quot;&gt;FK IdModule&lt;br/&gt;FK IdServeur" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;dashed=1;align=left;verticalAlign=top;spacingLeft=6;spacingTop=6;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="890" y="500" width="120" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== APPLICATIONS AZURE (V016 NEW) ==================== -->
+        <mxCell id="tbl-az" value="&lt;b&gt;ApplicationsAzure&lt;/b&gt; &lt;i style=&quot;color:#2e8b3d&quot;&gt;(V016)&lt;/i&gt;&lt;hr size=&quot;1&quot;&gt;&lt;u&gt;PK IdAzure&lt;/u&gt; : int&lt;br/&gt;IdentifiantAZ : nvarchar(255)&lt;br/&gt;NomAZ : nvarchar(200)&lt;br/&gt;DescriptionAZ : nvarchar(500)&lt;br/&gt;DateExpAz : date&lt;br/&gt;&lt;i&gt;UQ (IdentifiantAZ)&lt;/i&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#2e8b3d;strokeWidth=2;align=left;verticalAlign=top;spacingLeft=8;spacingTop=8;fontSize=11;fontColor=#1b4a26;" vertex="1" parent="1">
+          <mxGeometry x="1300" y="80" width="260" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl-modaz" value="&lt;b&gt;AssocModAzure&lt;/b&gt;&lt;hr size=&quot;1&quot;&gt;FK IdModule&lt;br/&gt;FK IdAzure&lt;br/&gt;Environnement : nvarchar(100)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;dashed=1;align=left;verticalAlign=top;spacingLeft=6;spacingTop=6;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1300" y="240" width="200" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== BDD UTILISE (V017 NEW) ==================== -->
+        <mxCell id="tbl-bdd" value="&lt;b&gt;BddUtilise&lt;/b&gt; &lt;i style=&quot;color:#2e8b3d&quot;&gt;(V017)&lt;/i&gt;&lt;hr size=&quot;1&quot;&gt;&lt;u&gt;PK IdBdd&lt;/u&gt; : int&lt;br/&gt;NomBdd : nvarchar(400)&lt;br/&gt;&lt;i&gt;UQ (NomBdd)&lt;/i&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#2e8b3d;strokeWidth=2;align=left;verticalAlign=top;spacingLeft=8;spacingTop=8;fontSize=11;fontColor=#1b4a26;" vertex="1" parent="1">
+          <mxGeometry x="1300" y="360" width="260" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl-modbdd" value="&lt;b&gt;AssocModBdd&lt;/b&gt;&lt;hr size=&quot;1&quot;&gt;FK IdModule&lt;br/&gt;FK IdBdd&lt;br/&gt;Environnement : nvarchar(100)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;dashed=1;align=left;verticalAlign=top;spacingLeft=6;spacingTop=6;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1300" y="475" width="200" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== CERTIFICATS (existante) ==================== -->
+        <mxCell id="tbl-cert" value="&lt;b&gt;Certificats&lt;/b&gt;&lt;hr size=&quot;1&quot;&gt;&lt;u&gt;PK IdCertif&lt;/u&gt; : int&lt;br/&gt;NomCertif : nvarchar(200)&lt;br/&gt;&lt;span style=&quot;color:#2e8b3d;font-weight:bold&quot;&gt;Empreinte : nvarchar(255)&lt;/span&gt;&lt;br/&gt;DateExp : date" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#003366;strokeWidth=2;align=left;verticalAlign=top;spacingLeft=8;spacingTop=8;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="620" y="400" width="240" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl-modcert" value="&lt;b&gt;AssocModCertificat&lt;/b&gt;&lt;hr size=&quot;1&quot;&gt;FK IdModule&lt;br/&gt;FK IdCertif" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;dashed=1;align=left;verticalAlign=top;spacingLeft=6;spacingTop=6;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="620" y="360" width="240" height="35" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== HISTORIQUE ACTIONS (NEW) ==================== -->
+        <mxCell id="tbl-histact" value="&lt;b&gt;HistoriqueActions&lt;/b&gt;&lt;hr size=&quot;1&quot;&gt;&lt;u&gt;PK IdAction&lt;/u&gt; : int&lt;br/&gt;TypeAction : nvarchar(50)&lt;br/&gt;DateAction : datetime&lt;br/&gt;NomUser : nvarchar(200)&lt;br/&gt;EntiteConcernee : nvarchar(100)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#2e8b3d;strokeWidth=2;align=left;verticalAlign=top;spacingLeft=8;spacingTop=8;fontSize=11;fontColor=#1b4a26;" vertex="1" parent="1">
+          <mxGeometry x="340" y="780" width="240" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="histact-badge" value="NOUVEAU" style="text;html=1;strokeColor=none;fillColor=#2e8b3d;fontColor=#ffffff;align=center;verticalAlign=middle;fontSize=9;fontStyle=1;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="520" y="784" width="55" height="14" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== HISTORIQUE ACTIONS DETAILS (NEW) ==================== -->
+        <mxCell id="tbl-histdet" value="&lt;b&gt;HistoriqueActionsDetails&lt;/b&gt;&lt;hr size=&quot;1&quot;&gt;&lt;u&gt;PK IdDetail&lt;/u&gt; : int&lt;br/&gt;&lt;span style=&quot;color:#2e8b3d;font-weight:bold&quot;&gt;FK IdAction&lt;/span&gt; : int&lt;br/&gt;NomTable : nvarchar(100)&lt;br/&gt;NomChamp : nvarchar(100)&lt;br/&gt;AncienneValeur : nvarchar(max)&lt;br/&gt;NouvelleValeur : nvarchar(max)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#2e8b3d;strokeWidth=2;align=left;verticalAlign=top;spacingLeft=8;spacingTop=8;fontSize=11;fontColor=#1b4a26;" vertex="1" parent="1">
+          <mxGeometry x="640" y="775" width="260" height="145" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== HISTORIQUE LIVRAISON (NEW) ==================== -->
+        <mxCell id="tbl-histlivr" value="&lt;b&gt;HistoriqueLivraison&lt;/b&gt;&lt;hr size=&quot;1&quot;&gt;&lt;u&gt;PK IdLivr&lt;/u&gt; : int&lt;br/&gt;&lt;span style=&quot;color:#2e8b3d;font-weight:bold&quot;&gt;FK IdModule&lt;/span&gt; : int&lt;br/&gt;DateLivr : date&lt;br/&gt;NumeroMEP : nvarchar(100)&lt;br/&gt;DocumentMEP : nvarchar(500)&lt;br/&gt;Fonctionnel : nvarchar(500)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#2e8b3d;strokeWidth=2;align=left;verticalAlign=top;spacingLeft=8;spacingTop=8;fontSize=11;fontColor=#1b4a26;" vertex="1" parent="1">
+          <mxGeometry x="960" y="775" width="260" height="145" as="geometry" />
+        </mxCell>
+        <mxCell id="histlivr-badge" value="NOUVEAU" style="text;html=1;strokeColor=none;fillColor=#2e8b3d;fontColor=#ffffff;align=center;verticalAlign=middle;fontSize=9;fontStyle=1;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="1160" y="779" width="55" height="14" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== RELATIONS ==================== -->
+        <!-- Applications - AssocAppMod - Modules -->
+        <mxCell id="rel-app-appmod" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;strokeColor=#003366;strokeWidth=1.5;fontSize=10;" edge="1" parent="1" source="tbl-app" target="tbl-appmod">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-appmod-mod" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;strokeColor=#003366;strokeWidth=1.5;fontSize=10;" edge="1" parent="1" source="tbl-appmod" target="tbl-mod">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-appmod-lbl" value="1..n" style="text;html=1;strokeColor=none;fillColor=none;fontSize=10;fontColor=#003366;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="290" y="190" width="50" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- Applications - AssocAppEquipe - Equipes -->
+        <mxCell id="rel-app-appeq" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;strokeColor=#003366;strokeWidth=1.5;" edge="1" parent="1" source="tbl-app" target="tbl-appeq">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-appeq-eq" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;strokeColor=#003366;strokeWidth=1.5;" edge="1" parent="1" source="tbl-appeq" target="tbl-eq">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Applications - AssocAppDevRef - Referents -->
+        <mxCell id="rel-app-devref" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;strokeColor=#003366;strokeWidth=1.5;exitX=0.25;exitY=1;entryX=0.75;entryY=0;" edge="1" parent="1" source="tbl-app" target="tbl-appdevref">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-devref-ref" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;strokeColor=#003366;strokeWidth=1.5;" edge="1" parent="1" source="tbl-appdevref" target="tbl-ref">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Referents - Fonctions (FK) -->
+        <mxCell id="rel-ref-fonc" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;endFill=1;strokeColor=#2e8b3d;strokeWidth=2;" edge="1" parent="1" source="tbl-ref" target="tbl-fonc">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Modules - AssocModFramework - Frameworks -->
+        <mxCell id="rel-mod-modfw" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;strokeColor=#2e8b3d;strokeWidth=2;" edge="1" parent="1" source="tbl-mod" target="tbl-modfw">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-modfw-fw" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;strokeColor=#2e8b3d;strokeWidth=2;" edge="1" parent="1" source="tbl-modfw" target="tbl-fw">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Modules - AssocModType - Type -->
+        <mxCell id="rel-mod-modtype" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;strokeColor=#2e8b3d;strokeWidth=2;" edge="1" parent="1" source="tbl-mod" target="tbl-modtype">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-modtype-type" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;strokeColor=#2e8b3d;strokeWidth=2;" edge="1" parent="1" source="tbl-modtype" target="tbl-type">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Modules - AssocModCptServices - ComptesServices -->
+        <mxCell id="rel-mod-modcpt" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;strokeColor=#2e8b3d;strokeWidth=2;" edge="1" parent="1" source="tbl-mod" target="tbl-modcpt">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-modcpt-cpt" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;strokeColor=#2e8b3d;strokeWidth=2;" edge="1" parent="1" source="tbl-modcpt" target="tbl-cpt">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Modules - AssocModServExp - ServeursExploitation -->
+        <mxCell id="rel-mod-modserv" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;strokeColor=#2e8b3d;strokeWidth=2;" edge="1" parent="1" source="tbl-mod" target="tbl-modserv">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-modserv-serv" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;strokeColor=#2e8b3d;strokeWidth=2;" edge="1" parent="1" source="tbl-modserv" target="tbl-serv">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Modules - AssocModAzure - ApplicationsAzure -->
+        <mxCell id="rel-mod-modaz" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;strokeColor=#2e8b3d;strokeWidth=2;" edge="1" parent="1" source="tbl-mod" target="tbl-modaz">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-modaz-az" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;strokeColor=#2e8b3d;strokeWidth=2;" edge="1" parent="1" source="tbl-modaz" target="tbl-az">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Modules - AssocModBdd - BddUtilise -->
+        <mxCell id="rel-mod-modbdd" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;strokeColor=#2e8b3d;strokeWidth=2;" edge="1" parent="1" source="tbl-mod" target="tbl-modbdd">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-modbdd-bdd" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;strokeColor=#2e8b3d;strokeWidth=2;" edge="1" parent="1" source="tbl-modbdd" target="tbl-bdd">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Modules - AssocModCertificat - Certificats -->
+        <mxCell id="rel-mod-modcert" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;strokeColor=#003366;strokeWidth=1.5;" edge="1" parent="1" source="tbl-mod" target="tbl-modcert">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-modcert-cert" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;strokeColor=#003366;strokeWidth=1.5;" edge="1" parent="1" source="tbl-modcert" target="tbl-cert">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Modules - HistoriqueLivraison (FK) -->
+        <mxCell id="rel-mod-histlivr" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;endFill=1;strokeColor=#2e8b3d;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="tbl-mod" target="tbl-histlivr">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- HistoriqueActions - HistoriqueActionsDetails -->
+        <mxCell id="rel-histact-histdet" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;endFill=1;strokeColor=#2e8b3d;strokeWidth=2;" edge="1" parent="1" source="tbl-histact" target="tbl-histdet">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
