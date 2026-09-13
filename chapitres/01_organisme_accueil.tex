@@ -30,13 +30,15 @@ transition énergétique et environnementale. En 2025, il réunissait environ
 293\,800~collaborateurs pour un chiffre d'affaires de 74,6~milliards d'euros
 et un résultat net de 4,9~milliards d'euros~\cite{vinci_urd2024}.
 
-Le groupe organise ses activités autour de deux grands pôles opérationnels.
+Le groupe organise ses activités autour de trois grandes branches de métiers~\cite{wiki_vinci}.
 VINCI~Concessions conçoit, finance et exploite des infrastructures
-de transport, notamment à travers VINCI~Autoroutes et VINCI~Airports. Le pôle
-énergie et construction rassemble VINCI~Energies,
-VINCI~Construction et Cobra~IS. À ces activités s'ajoute
-VINCI~Immobilier, dédié à la promotion immobilière. C'est au sein de
-VINCI~Energies que s'est déroulé mon stage.
+de transport, notamment à travers VINCI~Autoroutes et VINCI~Airports.
+VINCI~Energies rassemble les services à l'énergie et au numérique.
+VINCI~Construction et Eurovia couvrent le génie civil, le bâtiment et les
+infrastructures routières. À ces branches s'ajoutent Cobra~IS, filiale
+spécialisée dans les infrastructures énergétiques, et VINCI~Immobilier,
+dédié à la promotion immobilière. C'est au sein de VINCI~Energies que
+s'est déroulé mon stage.
 
 \begin{figure}[H]
   \centering
@@ -45,31 +47,47 @@ VINCI~Energies que s'est déroulé mon stage.
     racine/.style={rectangle, rounded corners, draw=vinciblue, very thick,
       fill=vinciblue, text=white, minimum width=2.4cm, minimum height=0.8cm,
       align=center},
-    pole/.style={rectangle, rounded corners, draw=vinciblue, thick,
-      fill=vinciblue!10, minimum width=2.6cm, minimum height=0.75cm, align=center},
+    branche/.style={rectangle, rounded corners, draw=vinciblue, thick,
+      fill=vinciblue!10, minimum width=2.3cm, minimum height=0.75cm, align=center},
     feuille/.style={rectangle, rounded corners, draw=gray, thick,
-      fill=grisclair, minimum width=2.4cm, minimum height=0.65cm, align=center},
+      fill=grisclair, minimum width=2.1cm, minimum height=0.65cm, align=center},
     lien/.style={-, draw=gray, thick}
   ]
     \node[racine] (vinci) {VINCI};
-    \node[pole, below left=1.2cm and 3.1cm of vinci] (conc) {VINCI\\Concessions};
-    \node[pole, below=1.2cm of vinci] (contr) {Énergie \&\\Construction};
-    \node[pole, below right=1.2cm and 3.1cm of vinci] (immo) {VINCI\\Immobilier};
+
+    \node[branche, below left=1.2cm and 4.8cm of vinci] (conc)
+      {VINCI\\Concessions};
+    \node[branche, below left=1.2cm and 1.2cm of vinci] (ve)
+      {VINCI\\\textbf{Energies}};
+    \node[branche, below right=1.2cm and 1.2cm of vinci] (vc)
+      {VINCI\\Construction};
+    \node[branche, below right=1.2cm and 3.8cm of vinci, minimum width=1.8cm] (cobra)
+      {Cobra~IS};
+    \node[branche, below right=1.2cm and 5.8cm of vinci, minimum width=2.0cm] (immo)
+      {VINCI\\Immobilier};
+
     \draw[lien] (vinci) -- (conc);
-    \draw[lien] (vinci) -- (contr);
+    \draw[lien] (vinci) -- (ve);
+    \draw[lien] (vinci) -- (vc);
+    \draw[lien] (vinci) -- (cobra);
     \draw[lien] (vinci) -- (immo);
-    \node[feuille, below=1.9cm of contr] (energies) {VINCI\\\textbf{Energies}};
-    \node[feuille, left=0.35cm of energies] (construction) {VINCI\\Construction};
-    \node[feuille, right=0.35cm of energies] (cobra) {Cobra~IS};
-    \draw[lien] (contr) -- (construction);
-    \draw[lien] (contr) -- (energies);
-    \draw[lien] (contr) -- (cobra);
-    \node[feuille, below=1.9cm of conc, minimum width=2.1cm] (airp) {VINCI\\Airports};
-    \node[feuille, left=0.35cm of airp, minimum width=2.1cm] (auto) {VINCI\\Autoroutes};
+
+    \node[feuille, below=0.8cm of conc, xshift=-1.2cm, minimum width=1.9cm] (auto)
+      {VINCI\\Autoroutes};
+    \node[feuille, below=0.8cm of conc, xshift=1.2cm, minimum width=1.9cm] (airp)
+      {VINCI\\Airports};
     \draw[lien] (conc) -- (auto);
     \draw[lien] (conc) -- (airp);
+
+    \node[feuille, below=0.8cm of vc, xshift=-1.0cm, minimum width=1.9cm] (vcf)
+      {VINCI Constr.\\France / Int.};
+    \node[feuille, below=0.8cm of vc, xshift=1.0cm, minimum width=1.9cm] (eurovia)
+      {Eurovia};
+    \draw[lien] (vc) -- (vcf);
+    \draw[lien] (vc) -- (eurovia);
+
     \begin{scope}[on background layer]
-      \node[draw=vincired, thick, rounded corners, fit=(energies), inner sep=3pt] {};
+      \node[draw=vincired, thick, rounded corners, fit=(ve), inner sep=3pt] {};
     \end{scope}
   \end{tikzpicture}
   \caption{Structure simplifiée du groupe VINCI. L'entité d'accueil,
