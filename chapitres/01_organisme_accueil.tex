@@ -45,26 +45,21 @@ s'est déroulé mon stage.
   \begin{tikzpicture}[
     font=\footnotesize,
     racine/.style={rectangle, rounded corners, draw=vinciblue, very thick,
-      fill=vinciblue, text=white, minimum width=2.4cm, minimum height=0.8cm,
+      fill=vinciblue, text=white, minimum width=2.6cm, minimum height=0.85cm,
       align=center},
     branche/.style={rectangle, rounded corners, draw=vinciblue, thick,
-      fill=vinciblue!10, minimum width=2.3cm, minimum height=0.75cm, align=center},
+      fill=vinciblue!10, minimum width=2.4cm, minimum height=0.75cm, align=center},
     feuille/.style={rectangle, rounded corners, draw=gray, thick,
-      fill=grisclair, minimum width=2.1cm, minimum height=0.65cm, align=center},
+      fill=grisclair, minimum width=2.2cm, minimum height=0.65cm, align=center},
     lien/.style={-, draw=gray, thick}
   ]
-    \node[racine] (vinci) {VINCI};
+    \node[racine] (vinci) at (0,0) {VINCI};
 
-    \node[branche, below left=1.2cm and 4.8cm of vinci] (conc)
-      {VINCI\\Concessions};
-    \node[branche, below left=1.2cm and 1.2cm of vinci] (ve)
-      {VINCI\\\textbf{Energies}};
-    \node[branche, below right=1.2cm and 1.2cm of vinci] (vc)
-      {VINCI\\Construction};
-    \node[branche, below right=1.2cm and 3.8cm of vinci, minimum width=1.8cm] (cobra)
-      {Cobra~IS};
-    \node[branche, below right=1.2cm and 5.8cm of vinci, minimum width=2.0cm] (immo)
-      {VINCI\\Immobilier};
+    \node[branche] (conc) at (-5.2,-1.6) {VINCI\\Concessions};
+    \node[branche] (ve)   at (-2.6,-1.6) {VINCI\\\textbf{Energies}};
+    \node[branche] (vc)   at ( 0.0,-1.6) {VINCI\\Construction};
+    \node[branche] (cobra) at ( 2.6,-1.6) {Cobra~IS};
+    \node[branche] (immo) at ( 5.2,-1.6) {VINCI\\Immobilier};
 
     \draw[lien] (vinci) -- (conc);
     \draw[lien] (vinci) -- (ve);
@@ -72,18 +67,12 @@ s'est déroulé mon stage.
     \draw[lien] (vinci) -- (cobra);
     \draw[lien] (vinci) -- (immo);
 
-    \node[feuille, below=0.8cm of conc, xshift=-1.2cm, minimum width=1.9cm] (auto)
-      {VINCI\\Autoroutes};
-    \node[feuille, below=0.8cm of conc, xshift=1.2cm, minimum width=1.9cm] (airp)
-      {VINCI\\Airports};
+    \node[feuille] (auto) at (-6.2,-3.2) {VINCI\\Autoroutes};
+    \node[feuille] (airp) at (-4.2,-3.2) {VINCI\\Airports};
     \draw[lien] (conc) -- (auto);
     \draw[lien] (conc) -- (airp);
 
-    \node[feuille, below=0.8cm of vc, xshift=-1.0cm, minimum width=1.9cm] (vcf)
-      {VINCI Constr.\\France / Int.};
-    \node[feuille, below=0.8cm of vc, xshift=1.0cm, minimum width=1.9cm] (eurovia)
-      {Eurovia};
-    \draw[lien] (vc) -- (vcf);
+    \node[feuille] (eurovia) at (0.0,-3.2) {Eurovia};
     \draw[lien] (vc) -- (eurovia);
 
     \begin{scope}[on background layer]
